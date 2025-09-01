@@ -1,0 +1,57 @@
+openapi: 3.0.0
+info:
+  title: Checkout API
+  version: 1.0.0
+  description: REST API for handling the checkout process.
+
+servers:
+  - url: /api/v1
+    description: Base path for Checkout API
+
+tags:
+  - name: Checkout
+    description: Operations to manage the checkout process
+
+paths: {}
+
+components:
+  schemas:
+    Extra:
+      type: object
+      description: Custom user-defined fields associated with the checkout.
+      additionalProperties: true
+      example:
+        source: "web_portal"
+        promoCode: "SUMMER2025"
+
+    ErrorCode:
+      type: string
+      description: Unique error code identifying the type of error.
+      enum:
+        - NOT_FOUND
+        - INTERNAL_ERROR
+        - VALIDATION_ERROR
+      example: "NOT_FOUND"
+
+    ErrorResponse:
+      type: object
+      description: Standard error response returned by the Checkout API.
+      required:
+        - code
+        - message
+      properties:
+        code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+          description: Human-readable message describing the error.
+          example: "Checkout with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+        timestamp:
+          type: string
+          format: date-time
+          description: Time when the error occurred.
+          example: "2025-08-19T12:34:56Z"
+        traceId:
+          type: string
+          description: Optional trace ID for correlating logs or debugging.
+          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"

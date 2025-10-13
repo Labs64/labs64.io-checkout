@@ -50,3 +50,20 @@ spring:
     username:
     password:
 
+  datasource:
+    url: jdbc:postgresql://postgresql-primary.default.svc.cluster.local:5432/checkout
+    username:
+    password:
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+#    default-schema: checkout
+#    schemas: [ checkout ]
+#    create-schemas: true
+
+
+checkout:
+  currency:
+    - USD
+    - EUR

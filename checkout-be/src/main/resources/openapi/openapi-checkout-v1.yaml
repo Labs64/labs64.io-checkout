@@ -9,16 +9,1103 @@ servers:
     description: Base path for Checkout API
 
 tags:
-  - name: Checkout
+  - name: CheckoutIntent
     description: Operations to manage the checkout process
+  - name: BillingInfo
+    description: Operations to manage the billing info process
+  - name: ShippingInfo
+    description: Operations to manage the shipping info process
+  - name: Shipping
+    description: Operations to manage the shipping process
 
-paths: {}
+paths:
+  # CHECKOUT INTENT
+  /checkout-intent:
+    post:
+      summary: Create a new checkout intent
+      operationId: createCheckoutIntent
+      tags:
+        - CheckoutIntent
+      description: |
+        Creates a new checkout intent that represents a pending payment process.
+        The checkout intent can include optional initial items, customer information,
+        and metadata to customize the payment flow.
+      requestBody:
+        description: Payload to create a checkout intent.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutIntentCreateRequest'
+      responses:
+        '201':
+          description: Checkout intent created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutIntent'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "Currency is invalid. Allowed currencies: USD, EUR"
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    get:
+      summary: Returns a list of checkout intents
+      operationId: listCheckoutIntents
+      tags:
+        - CheckoutIntent
+      description: |
+        Retrieves all existing checkout intents.
+        This endpoint is typically used for administrative or reporting purposes
+        to review created payment attempts.
+      x-spring-paginated: true
+      parameters:
+        - name: query
+          in: query
+          description: Free-text search term to filter checkout intents.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of checkout intents.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutIntentPage'
+
+  /checkout-intent/{id}:
+    get:
+      summary: Retrieve a checkout intent by its ID
+      operationId: getCheckoutIntent
+      tags:
+        - CheckoutIntent
+      description: |
+        Retrieves the details of a specific checkout intent using its unique identifier.
+        This can be used to check the current status or metadata of a pending or completed payment.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the checkout intent to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Checkout intent found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutIntent'
+        '404':
+          description: Checkout intent not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "CheckoutIntent with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    patch:
+      summary: Partially update a checkout intent
+      operationId: updateCheckoutIntent
+      tags:
+        - CheckoutIntent
+      description: |
+        Partially updates an existing checkout intent.
+        This can be used to modify fields like status, payment method, 
+        or billing details without replacing the entire object.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the checkout intent to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        description: Fields to update in the checkout intent.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckoutIntentUpdateRequest'
+      responses:
+        '200':
+          description: Checkout intent updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckoutIntent'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "Currency is invalid. Allowed currencies: USD, EUR"
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        '404':
+          description: Checkout intent not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "CheckoutIntent with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+
+  # BILLING INFO
+  /billing-info:
+    post:
+      summary: Create a new billing info
+      operationId: createBillingInfo
+      tags:
+        - BillingInfo
+      description: |
+        Creates a new billing info record for a customer. 
+        This info can later be linked to a CheckoutIntent for processing payments.
+      requestBody:
+        description: Payload to create a billing info.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingInfoCreateRequest'
+      responses:
+        '201':
+          description: Billing info created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingInfo'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "Email is invalid."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    get:
+      summary: Returns a list of billing infos
+      operationId: listBillingInfos
+      tags:
+        - BillingInfo
+      description: Retrieves a paginated list of billing info records, optionally filtered by a free-text search term.
+      x-spring-paginated: true
+      parameters:
+        - name: query
+          in: query
+          description: Free-text search term to filter billing info.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of billing
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingInfoPage'
+
+  /billing-info/{id}:
+    get:
+      summary: Retrieve a billing info by its ID
+      operationId: getBillingInfo
+      tags:
+        - BillingInfo
+      description: Retrieves the details of a specific billing info by its UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the billing info to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Billing info found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingInfo'
+        '404':
+          description: Billing info not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "BillingInfo with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    patch:
+      summary: Partially update a billing info
+      operationId: updateBillingInfo
+      tags:
+        - BillingInfo
+      description: |
+        Partially updates a billing info record. Only non-critical fields can be updated if the billing 
+        info is already linked to a CheckoutIntent.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the billing info to update.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        description: Fields to update in the billing info.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BillingInfoUpdateRequest'
+      responses:
+        '200':
+          description: Billing info updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BillingInfo'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "email is invalid."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        '404':
+          description: Billing info not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "BillingInfo with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    delete:
+      summary: Delete a billing info
+      operationId: deleteBillingInfo
+      tags:
+        - BillingInfo
+      description: |
+        Deletes a billing info record if it is not currently linked to any CheckoutIntent. 
+        Deletion is forbidden for billing infos that are in use.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the billing info to delete.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '204':
+          description: Billing info deleted successfully.
+        '404':
+          description: Billing info not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "BillingInfo with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        '409':
+          description: BillingInfo is linked to CheckoutIntents and cannot be deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "CONFLICT"
+                message: "BillingInfo is linked to CheckoutIntents and cannot be deleted."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+
+  # SHIPPING INFO
+  /shipping-info:
+    post:
+      summary: Create a new shipping info
+      operationId: createShippingInfo
+      tags:
+        - ShippingInfo
+      description: |
+        Creates a new shipping info record for a customer. 
+        This info can later be linked to a CheckoutIntent for processing payments.
+      requestBody:
+        description: Payload to create a shipping info.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShippingInfoCreateRequest'
+      responses:
+        '201':
+          description: Shipping info created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingInfo'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "Name is required."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    get:
+      summary: Returns a list of shipping infos
+      operationId: listShippingInfos
+      tags:
+        - ShippingInfo
+      description: Retrieves a paginated list of shipping info records, optionally filtered by a free-text search term.
+      x-spring-paginated: true
+      parameters:
+        - name: query
+          in: query
+          description: Free-text search term to filter shipping info.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of shipping
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingInfoPage'
+
+  /shipping-info/{id}:
+    get:
+      summary: Retrieve a shipping info by its ID
+      operationId: getShippingInfo
+      tags:
+        - ShippingInfo
+      description: Retrieves the details of a specific shipping info by its UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the shipping info to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Shipping info found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingInfo'
+        '404':
+          description: Shipping info not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "ShippingInfo with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    patch:
+      summary: Partially update a shipping info
+      operationId: updateShippingInfo
+      tags:
+        - ShippingInfo
+      description: |
+        Partially updates a shipping info record. Only non-critical fields can be updated if the shipping 
+        info is already linked to a CheckoutIntent.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the shipping info to update.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        description: Fields to update in the shipping info.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShippingInfoUpdateRequest'
+      responses:
+        '200':
+          description: Shipping info updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingInfo'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "name is missing."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        '404':
+          description: Shipping info not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "ShippingInfo with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    delete:
+      summary: Delete a shipping info
+      operationId: deleteShippingInfo
+      tags:
+        - ShippingInfo
+      description: |
+        Deletes a shipping info record if it is not currently linked to any CheckoutIntent. 
+        Deletion is forbidden for shipping infos that are in use.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the shipping info to delete.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '204':
+          description: Shipping info deleted successfully.
+        '404':
+          description: Shipping info not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "ShippingInfo with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        '409':
+          description: ShippingInfo is linked to CheckoutIntents and cannot be deleted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "CONFLICT"
+                message: "ShippingInfo is linked to CheckoutIntents and cannot be deleted."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+
+  # SHIPPING
+  /shipping:
+    post:
+      summary: Create a new shipping
+      operationId: createShipping
+      tags:
+        - Shipping
+      description: |
+        Registers shipping details for a CheckoutIntent. This endpoint stores a carrier code
+        and a tracking number together with a reference to the recipient address (ShippingInfo).
+        The API does NOT manage courier workflows; it only persists and returns references
+        needed by CRM/OMS to track parcels at the carrier side.
+      requestBody:
+        description: Payload to create a shipping.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShippingCreateRequest'
+      responses:
+        '201':
+          description: Shipping created successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipping'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "Name is required."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    get:
+      summary: Returns a list of shipping
+      operationId: listShipping
+      tags:
+        - Shipping
+      description: Retrieves a paginated list of shipping records, optionally filtered by a free-text search term.
+      x-spring-paginated: true
+      parameters:
+        - name: query
+          in: query
+          description: Free-text search term to filter shipping.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of shipping
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ShippingPage'
+
+  /shipping/{id}:
+    get:
+      summary: Retrieve a shipping by its ID
+      operationId: getShipping
+      tags:
+        - Shipping
+      description: Retrieves the details of a specific shipping by its UUID.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the shipping to retrieve.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      responses:
+        '200':
+          description: Shipping found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipping'
+        '404':
+          description: Shipping not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "Shipping with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+    patch:
+      summary: Partially update a shipping
+      operationId: updateShipping
+      tags:
+        - Shipping
+      description: Partially updates a shipping record.
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: UUID of the shipping to update.
+          schema:
+            type: string
+            format: uuid
+            example: "550e8400-e29b-41d4-a716-446655440000"
+      requestBody:
+        description: Fields to update in the shipping.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ShippingUpdateRequest'
+      responses:
+        '200':
+          description: Shipping updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipping'
+        '400':
+          description: Invalid request payload.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "VALIDATION_ERROR"
+                message: "name is missing."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+        '404':
+          description: Shipping not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: "NOT_FOUND"
+                message: "Shipping with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
+                timestamp: "2025-08-19T12:34:56Z"
+                traceId: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
 
 components:
   schemas:
+    CheckoutIntentBase:
+      type: object
+      properties:
+        status:
+          allOf:
+            - $ref: '#/components/schemas/CheckoutIntentStatus'
+            - readOnly: true
+        amount:
+          type: number
+          format: double
+          description: Total amount to be charged for this checkout intent.
+          minimum: 0
+          example: 149.99
+        currency:
+          type: string
+          description: Currency in ISO 4217 format
+          example: USD
+          x-extra-annotation: "@io.labs64.checkout.v1.validator.ValidCurrency"
+        paymentMethod:
+          type: string
+          description: Unique identifier of the payment method.
+          example: "STRIPE"
+        billingInfoId:
+          type: string
+          format: uuid
+          description: Unique identifier of the billing info.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        extra:
+          $ref: '#/components/schemas/Extra'
+
+    CheckoutIntentStatus:
+      type: string
+      description: Represents the current state of a checkout intent.
+      enum:
+        - CREATED     # The checkout intent has been created but not yet processed.
+        - PENDING     # The checkout is awaiting payment confirmation or further action.
+        - FAILED      # The payment attempt failed or was declined.
+        - CANCELED    # The checkout intent was canceled before completion.
+        - COMPLETED   # The payment was successfully completed.
+
+    CheckoutIntent:
+      type: object
+      description: Represents a payment attempt.
+      allOf:
+        - $ref: '#/components/schemas/CheckoutIntentBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier of the checkout intent.
+              readOnly: true
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            createdAt:
+              type: string
+              format: date-time
+              description: Timestamp when the checkout intent was created.
+              readOnly: true
+              example: "2025-09-11T12:34:56Z"
+            updatedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the checkout intent was last updated.
+              readOnly: true
+              example: "2025-09-11T13:20:00Z"
+            closedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the checkout intent reached a final status (COMPLETED, CANCELED, or FAILED).
+              readOnly: true
+              example: "2025-09-11T14:00:00Z"
+
+    CheckoutIntentCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/CheckoutIntentBase'
+        - type: object
+          description: Schema used when creating a new checkout intent. Requires mandatory fields such as amount and currency.
+          required:
+            - amount
+            - currency
+            - paymentMethod
+
+    CheckoutIntentUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/CheckoutIntentBase'
+        - type: object
+          description: Schema used when partially updating an existing checkout intent. Only the provided fields will be modified.
+
+    CheckoutIntentPage:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/CheckoutIntent'
+              default: [ ]
+          required:
+            - items
+
+    BillingInfoBase:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: Full name of the person responsible for billing.
+          maxLength: 255
+          example: "John Doe"
+        email:
+          type: string
+          format: email
+          description: Email address for billing purposes.
+          maxLength: 255
+          example: "john.doe@example.com"
+        phone:
+          type: string
+          description: Phone number for billing purposes.
+          maxLength: 50
+          example: "+1234567890"
+        city:
+          type: string
+          description: City of the billing address.
+          maxLength: 100
+          example: "New York"
+        country:
+          type: string
+          description: Country code of the billing address in ISO 3166-1 alpha-2 format.
+          maxLength: 2
+          example: "US"
+        address1:
+          type: string
+          description: Primary street address.
+          maxLength: 255
+          example: "123 Main St"
+        address2:
+          type: string
+          description: Secondary street address (optional).
+          maxLength: 255
+          example: "Apt 4B"
+        postalCode:
+          type: string
+          description: ZIP or postal code of the billing address.
+          maxLength: 20
+          example: "10001"
+        state:
+          type: string
+          description: State or region of the billing address.
+          maxLength: 50
+          example: "NY"
+        extra:
+          allOf:
+            - $ref: '#/components/schemas/Extra'
+          x-extra-annotation: "@io.labs64.checkout.v1.validator.ValidExtra"
+
+    BillingInfo:
+      type: object
+      description: Billing details associated with this payment attempt.
+      allOf:
+        - $ref: '#/components/schemas/BillingInfoBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier of the billing info.
+              readOnly: true
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            createdAt:
+              type: string
+              format: date-time
+              description: Timestamp when the billing info was created.
+              readOnly: true
+              example: "2025-09-11T12:34:56Z"
+            updatedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the billing info was last updated.
+              readOnly: true
+              example: "2025-09-11T13:20:00Z"
+            confirmedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the billing info was last updated.
+              readOnly: true
+              example: "2025-09-11T13:20:00Z"
+
+    BillingInfoCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/BillingInfoBase'
+        - type: object
+          description: Schema used when creating a new billing info.
+          required:
+            - name
+          properties:
+            confirm:
+              type: boolean
+              enum: [ true ]
+              description: "Explicit user consent to store billing info. Must be true."
+
+    BillingInfoUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/BillingInfoBase'
+        - type: object
+          description: Schema used when partially updating an existing billing info. Only the provided fields will be modified.
+
+    BillingInfoPage:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/BillingInfo'
+              default: [ ]
+          required:
+            - items
+
+    ShippingInfoBase:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: Full name of the shipment recipient.
+          maxLength: 255
+          example: "John Doe"
+        phone:
+          type: string
+          description: Recipient phone number (preferably in E.164 format; extensions may be included, e.g., "ext. 123").
+          maxLength: 50
+          example: "+15687985466"
+        city:
+          type: string
+          description: City of the shipping address.
+          maxLength: 100
+          example: "New York"
+        country:
+          type: string
+          description: Country code of the shipping address in ISO 3166-1 alpha-2 format.
+          maxLength: 2
+          example: "US"
+        address1:
+          type: string
+          description: Primary street address.
+          maxLength: 255
+          example: "123 Main St"
+        address2:
+          type: string
+          description: Secondary street address (optional).
+          maxLength: 255
+          example: "Apt 4B"
+        postalCode:
+          type: string
+          description: ZIP or postal code of the shipping address.
+          maxLength: 20
+          example: "10001"
+        state:
+          type: string
+          description: State or region of the shipping address.
+          maxLength: 50
+          example: "NY"
+        extra:
+          allOf:
+            - $ref: '#/components/schemas/Extra'
+          x-extra-annotation: "@io.labs64.checkout.v1.validator.ValidExtra"
+
+    ShippingInfo:
+      type: object
+      description: Shipping details associated with this payment attempt.
+      allOf:
+        - $ref: '#/components/schemas/ShippingInfoBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier of the shipping info.
+              readOnly: true
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            createdAt:
+              type: string
+              format: date-time
+              description: Timestamp when the shipping info was created.
+              readOnly: true
+              example: "2025-09-11T12:34:56Z"
+            updatedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the shipping info was last updated.
+              readOnly: true
+              example: "2025-09-11T13:20:00Z"
+
+    ShippingInfoCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/ShippingInfoBase'
+        - type: object
+          description: Schema used when creating a new shipping info.
+          required:
+            - name
+          properties:
+            confirm:
+              type: boolean
+              enum: [ true ]
+              description: "Explicit user consent to store shipping info. Must be true."
+
+    ShippingInfoUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/ShippingInfoBase'
+        - type: object
+          description: Schema used when partially updating an existing shipping info. Only the provided fields will be modified.
+
+    ShippingInfoPage:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/ShippingInfo'
+              default: [ ]
+          required:
+            - items
+
+    ShippingBase:
+      type: object
+      additionalProperties: false
+      properties:
+        carrier:
+          type: string
+          description: Name or code of the shipping carrier handling the parcel.
+          example: Fedex
+        trackingNumber:
+          type: string
+          description: Carrier-issued parcel identifier used to track delivery status.
+          example: RA123456789CN
+        shippingInfoId:
+          type: string
+          format: uuid
+          description: Unique identifier of the shipping info.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        checkoutIntentId:
+          type: string
+          format: uuid
+          description: Unique identifier of the checkout intent.
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        extra:
+          allOf:
+            - $ref: '#/components/schemas/Extra'
+          x-extra-annotation: "@io.labs64.checkout.v1.validator.ValidExtra"
+
+    Shipping:
+      type: object
+      description: Shipping record linked to a CheckoutIntent, holding carrier and tracking identifiers.
+      allOf:
+        - $ref: '#/components/schemas/ShippingBase'
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: Unique identifier of the shipping info.
+              readOnly: true
+              example: "550e8400-e29b-41d4-a716-446655440000"
+            createdAt:
+              type: string
+              format: date-time
+              description: Timestamp when the shipping info was created.
+              readOnly: true
+              example: "2025-09-11T12:34:56Z"
+            updatedAt:
+              type: string
+              format: date-time
+              description: Timestamp when the shipping info was last updated.
+              readOnly: true
+              example: "2025-09-11T13:20:00Z"
+
+    ShippingCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/ShippingBase'
+        - type: object
+          description: Schema used when creating a new shipping.
+          required:
+            - carrier
+            - trackingNumber
+            - shippingInfoId
+            - checkoutIntentId
+
+    ShippingUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/ShippingBase'
+        - type: object
+          description: Schema used when partially updating an existing shipping. Only the provided fields will be modified.
+
+    ShippingPage:
+      allOf:
+        - $ref: '#/components/schemas/PaginatedResponse'
+        - type: object
+          properties:
+            items:
+              type: array
+              items:
+                $ref: '#/components/schemas/Shipping'
+              default: [ ]
+          required:
+            - items
+
     Extra:
       type: object
-      description: Custom user-defined fields associated with the checkout.
+      description: Custom user-defined fields.
       additionalProperties: true
       example:
         source: "web_portal"
@@ -28,9 +1115,12 @@ components:
       type: string
       description: Unique error code identifying the type of error.
       enum:
-        - NOT_FOUND
-        - INTERNAL_ERROR
-        - VALIDATION_ERROR
+        - NOT_FOUND         # The requested resource was not found.
+        - INTERNAL_ERROR    # An unexpected server-side error occurred.
+        - VALIDATION_ERROR  # The request payload failed validation rules.
+        - CONFLICT          # Resource conflict (e.g., FK restriction, duplicate, etc.)
+        - CONSENT_REQUIRED  # Consent required
+        - MISSING_TENANT_ID # Missing header "X-Tenant-Id"
       example: "NOT_FOUND"
 
     ErrorResponse:
@@ -39,6 +1129,7 @@ components:
       required:
         - code
         - message
+        - timestamp
       properties:
         code:
           $ref: '#/components/schemas/ErrorCode'
@@ -55,3 +1146,32 @@ components:
           type: string
           description: Optional trace ID for correlating logs or debugging.
           example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+
+    PaginatedResponse:
+      type: object
+      description: Standard pagination envelope used by list endpoints. Contains page cursors and total counters.
+      properties:
+        page:
+          type: integer
+          example: 0
+        pageSize:
+          type: integer
+          example: 100
+        totalItems:
+          type: integer
+          format: int64
+          example: 1000
+        totalPages:
+          type: integer
+          example: 10
+        hasPrev:
+          type: boolean
+        hasNext:
+          type: boolean
+      required:
+        - page
+        - pageSize
+        - totalItems
+        - totalPages
+        - hasPrev
+        - hasNext

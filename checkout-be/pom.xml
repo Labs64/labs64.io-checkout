@@ -30,12 +30,14 @@
         <junit-jupiter.version>5.13.4</junit-jupiter.version>
         <jackson-datatype-jsr310.version>2.19.2</jackson-datatype-jsr310.version>
         <commons-lang3.version>3.18.0</commons-lang3.version>
-        <kubernetes-client.version>7.3.1</kubernetes-client.version>
+        <kubernetes-client.version>7.4.0</kubernetes-client.version>
         <opentelemetry-exporter-otlp.version>1.53.0</opentelemetry-exporter-otlp.version>
         <micrometer-tracing.version>1.5.3</micrometer-tracing.version>
         <labs64.code-formatting.version>1.0.0</labs64.code-formatting.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.38</lombok.version>
+        <postgresql.version>42.7.7</postgresql.version>
+        <flyway.version>11.12.0</flyway.version>
         <!-- PLUGINS -->
         <maven-enforcer-plugin.version>3.6.1</maven-enforcer-plugin.version>
         <openapi-generator-maven-plugin.version>7.15.0</openapi-generator-maven-plugin.version>
@@ -74,6 +76,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
             <groupId>net.logstash.logback</groupId>
@@ -146,11 +152,31 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
-        <!-- MapStruct-->
+        <!-- MapStruct -->
         <dependency>
             <groupId>org.mapstruct</groupId>
             <artifactId>mapstruct</artifactId>
             <version>${mapstruct.version}</version>
+        </dependency>
+
+        <!-- Flyaway -->
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-core</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.flywaydb</groupId>
+            <artifactId>flyway-database-postgresql</artifactId>
+            <version>${flyway.version}</version>
+        </dependency>
+
+        <!-- Postgres Driver -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${postgresql.version}</version>
         </dependency>
 
         <!-- Testing -->

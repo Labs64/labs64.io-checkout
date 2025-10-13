@@ -15,6 +15,11 @@ docker: build
 run: build
     mvn spring-boot:run -Dspring-boot.run.profiles=local
 
+# profile local
+install-local:
+    mvn clean install "-Dspring.profiles.active=local"
+
+
 # check maven dependencies/plugins/properties updates
 check-updates:
     mvn versions:display-plugin-updates -Dmaven.version.ignore='(?i).*[.-]?(alpha|beta|RC|M)\d*'

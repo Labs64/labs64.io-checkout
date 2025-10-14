@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Component
-@Order(Ordered.HIGHEST_PRECEDENCE)
 public class TenantHeaderFilter extends OncePerRequestFilter {
     private final ObjectProvider<RequestTenantProvider> tenantProvider;
 

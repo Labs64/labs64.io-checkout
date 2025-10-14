@@ -1,16 +1,16 @@
 package io.labs64.checkout.v1.model;
 
+import java.util.Map;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.labs64.checkout.v1.model.ShippingUpdateRequest;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeAll;
-
-import io.labs64.checkout.v1.model.ShippingUpdateRequest;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ShippingUpdateRequestTest {
 
@@ -24,11 +24,8 @@ public class ShippingUpdateRequestTest {
     }
 
     private static ShippingUpdateRequest valid() {
-        return new ShippingUpdateRequest()
-                .carrier("Fedex")
-                .trackingNumber("RA123456789CN")
-                .shippingInfoId(java.util.UUID.randomUUID())
-                .checkoutIntentId(java.util.UUID.randomUUID())
+        return new ShippingUpdateRequest().carrier("Fedex").trackingNumber("RA123456789CN")
+                .shippingInfoId(java.util.UUID.randomUUID()).checkoutIntentId(java.util.UUID.randomUUID())
                 .extra(Map.of("source", "web_portal"));
     }
 

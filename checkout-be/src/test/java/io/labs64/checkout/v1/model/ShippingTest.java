@@ -6,19 +6,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
-import io.swagger.v3.oas.annotations.media.Schema;
-
-import io.labs64.checkout.v1.model.Shipping;
 
 import static org.assertj.core.api.Assertions.assertThat;
+
+import io.labs64.checkout.v1.model.Shipping;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 class ShippingTest {
 
@@ -32,30 +32,23 @@ class ShippingTest {
     }
 
     private static Shipping validShipping() {
-        return new Shipping()
-                .carrier("Fedex")
-                .trackingNumber("RA123456789CN")
-                .shippingInfoId(UUID.randomUUID())
-                .checkoutIntentId(UUID.randomUUID())
-                .extra(Map.of("source", "web_portal"));
+        return new Shipping().carrier("Fedex").trackingNumber("RA123456789CN").shippingInfoId(UUID.randomUUID())
+                .checkoutIntentId(UUID.randomUUID()).extra(Map.of("source", "web_portal"));
     }
 
     @Test
     void shouldPassWhenOptionalFieldsAreNull() {
-        final Shipping shipping = validShipping()
-                .carrier(null).trackingNumber(null)
-                .shippingInfoId(null).checkoutIntentId(null)
-                .extra(null);
+        final Shipping shipping = validShipping().carrier(null).trackingNumber(null).shippingInfoId(null)
+                .checkoutIntentId(null).extra(null);
         assertThat(validator.validate(shipping)).isEmpty();
     }
 
     @Test
     void shouldFailWhenExtraHasNestedStructure_ifValidExtraEnabled() {
-        final boolean hasConstraint =
-                validator.getConstraintsForClass(Shipping.class)
-                        .getConstraintsForProperty("extra") != null &&
-                        !validator.getConstraintsForClass(Shipping.class)
-                                .getConstraintsForProperty("extra").getConstraintDescriptors().isEmpty();
+        final boolean hasConstraint = validator.getConstraintsForClass(Shipping.class)
+                .getConstraintsForProperty("extra") != null
+                && !validator.getConstraintsForClass(Shipping.class).getConstraintsForProperty("extra")
+                        .getConstraintDescriptors().isEmpty();
 
         Assumptions.assumeTrue(hasConstraint, "ValidExtra not active; skipping.");
 

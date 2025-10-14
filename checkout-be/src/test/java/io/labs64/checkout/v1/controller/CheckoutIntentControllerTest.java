@@ -1,24 +1,14 @@
 package io.labs64.checkout.v1.controller;
 
-import io.labs64.checkout.v1.entity.BillingInfoEntity;
-import io.labs64.checkout.v1.entity.CheckoutIntentEntity;
-import io.labs64.checkout.v1.mapper.CheckoutIntentMapper;
-import io.labs64.checkout.v1.model.CheckoutIntent;
-import io.labs64.checkout.v1.model.CheckoutIntentPage;
-import io.labs64.checkout.v1.model.CheckoutIntentCreateRequest;
-import io.labs64.checkout.v1.model.CheckoutIntentUpdateRequest;
-import io.labs64.checkout.v1.service.BillingInfoService;
-import io.labs64.checkout.v1.service.CheckoutIntentService;
-import io.labs64.checkout.v1.web.tenant.RequestTenantProvider;
+import java.util.List;
+import java.util.UUID;
+import java.util.function.Consumer;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.function.Consumer;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,6 +19,17 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.v1.entity.BillingInfoEntity;
+import io.labs64.checkout.v1.entity.CheckoutIntentEntity;
+import io.labs64.checkout.v1.mapper.CheckoutIntentMapper;
+import io.labs64.checkout.v1.model.CheckoutIntent;
+import io.labs64.checkout.v1.model.CheckoutIntentCreateRequest;
+import io.labs64.checkout.v1.model.CheckoutIntentPage;
+import io.labs64.checkout.v1.model.CheckoutIntentUpdateRequest;
+import io.labs64.checkout.v1.service.BillingInfoService;
+import io.labs64.checkout.v1.service.CheckoutIntentService;
+import io.labs64.checkout.v1.web.tenant.RequestTenantProvider;
+
 class CheckoutIntentControllerTest {
 
     private final RequestTenantProvider tenantProvider = mock(RequestTenantProvider.class);
@@ -36,8 +37,8 @@ class CheckoutIntentControllerTest {
     private final BillingInfoService biService = mock(BillingInfoService.class);
     private final CheckoutIntentMapper mapper = mock(CheckoutIntentMapper.class);
 
-    private final CheckoutIntentController controller =
-            new CheckoutIntentController(tenantProvider, ciService, biService, mapper);
+    private final CheckoutIntentController controller = new CheckoutIntentController(tenantProvider, ciService,
+            biService, mapper);
 
     @Test
     void shouldReturnOkAndBodyWhenGetCheckoutIntent() {
@@ -137,12 +138,11 @@ class CheckoutIntentControllerTest {
         final CheckoutIntent dto = new CheckoutIntent();
 
         when(tenantProvider.requireTenantId()).thenReturn(tenant);
-        when(ciService.update(eq(tenant), eq(id), any()))
-                .thenAnswer(inv -> {
-                    final Consumer<CheckoutIntentEntity> updater = inv.getArgument(2);
-                    updater.accept(entity);
-                    return entity;
-                });
+        when(ciService.update(eq(tenant), eq(id), any())).thenAnswer(inv -> {
+            final Consumer<CheckoutIntentEntity> updater = inv.getArgument(2);
+            updater.accept(entity);
+            return entity;
+        });
         when(mapper.toDto(entity)).thenReturn(dto);
 
         final ResponseEntity<CheckoutIntent> resp = controller.updateCheckoutIntent(id, req);
@@ -167,12 +167,11 @@ class CheckoutIntentControllerTest {
 
         when(tenantProvider.requireTenantId()).thenReturn(tenant);
         when(biService.get(tenant, billingInfoId)).thenReturn(billingInfo);
-        when(ciService.update(eq(tenant), eq(id), any()))
-                .thenAnswer(inv -> {
-                    final Consumer<CheckoutIntentEntity> updater = inv.getArgument(2);
-                    updater.accept(entity);
-                    return entity;
-                });
+        when(ciService.update(eq(tenant), eq(id), any())).thenAnswer(inv -> {
+            final Consumer<CheckoutIntentEntity> updater = inv.getArgument(2);
+            updater.accept(entity);
+            return entity;
+        });
         when(mapper.toDto(entity)).thenReturn(dto);
 
         final ResponseEntity<CheckoutIntent> resp = controller.updateCheckoutIntent(id, req);

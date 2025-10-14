@@ -49,11 +49,6 @@ public class ShippingInfoEntity {
 
     private String phone;
 
-    @Column(nullable = false)
-    private String carrier;
-
-    private String trackingNumber;
-
     private String city;
 
     private String country;

@@ -11,6 +11,10 @@ spring:
     username: labs64
     password: labs64pw
 
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
   flyway:
     enabled: true
     locations: classpath:db/migration

@@ -1,19 +1,19 @@
 package io.labs64.checkout.v1.model;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.labs64.checkout.v1.model.BillingInfoCreateRequest;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 class BillingInfoCreateRequestTest {
 
@@ -34,17 +34,9 @@ class BillingInfoCreateRequestTest {
     }
 
     private static BillingInfoCreateRequest validRequest() {
-        return new BillingInfoCreateRequest("John Doe")
-                .email("john.doe@example.com")
-                .phone("+1234567890")
-                .city("New York")
-                .country("US")
-                .address1("123 Main St")
-                .address2("Apt 4B")
-                .postalCode("10001")
-                .state("NY")
-                .extra(Map.of("source", "web_portal", "promoCode", "SUMMER2025"))
-                .confirm(Boolean.TRUE);
+        return new BillingInfoCreateRequest("John Doe").email("john.doe@example.com").phone("+1234567890")
+                .city("New York").country("US").address1("123 Main St").address2("Apt 4B").postalCode("10001")
+                .state("NY").extra(Map.of("source", "web_portal", "promoCode", "SUMMER2025")).confirm(Boolean.TRUE);
     }
 
     @Test
@@ -165,7 +157,9 @@ class BillingInfoCreateRequestTest {
     @Test
     void shouldPassWhenExtraHasAllowedTypes() {
         final Map<String, Object> ok = new LinkedHashMap<>();
-        ok.put("s", "ok"); ok.put("n", 42); ok.put("b", Boolean.TRUE);
+        ok.put("s", "ok");
+        ok.put("n", 42);
+        ok.put("b", Boolean.TRUE);
         final BillingInfoCreateRequest req = validRequest().extra(ok);
         assertThat(validator.validateProperty(req, "extra")).isEmpty();
     }

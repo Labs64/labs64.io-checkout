@@ -1,16 +1,16 @@
 package io.labs64.checkout.v1.model;
 
+import java.util.UUID;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.labs64.checkout.v1.model.ShippingCreateRequest;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeAll;
-
-import io.labs64.checkout.v1.model.ShippingCreateRequest;
-import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class ShippingCreateRequestTest {
     private static Validator validator;
@@ -23,12 +23,7 @@ public class ShippingCreateRequestTest {
     }
 
     private static ShippingCreateRequest valid() {
-        return new ShippingCreateRequest(
-                "Fedex",
-                "RA123456789CN",
-                UUID.randomUUID(),
-                UUID.randomUUID()
-        );
+        return new ShippingCreateRequest("Fedex", "RA123456789CN", UUID.randomUUID(), UUID.randomUUID());
     }
 
     @Test

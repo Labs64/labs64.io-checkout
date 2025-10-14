@@ -55,8 +55,13 @@ spring:
     username:
     password:
 
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: none
+
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
 #    default-schema: checkout
 #    schemas: [ checkout ]

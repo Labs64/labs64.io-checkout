@@ -1,16 +1,16 @@
 package io.labs64.checkout.v1.model;
 
+import java.math.BigDecimal;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.labs64.checkout.v1.model.CheckoutIntentCreateRequest;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.jupiter.api.BeforeAll;
-
-import io.labs64.checkout.v1.model.CheckoutIntentCreateRequest;
-import org.junit.jupiter.api.Test;
-
-import java.math.BigDecimal;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class CheckoutIntentCreateRequestTest {
 

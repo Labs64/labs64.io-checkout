@@ -1,13 +1,10 @@
 package io.labs64.checkout.v1.service;
 
-import io.labs64.checkout.exception.ConflictException;
-import io.labs64.checkout.exception.NotFoundException;
-import io.labs64.checkout.messages.ShippingMessages;
-import io.labs64.checkout.v1.entity.CheckoutIntentEntity;
-import io.labs64.checkout.v1.entity.ShippingEntity;
-import io.labs64.checkout.v1.entity.ShippingInfoEntity;
-import io.labs64.checkout.v1.repository.CheckoutIntentRepository;
-import io.labs64.checkout.v1.repository.ShippingRepository;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,11 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
@@ -32,17 +24,32 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.exception.ConflictException;
+import io.labs64.checkout.exception.NotFoundException;
+import io.labs64.checkout.messages.ShippingMessages;
+import io.labs64.checkout.v1.entity.CheckoutIntentEntity;
+import io.labs64.checkout.v1.entity.ShippingEntity;
+import io.labs64.checkout.v1.entity.ShippingInfoEntity;
+import io.labs64.checkout.v1.repository.CheckoutIntentRepository;
+import io.labs64.checkout.v1.repository.ShippingRepository;
 
 @ExtendWith(MockitoExtension.class)
 class ShippingServiceTest {
 
-    @Mock ShippingRepository repository;
-    @Mock ShippingInfoService shippingInfoService;
-    @Mock CheckoutIntentService checkoutIntentService;
-    @Mock CheckoutIntentRepository checkoutIntentRepository;
-    @Mock ShippingMessages msg;
+    @Mock
+    ShippingRepository repository;
+    @Mock
+    ShippingInfoService shippingInfoService;
+    @Mock
+    CheckoutIntentService checkoutIntentService;
+    @Mock
+    CheckoutIntentRepository checkoutIntentRepository;
+    @Mock
+    ShippingMessages msg;
 
-    @InjectMocks ShippingService service;
+    @InjectMocks
+    ShippingService service;
+
     @Test
     void shouldReturnOptionalWhenFind() {
         final String tenant = "t1";
@@ -75,9 +82,7 @@ class ShippingServiceTest {
         when(repository.findByIdAndTenantId(id, tenant)).thenReturn(Optional.empty());
         when(msg.notFound(id)).thenReturn("not found");
 
-        assertThatThrownBy(() -> service.get(tenant, id))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage("not found");
+        assertThatThrownBy(() -> service.get(tenant, id)).isInstanceOf(NotFoundException.class).hasMessage("not found");
     }
 
     @Test
@@ -105,8 +110,7 @@ class ShippingServiceTest {
 
         when(shippingInfoService.get(tenant, shippingInfoId)).thenReturn(shippingInfo);
         when(checkoutIntentService.get(tenant, checkoutIntentId)).thenReturn(checkoutIntent);
-        when(repository.save(any(ShippingEntity.class)))
-                .thenAnswer((Answer<ShippingEntity>) inv -> inv.getArgument(0));
+        when(repository.save(any(ShippingEntity.class))).thenAnswer((Answer<ShippingEntity>) inv -> inv.getArgument(0));
 
         final ShippingEntity saved = service.create(tenant, shippingInfoId, checkoutIntentId, toSave);
 
@@ -142,11 +146,9 @@ class ShippingServiceTest {
         when(repository.findByIdAndTenantId(id, tenant)).thenReturn(Optional.empty());
         when(msg.notFound(id)).thenReturn("not found");
 
-        assertThatThrownBy(() -> service.update(tenant, id, s -> {}))
-                .isInstanceOf(NotFoundException.class)
-                .hasMessage("not found");
+        assertThatThrownBy(() -> service.update(tenant, id, s -> {
+        })).isInstanceOf(NotFoundException.class).hasMessage("not found");
     }
-
 
     @Test
     void shouldThrowConflictWhenDeleteLinked() {
@@ -155,9 +157,7 @@ class ShippingServiceTest {
         when(checkoutIntentRepository.existsByTenantIdAndShippingId(tenant, id)).thenReturn(true);
         when(msg.deleteConflict(id)).thenReturn("linked");
 
-        assertThatThrownBy(() -> service.delete(tenant, id))
-                .isInstanceOf(ConflictException.class)
-                .hasMessage("linked");
+        assertThatThrownBy(() -> service.delete(tenant, id)).isInstanceOf(ConflictException.class).hasMessage("linked");
 
         verify(repository, never()).deleteByIdAndTenantId(any(), anyString());
     }

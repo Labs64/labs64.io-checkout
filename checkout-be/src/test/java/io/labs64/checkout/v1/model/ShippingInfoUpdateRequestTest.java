@@ -1,16 +1,16 @@
 package io.labs64.checkout.v1.model;
 
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.labs64.checkout.v1.model.ShippingInfoUpdateRequest;
-import org.junit.jupiter.api.Test;
-
-import java.util.Map;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
 
 class ShippingInfoUpdateRequestTest {
 
@@ -31,15 +31,8 @@ class ShippingInfoUpdateRequestTest {
     }
 
     private static ShippingInfoUpdateRequest valid() {
-        return new ShippingInfoUpdateRequest()
-                .name("John Doe")
-                .phone("+15687985466")
-                .city("New York")
-                .country("US")
-                .address1("123 Main St")
-                .address2("Apt 4B")
-                .postalCode("10001")
-                .state("NY")
+        return new ShippingInfoUpdateRequest().name("John Doe").phone("+15687985466").city("New York").country("US")
+                .address1("123 Main St").address2("Apt 4B").postalCode("10001").state("NY")
                 .extra(Map.of("source", "web_portal"));
     }
 

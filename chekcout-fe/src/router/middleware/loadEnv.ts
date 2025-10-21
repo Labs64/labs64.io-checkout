@@ -13,7 +13,7 @@ const middleware: Middleware = async (to, from) => {
   const { isLoaded, loadEnv } = useEnv();
 
   try {
-    if (!isLoaded) {
+    if (!isLoaded()) {
       await loadEnv();
     }
   } catch (error) {

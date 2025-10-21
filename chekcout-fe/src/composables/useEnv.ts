@@ -1,29 +1,49 @@
-import baseAxios from '@/services/api/baseAxios';
-
 let env: Partial<Record<keyof ImportMetaEnv, string>> = {};
-let isLoaded: boolean = false;
-let envLoadPromise: Promise<void> | null = null;
+let loaded: boolean = false;
+let pending: Promise<void> | null = null;
+
+const RUNTIME = import.meta.env.VITE_RUNTIME_ENV === 'true';
+const STRICT  = import.meta.env.VITE_REQUIRE_RUNTIME_ENV === 'true';
+const PATH    = import.meta.env.VITE_RUNTIME_ENV_PATH ?? '/config/env.json';
 
 const loadEnv = async () => {
-  if (isLoaded) {
+  if (loaded) {
     return;
   }
 
-  if (envLoadPromise) {
-    return envLoadPromise;
+  if (pending) {
+    return pending;
   }
 
-  envLoadPromise = baseAxios
-    .get<Record<string, string>>('./env.json')
-    .then((res) => {
-      env = res.data;
-      isLoaded = true;
+  // skip runtime fetch entirely
+  if (!RUNTIME) {
+    loaded = true;
+    env = {};
+    return;
+  }
+
+  pending = fetch(PATH, { cache: 'no-store', headers: { 'Accept': 'application/json' } })
+    .then(async (response) => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      // for dev/local: no runtime overrides
+      if (response.status === 404 && !STRICT) {
+        return {};
+      }
+
+      throw new Error(`env.json HTTP ${response.status}`);
+    })
+    .then((data) => {
+      loaded = true;
+      env = data;
     })
     .finally(() => {
-      envLoadPromise = null;
+      pending = null;
     });
 
-  return envLoadPromise;
+  return pending;
 };
 
 
@@ -36,7 +56,7 @@ function getEnv(key: keyof ImportMetaEnv, fallback?: string) {
 
 export default function useEnv() {
   return {
-    isLoaded,
+    isLoaded: () => loaded,
     loadEnv,
     getEnv,
   };

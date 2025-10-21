@@ -1,5 +1,8 @@
 import type { MiddlewareConfig } from '@/types/router/middleware';
 
+// middleware
+import loadEnv from '@/router/middleware/loadEnv';
+
 const config: MiddlewareConfig = {
   /**
    * The application's global HTTP middleware stack.
@@ -7,7 +10,7 @@ const config: MiddlewareConfig = {
    */
   global: {
     // executed before any route
-    before: [],
+    before: [loadEnv],
 
     // executed after any route
     after: [],

@@ -1,5 +1,4 @@
 import type {
-  NavigationGuardNext,
   RouteLocation,
   RouteLocationNormalized,
   RouteLocationNormalizedLoaded,
@@ -7,12 +6,12 @@ import type {
 
 import { isString, isObject, forEach, castArray } from 'lodash-es';
 
-import type { MetaMiddleware, Middleware, RouteMiddleware } from '@/types/router/middleware';
+import type { MetaMiddleware, RouteMiddleware } from '@/types/router/middleware';
 
 import config from './config';
 
-export const useMiddleware = () => {
-  const getRouteMiddlewares = (route: RouteLocation): RouteMiddleware[] =>
+export const useRouteMiddleware = () => {
+  const collectRouteMiddleware = (route: RouteLocation): RouteMiddleware[] =>
     route.matched.flatMap(({ meta }) => {
       let metaMiddleware = meta?.middleware as MetaMiddleware | undefined;
 
@@ -56,46 +55,41 @@ export const useMiddleware = () => {
       return result;
     });
 
-  const getAllRoutesMiddlewares = (route: RouteLocation): RouteMiddleware[] => {
+  const buildMiddlewarePipeline = (route: RouteLocation): RouteMiddleware[] => {
     return [
       ...config.global.before.map((mw) => ({ mw, args: [] })),
-      ...getRouteMiddlewares(route),
+      ...collectRouteMiddleware(route),
       ...config.global.after.map((mw) => ({ mw, args: [] })),
     ];
   };
 
+  const navigationGuard = async (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded) => {
+    const middlewares = buildMiddlewarePipeline(to);
 
-  const nextMiddleware = (to: RouteLocationNormalized, from: RouteLocationNormalizedLoaded, next: NavigationGuardNext) => {
-    const middlewares = getAllRoutesMiddlewares(to);
+    if (!middlewares) {
+      return;
+    }
 
-    const guard = (index: number = 0) => {
-      const middleware = middlewares[index];
-
+    for (let i = 0; i < middlewares.length; i++) {
+      const middleware = middlewares[i];
 
       if (!middleware) {
-        return next;
+        continue;
       }
 
-      return (...args: Parameters<NavigationGuardNext> | []) => {
-        if (args.length) {
-          return next(...args);
-        }
+      const result = await middleware.mw.apply({}, [to, from, ...middleware.args]);
 
-        const { mw, args: mArgs } = middleware;
-        const nextGuard = guard(index + 1) as NavigationGuardNext;
-        return mw.apply({}, [to, from, nextGuard, ...mArgs]);
-      };
-    };
-
-    // start middlewares
-    guard();
+      if (result !== undefined) {
+        return result;
+      }
+    }
   };
 
   return {
-    getRouteMiddlewares,
-    getAllRoutesMiddlewares,
-    nextMiddleware,
+    collectRouteMiddleware,
+    buildMiddlewarePipeline,
+    navigationGuard,
   };
 };
 
-export default useMiddleware;
+export default useRouteMiddleware;

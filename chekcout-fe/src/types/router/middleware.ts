@@ -1,15 +1,15 @@
 import type {
   RouteLocationNormalized,
   RouteLocationNormalizedLoaded,
-  NavigationGuardNext,
+  NavigationGuardReturn,
+  _Awaitable,
 } from 'vue-router';
 
 export type Middleware = (
   to: RouteLocationNormalized,
   from: RouteLocationNormalizedLoaded,
-  next: NavigationGuardNext,
   ...args: unknown[]
-) => void | Promise<void>;
+) => _Awaitable<NavigationGuardReturn>;
 
 export type MetaMiddleware = string | string[] | { [key: string]: unknown[] };
 

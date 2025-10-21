@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, createWebHistory } from 'vue-router';
-import routes from './routes';
-import useMiddleware from '@/router/middleware';
+import routes from '@/router/routes';
+import useRouteMiddleware from '@/router/middleware';
 
 let history = createWebHistory(import.meta.env.BASE_URL);
 
@@ -10,9 +10,8 @@ if (import.meta.env.VITE_ROUTER_HASH_MODE === 'true') {
 
 const router = createRouter({ history, routes });
 
-router.beforeEach((to, from, next) => {
-  const { nextMiddleware } = useMiddleware();
-  nextMiddleware(to, from, next);
-});
+const { navigationGuard } = useRouteMiddleware();
+
+router.beforeEach(async (to, from) => navigationGuard(to, from));
 
 export default router;

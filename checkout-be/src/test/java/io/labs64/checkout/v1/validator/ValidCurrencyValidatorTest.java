@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.validator;
+package io.labs64.checkout.validator;
 
 import java.util.List;
 import java.util.Set;
@@ -19,6 +19,7 @@ import static org.mockito.Mockito.when;
 
 import io.labs64.checkout.config.CheckoutProperties;
 import io.labs64.checkout.messages.ValidationMessages;
+import io.labs64.checkout.validator.ValidCurrencyValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 @ExtendWith(MockitoExtension.class)

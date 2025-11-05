@@ -20,9 +20,9 @@ CREATE TABLE billing_info
 -- unique idx
 CREATE UNIQUE INDEX ux_billing_info_tenant_id_id ON billing_info (tenant_id, id);
 
-CREATE INDEX idx_billing_info_tenant_id ON billing_info (tenant_id);
-CREATE INDEX idx_billing_info_email ON billing_info (tenant_id, email) WHERE email IS NOT NULL;;
-CREATE INDEX idx_billing_info_created_at ON billing_info (tenant_id, created_at);
-CREATE INDEX idx_billing_info_updated_at ON billing_info (tenant_id, updated_at);
-CREATE INDEX idx_billing_info_confirmed_at ON billing_info (tenant_id, confirmed_at);
-CREATE INDEX idx_billing_info_extra_gin ON billing_info USING gin (extra jsonb_path_ops);
+CREATE INDEX ix_billing_info_tenant_id ON billing_info (tenant_id);
+CREATE INDEX ix_billing_info_email ON billing_info (tenant_id, email) WHERE email IS NOT NULL;
+CREATE INDEX ix_billing_info_created_at ON billing_info (tenant_id, created_at);
+CREATE INDEX ix_billing_info_updated_at ON billing_info (tenant_id, updated_at);
+CREATE INDEX ix_billing_info_confirmed_at ON billing_info (tenant_id, confirmed_at);
+CREATE INDEX ix_billing_info_extra_gin ON billing_info USING gin (extra jsonb_path_ops);

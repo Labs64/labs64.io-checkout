@@ -19,8 +19,8 @@ CREATE TABLE shipping_info
 -- unique idx
 CREATE UNIQUE INDEX ux_shipping_info_tenant_id_id ON shipping_info (tenant_id, id);
 
-CREATE INDEX idx_shipping_info_tenant_id ON shipping_info (tenant_id);
-CREATE INDEX idx_shipping_info_created_at ON shipping_info (tenant_id, created_at);
-CREATE INDEX idx_shipping_info_updated_at ON shipping_info (tenant_id, updated_at);
-CREATE INDEX idx_shipping_info_confirmed_at ON shipping_info (tenant_id, confirmed_at);
-CREATE INDEX idx_shipping_info_extra_gin ON shipping_info USING gin (extra jsonb_path_ops);
+CREATE INDEX ix_shipping_info_tenant_id ON shipping_info (tenant_id);
+CREATE INDEX ix_shipping_info_created_at ON shipping_info (tenant_id, created_at);
+CREATE INDEX ix_shipping_info_updated_at ON shipping_info (tenant_id, updated_at);
+CREATE INDEX ix_shipping_info_confirmed_at ON shipping_info (tenant_id, confirmed_at);
+CREATE INDEX ix_shipping_info_extra_gin ON shipping_info USING gin (extra jsonb_path_ops);

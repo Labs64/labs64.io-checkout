@@ -4,7 +4,7 @@ import java.io.Serial;
 
 import org.springframework.http.HttpStatus;
 
-import io.labs64.checkout.v1.model.ErrorCode;
+import io.labs64.checkout.model.ErrorCode;
 import lombok.Getter;
 
 @Getter

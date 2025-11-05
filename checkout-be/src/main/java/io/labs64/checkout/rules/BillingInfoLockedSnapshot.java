@@ -1,6 +1,6 @@
 package io.labs64.checkout.rules;
 
-import io.labs64.checkout.v1.entity.BillingInfoEntity;
+import io.labs64.checkout.entity.BillingInfoEntity;
 
 public record BillingInfoLockedSnapshot(String name,String email,String phone,String country,String city,String address1,String address2,String postalCode,String state){
 

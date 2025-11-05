@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.service;
+package io.labs64.checkout.service;
 
 import java.time.OffsetDateTime;
 import java.util.Optional;
@@ -23,14 +23,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.entity.BillingInfoEntity;
 import io.labs64.checkout.exception.ConflictException;
 import io.labs64.checkout.exception.ConsentRequiredException;
 import io.labs64.checkout.exception.NotFoundException;
 import io.labs64.checkout.messages.BillingInfoMessages;
+import io.labs64.checkout.repository.BillingInfoRepository;
+import io.labs64.checkout.repository.CheckoutIntentRepository;
 import io.labs64.checkout.rules.BillingInfoLockedSnapshot;
-import io.labs64.checkout.v1.entity.BillingInfoEntity;
-import io.labs64.checkout.v1.repository.BillingInfoRepository;
-import io.labs64.checkout.v1.repository.CheckoutIntentRepository;
+import io.labs64.checkout.service.BillingInfoService;
 
 @ExtendWith(MockitoExtension.class)
 class BillingInfoServiceTest {

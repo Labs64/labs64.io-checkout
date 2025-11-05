@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.service;
+package io.labs64.checkout.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -25,13 +25,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.entity.CheckoutIntentEntity;
 import io.labs64.checkout.exception.ConflictException;
 import io.labs64.checkout.exception.NotFoundException;
 import io.labs64.checkout.messages.CheckoutIntentMessages;
+import io.labs64.checkout.model.CheckoutIntentStatus;
+import io.labs64.checkout.repository.CheckoutIntentRepository;
 import io.labs64.checkout.rules.CheckoutIntentStatusRules;
-import io.labs64.checkout.v1.entity.CheckoutIntentEntity;
-import io.labs64.checkout.v1.model.CheckoutIntentStatus;
-import io.labs64.checkout.v1.repository.CheckoutIntentRepository;
+import io.labs64.checkout.service.CheckoutIntentService;
 
 @ExtendWith(MockitoExtension.class)
 class CheckoutIntentServiceTest {

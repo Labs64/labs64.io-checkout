@@ -1,6 +1,5 @@
-package io.labs64.checkout.v1.model;
+package io.labs64.checkout.model;
 
-import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
@@ -11,8 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.labs64.checkout.v1.model.CheckoutIntent;
-import io.labs64.checkout.v1.model.CheckoutIntentStatus;
+import io.labs64.checkout.model.CheckoutIntent;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -29,7 +27,7 @@ class CheckoutIntentTest {
     }
 
     private static CheckoutIntent validCheckoutIntent() {
-        return new CheckoutIntent().amount(new BigDecimal("149.99")).currency("USD").paymentMethod("STRIPE")
+        return new CheckoutIntent().amount(14999L).currency("USD").paymentMethod("STRIPE")
                 .billingInfoId(UUID.randomUUID()).extra(Map.of("source", "web_portal"));
     }
 
@@ -41,14 +39,14 @@ class CheckoutIntentTest {
 
     @Test
     void shouldPassWhenAmountIsZero() {
-        final CheckoutIntent ci = validCheckoutIntent().amount(BigDecimal.ZERO);
+        final CheckoutIntent ci = validCheckoutIntent().amount(0L);
         assertThat(validator.validateProperty(ci, "amount")).isEmpty();
     }
 
     @ParameterizedTest
-    @ValueSource(strings = { "-0.01", "-1", "-100" })
-    void shouldFailWhenAmountIsNegative(final String val) {
-        final CheckoutIntent ci = validCheckoutIntent().amount(new BigDecimal(val));
+    @ValueSource(longs = { -1L, -100L })
+    void shouldFailWhenAmountIsNegative(final Long val) {
+        final CheckoutIntent ci = validCheckoutIntent().amount(val);
         assertThat(validator.validateProperty(ci, "amount")).isNotEmpty();
     }
 }

@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.validator;
+package io.labs64.checkout.validator;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,6 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.validator.ValidExtra;
+import io.labs64.checkout.validator.ValidExtraValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
 /**

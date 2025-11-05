@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.model;
+package io.labs64.checkout.model;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.labs64.checkout.v1.model.BillingInfoCreateRequest;
+import io.labs64.checkout.model.BillingInfoCreateRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

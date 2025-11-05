@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.model;
+package io.labs64.checkout.model;
 
 import java.time.OffsetDateTime;
 import java.util.Map;
@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-import io.labs64.checkout.v1.model.ShippingInfo;
+import io.labs64.checkout.model.ShippingInfo;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;

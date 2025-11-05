@@ -3,7 +3,7 @@ package io.labs64.checkout.rules;
 import java.util.EnumSet;
 import java.util.Set;
 
-import io.labs64.checkout.v1.model.CheckoutIntentStatus;
+import io.labs64.checkout.model.CheckoutIntentStatus;
 
 public class CheckoutIntentStatusRules {
     private static final EnumSet<CheckoutIntentStatus> FINISHED_STATUSES = EnumSet.of(CheckoutIntentStatus.COMPLETED,

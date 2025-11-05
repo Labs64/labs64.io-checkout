@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.model;
+package io.labs64.checkout.model;
 
 import java.math.BigDecimal;
 
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.labs64.checkout.v1.model.CheckoutIntentCreateRequest;
+import io.labs64.checkout.model.CheckoutIntentCreateRequest;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
@@ -23,25 +23,25 @@ public class CheckoutIntentCreateRequestTest {
         }
     }
 
-    private static io.labs64.checkout.v1.model.CheckoutIntentCreateRequest valid() {
-        return new CheckoutIntentCreateRequest(new BigDecimal("149.99"), "USD", "STRIPE");
+    private static io.labs64.checkout.model.CheckoutIntentCreateRequest valid() {
+        return new CheckoutIntentCreateRequest(14999L, "USD", "STRIPE");
     }
 
     @Test
     void shouldPassWhenAmountIsZero() {
-        final CheckoutIntentCreateRequest r = valid().amount(BigDecimal.ZERO);
+        final CheckoutIntentCreateRequest r = valid().amount(0L);
         assertThat(validator.validateProperty(r, "amount")).isEmpty();
     }
 
     @Test
     void shouldPassWhenAmountIsPositive() {
-        final CheckoutIntentCreateRequest r = valid().amount(new BigDecimal("0.01"));
+        final CheckoutIntentCreateRequest r = valid().amount(1L);
         assertThat(validator.validateProperty(r, "amount")).isEmpty();
     }
 
     @Test
     void shouldFailWhenAmountIsNegative() {
-        final CheckoutIntentCreateRequest r = valid().amount(new BigDecimal("-0.01"));
+        final CheckoutIntentCreateRequest r = valid().amount(-1L);
         assertThat(validator.validateProperty(r, "amount")).isNotEmpty();
     }
 }

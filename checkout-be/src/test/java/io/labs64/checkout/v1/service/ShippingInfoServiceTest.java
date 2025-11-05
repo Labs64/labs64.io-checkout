@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.service;
+package io.labs64.checkout.service;
 
 import java.time.OffsetDateTime;
 import java.util.List;
@@ -25,13 +25,14 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.entity.ShippingInfoEntity;
 import io.labs64.checkout.exception.ConflictException;
 import io.labs64.checkout.exception.ConsentRequiredException;
 import io.labs64.checkout.exception.NotFoundException;
 import io.labs64.checkout.messages.ShippingInfoMessages;
-import io.labs64.checkout.v1.entity.ShippingInfoEntity;
-import io.labs64.checkout.v1.repository.ShippingInfoRepository;
-import io.labs64.checkout.v1.repository.ShippingRepository;
+import io.labs64.checkout.repository.ShippingInfoRepository;
+import io.labs64.checkout.repository.ShippingRepository;
+import io.labs64.checkout.service.ShippingInfoService;
 
 @ExtendWith(MockitoExtension.class)
 class ShippingInfoServiceTest {

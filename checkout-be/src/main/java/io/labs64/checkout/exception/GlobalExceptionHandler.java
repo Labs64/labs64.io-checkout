@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.labs64.checkout.messages.ValidationMessages;
-import io.labs64.checkout.v1.model.ErrorCode;
-import io.labs64.checkout.v1.model.ErrorResponse;
+import io.labs64.checkout.model.ErrorCode;
+import io.labs64.checkout.model.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import lombok.AllArgsConstructor;
@@ -43,7 +43,8 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ValidationException.class)
     public ResponseEntity<ErrorResponse> handleCustomValidation(final ValidationException ex,
             final HttpServletRequest request) {
-        final String message = msg.invalidField(ex.getField(), ex.getMessage());
+        final String message = (ex.getField() != null) ? msg.invalidField(ex.getField(), ex.getMessage())
+                : ex.getMessage();
         final ErrorResponse error = buildErrorResponse(ex.getErrorCode(), message, request);
 
         log.error(ex.getMessage(), ex);

@@ -1,16 +1,16 @@
 CREATE TABLE checkout_intent
 (
-    id              UUID PRIMARY KEY         DEFAULT gen_random_uuid(),
-    tenant_id       TEXT                                   NOT NULL,
-    status          TEXT                                   NOT NULL,
-    amount          NUMERIC(12, 2)                         NOT NULL CHECK (amount >= 0),
-    currency        TEXT                                   NOT NULL,
-    payment_method  TEXT,
-    billing_info_id UUID,
-    extra           JSONB,
-    created_at      TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-    updated_at      TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
-    closed_at       TIMESTAMP WITH TIME ZONE,
+    id                UUID PRIMARY KEY         DEFAULT gen_random_uuid(),
+    tenant_id         TEXT                                   NOT NULL,
+    status            TEXT                                   NOT NULL,
+    amount            BIGINT                                 NOT NULL,
+    currency          TEXT                                   NOT NULL,
+    payment_method    TEXT,
+    billing_info_id   UUID,
+    extra             JSONB,
+    created_at        TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+    updated_at        TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
+    closed_at         TIMESTAMP WITH TIME ZONE,
     CONSTRAINT fk_checkout_intent__billing_info
         FOREIGN KEY (tenant_id, billing_info_id)
             REFERENCES billing_info (tenant_id, id)

@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.model;
+package io.labs64.checkout.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -14,7 +14,7 @@ import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.labs64.checkout.v1.model.Shipping;
+import io.labs64.checkout.model.Shipping;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

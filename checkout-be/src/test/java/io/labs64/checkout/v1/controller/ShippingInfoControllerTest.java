@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.controller;
+package io.labs64.checkout.controller;
 
 import java.util.List;
 import java.util.UUID;
@@ -18,16 +18,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
+import io.labs64.checkout.controller.ShippingInfoController;
+import io.labs64.checkout.entity.ShippingInfoEntity;
 import io.labs64.checkout.exception.ConsentRequiredException;
+import io.labs64.checkout.mapper.ShippingInfoMapper;
 import io.labs64.checkout.messages.ShippingInfoMessages;
-import io.labs64.checkout.v1.entity.ShippingInfoEntity;
-import io.labs64.checkout.v1.mapper.ShippingInfoMapper;
-import io.labs64.checkout.v1.model.ShippingInfo;
-import io.labs64.checkout.v1.model.ShippingInfoCreateRequest;
-import io.labs64.checkout.v1.model.ShippingInfoPage;
-import io.labs64.checkout.v1.model.ShippingInfoUpdateRequest;
-import io.labs64.checkout.v1.service.ShippingInfoService;
-import io.labs64.checkout.v1.web.tenant.RequestTenantProvider;
+import io.labs64.checkout.model.ShippingInfo;
+import io.labs64.checkout.model.ShippingInfoCreateRequest;
+import io.labs64.checkout.model.ShippingInfoPage;
+import io.labs64.checkout.model.ShippingInfoUpdateRequest;
+import io.labs64.checkout.service.ShippingInfoService;
+import io.labs64.checkout.web.tenant.RequestTenantProvider;
 
 class ShippingInfoControllerTest {
 

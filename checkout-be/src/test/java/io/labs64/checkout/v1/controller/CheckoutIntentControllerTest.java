@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.controller;
+package io.labs64.checkout.controller;
 
 import java.util.List;
 import java.util.UUID;
@@ -19,16 +19,17 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.labs64.checkout.v1.entity.BillingInfoEntity;
-import io.labs64.checkout.v1.entity.CheckoutIntentEntity;
-import io.labs64.checkout.v1.mapper.CheckoutIntentMapper;
-import io.labs64.checkout.v1.model.CheckoutIntent;
-import io.labs64.checkout.v1.model.CheckoutIntentCreateRequest;
-import io.labs64.checkout.v1.model.CheckoutIntentPage;
-import io.labs64.checkout.v1.model.CheckoutIntentUpdateRequest;
-import io.labs64.checkout.v1.service.BillingInfoService;
-import io.labs64.checkout.v1.service.CheckoutIntentService;
-import io.labs64.checkout.v1.web.tenant.RequestTenantProvider;
+import io.labs64.checkout.controller.CheckoutIntentController;
+import io.labs64.checkout.entity.BillingInfoEntity;
+import io.labs64.checkout.entity.CheckoutIntentEntity;
+import io.labs64.checkout.mapper.CheckoutIntentMapper;
+import io.labs64.checkout.model.CheckoutIntent;
+import io.labs64.checkout.model.CheckoutIntentCreateRequest;
+import io.labs64.checkout.model.CheckoutIntentPage;
+import io.labs64.checkout.model.CheckoutIntentUpdateRequest;
+import io.labs64.checkout.service.BillingInfoService;
+import io.labs64.checkout.service.CheckoutIntentService;
+import io.labs64.checkout.web.tenant.RequestTenantProvider;
 
 class CheckoutIntentControllerTest {
 

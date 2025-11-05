@@ -1,4 +1,4 @@
-package io.labs64.checkout.v1.controller;
+package io.labs64.checkout.controller;
 
 import java.util.List;
 import java.util.UUID;
@@ -16,14 +16,15 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import io.labs64.checkout.v1.entity.BillingInfoEntity;
-import io.labs64.checkout.v1.mapper.BillingInfoMapper;
-import io.labs64.checkout.v1.model.BillingInfo;
-import io.labs64.checkout.v1.model.BillingInfoCreateRequest;
-import io.labs64.checkout.v1.model.BillingInfoPage;
-import io.labs64.checkout.v1.model.BillingInfoUpdateRequest;
-import io.labs64.checkout.v1.service.BillingInfoService;
-import io.labs64.checkout.v1.web.tenant.RequestTenantProvider;
+import io.labs64.checkout.controller.BillingInfoController;
+import io.labs64.checkout.entity.BillingInfoEntity;
+import io.labs64.checkout.mapper.BillingInfoMapper;
+import io.labs64.checkout.model.BillingInfo;
+import io.labs64.checkout.model.BillingInfoCreateRequest;
+import io.labs64.checkout.model.BillingInfoPage;
+import io.labs64.checkout.model.BillingInfoUpdateRequest;
+import io.labs64.checkout.service.BillingInfoService;
+import io.labs64.checkout.web.tenant.RequestTenantProvider;
 
 class BillingInfoControllerTest {
 

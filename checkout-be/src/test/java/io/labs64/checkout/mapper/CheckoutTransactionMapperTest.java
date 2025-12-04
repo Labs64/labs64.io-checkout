@@ -1,8 +1,5 @@
 package io.labs64.checkout.mapper;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -15,6 +12,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 import io.labs64.checkout.entity.CheckoutTransactionEntity;
 import io.labs64.checkout.entity.PurchaseOrderEntity;
@@ -82,8 +82,7 @@ class CheckoutTransactionMapperTest {
         entity.setId(UUID.randomUUID());
 
         final PageRequest pageable = PageRequest.of(1, 5);
-        final Page<CheckoutTransactionEntity> sourcePage =
-                new PageImpl<>(List.of(entity), pageable, 13);
+        final Page<CheckoutTransactionEntity> sourcePage = new PageImpl<>(List.of(entity), pageable, 13);
 
         final CheckoutTransactionPage page = mapper.toPage(sourcePage);
 

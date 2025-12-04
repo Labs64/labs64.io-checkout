@@ -1,23 +1,8 @@
 package io.labs64.checkout.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.UUID;
 
-import io.labs64.checkout.entity.CustomerEntity;
-import io.labs64.checkout.mapper.CustomerMapper;
-import io.labs64.checkout.model.Customer;
-import io.labs64.checkout.model.CustomerCreateRequest;
-import io.labs64.checkout.model.CustomerPage;
-import io.labs64.checkout.model.CustomerUpdateRequest;
-import io.labs64.checkout.service.CustomerService;
-import io.labs64.checkout.web.tenant.RequestTenantProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -29,6 +14,22 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import io.labs64.checkout.entity.CustomerEntity;
+import io.labs64.checkout.mapper.CustomerMapper;
+import io.labs64.checkout.model.Customer;
+import io.labs64.checkout.model.CustomerCreateRequest;
+import io.labs64.checkout.model.CustomerPage;
+import io.labs64.checkout.model.CustomerUpdateRequest;
+import io.labs64.checkout.service.CustomerService;
+import io.labs64.checkout.web.tenant.RequestTenantProvider;
 
 @ExtendWith(MockitoExtension.class)
 class CustomerControllerTest {

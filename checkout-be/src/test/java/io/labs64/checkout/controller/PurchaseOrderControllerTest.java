@@ -1,13 +1,25 @@
 package io.labs64.checkout.controller;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
-
-import java.util.List;
-import java.util.UUID;
 
 import io.labs64.checkout.entity.CheckoutTransactionEntity;
 import io.labs64.checkout.entity.CustomerEntity;
@@ -27,17 +39,6 @@ import io.labs64.checkout.model.ShippingInfo;
 import io.labs64.checkout.service.CustomerService;
 import io.labs64.checkout.service.PurchaseOrderService;
 import io.labs64.checkout.web.tenant.RequestTenantProvider;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 @ExtendWith(MockitoExtension.class)
 class PurchaseOrderControllerTest {
@@ -84,8 +85,7 @@ class PurchaseOrderControllerTest {
         final Pageable pageable = PageRequest.of(1, 20);
 
         final PurchaseOrderEntity entity = new PurchaseOrderEntity();
-        final Page<PurchaseOrderEntity> entityPage =
-                new PageImpl<>(List.of(entity), pageable, 1);
+        final Page<PurchaseOrderEntity> entityPage = new PageImpl<>(List.of(entity), pageable, 1);
 
         final PurchaseOrderPage dtoPage = new PurchaseOrderPage();
 
@@ -93,8 +93,7 @@ class PurchaseOrderControllerTest {
         when(service.list(tenantId, query, pageable)).thenReturn(entityPage);
         when(mapper.toPage(entityPage)).thenReturn(dtoPage);
 
-        final ResponseEntity<PurchaseOrderPage> response =
-                controller.listPurchaseOrders(query, pageable);
+        final ResponseEntity<PurchaseOrderPage> response = controller.listPurchaseOrders(query, pageable);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertSame(dtoPage, response.getBody());
@@ -106,7 +105,8 @@ class PurchaseOrderControllerTest {
     @Test
     void createPurchaseOrderWithoutCustomer() {
         final String tenantId = "tenant-1";
-        final PurchaseOrderCreateRequest request = new PurchaseOrderCreateRequest(); // items/currency тут не важливі для контролера
+        final PurchaseOrderCreateRequest request = new PurchaseOrderCreateRequest(); // items/currency тут не важливі
+                                                                                     // для контролера
 
         final PurchaseOrderEntity newPo = new PurchaseOrderEntity();
         final PurchaseOrderEntity created = new PurchaseOrderEntity();
@@ -117,8 +117,7 @@ class PurchaseOrderControllerTest {
         when(service.create(tenantId, newPo)).thenReturn(created);
         when(mapper.toDto(created)).thenReturn(dto);
 
-        final ResponseEntity<PurchaseOrder> response =
-                controller.createPurchaseOrder(request);
+        final ResponseEntity<PurchaseOrder> response = controller.createPurchaseOrder(request);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertSame(dto, response.getBody());
@@ -147,8 +146,7 @@ class PurchaseOrderControllerTest {
         when(service.create(tenantId, newPo)).thenReturn(created);
         when(mapper.toDto(created)).thenReturn(dto);
 
-        final ResponseEntity<PurchaseOrder> response =
-                controller.createPurchaseOrder(request);
+        final ResponseEntity<PurchaseOrder> response = controller.createPurchaseOrder(request);
 
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertSame(dto, response.getBody());
@@ -172,8 +170,7 @@ class PurchaseOrderControllerTest {
         when(service.update(eq(tenantId), eq(id), any())).thenReturn(updated);
         when(mapper.toDto(updated)).thenReturn(dto);
 
-        final ResponseEntity<PurchaseOrder> response =
-                controller.updatePurchaseOrder(id, request);
+        final ResponseEntity<PurchaseOrder> response = controller.updatePurchaseOrder(id, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertSame(dto, response.getBody());
@@ -200,12 +197,10 @@ class PurchaseOrderControllerTest {
         final CheckoutTransaction txDto = new CheckoutTransaction();
 
         when(tenantProvider.requireTenantId()).thenReturn(tenantId);
-        when(service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo))
-                .thenReturn(txEntity);
+        when(service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo)).thenReturn(txEntity);
         when(transactionMapper.toDto(txEntity)).thenReturn(txDto);
 
-        final ResponseEntity<CheckoutResponse> response =
-                controller.checkoutPurchaseOrder(id, request);
+        final ResponseEntity<CheckoutResponse> response = controller.checkoutPurchaseOrder(id, request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         final CheckoutResponse body = response.getBody();

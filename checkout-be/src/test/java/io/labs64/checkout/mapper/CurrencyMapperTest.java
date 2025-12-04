@@ -1,11 +1,12 @@
 package io.labs64.checkout.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class CurrencyMapperTest {
-    private final CurrencyMapper mapper = new CurrencyMapper() {};
+    private final CurrencyMapper mapper = new CurrencyMapper() {
+    };
 
     @Test
     void upperCurrencyNullReturnsNull() {

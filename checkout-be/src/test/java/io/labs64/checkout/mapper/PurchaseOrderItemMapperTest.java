@@ -1,20 +1,21 @@
 package io.labs64.checkout.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import io.labs64.checkout.entity.PurchaseOrderItemEntity;
-import io.labs64.checkout.model.PurchaseOrderItem;
-import io.labs64.checkout.model.Tax;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import io.labs64.checkout.entity.PurchaseOrderItemEntity;
+import io.labs64.checkout.model.PurchaseOrderItem;
+import io.labs64.checkout.model.Tax;
 
 @ExtendWith(MockitoExtension.class)
 class PurchaseOrderItemMapperTest {
@@ -70,18 +71,10 @@ class PurchaseOrderItemMapperTest {
         extra.put("source", "api");
         extra.put("promoCode", "WINTER2025");
 
-        final PurchaseOrderItemEntity entity = PurchaseOrderItemEntity.builder()
-                .name("Basic plan")
-                .description("Basic subscription")
-                .url("https://example.com/product/basic")
-                .image("https://example.com/product/basic.png")
-                .sku("BASIC-001")
-                .uom("PCS")
-                .price(999L)
-                .quantity(1)
-                .tax(tax)
-                .extra(extra)
-                .build();
+        final PurchaseOrderItemEntity entity = PurchaseOrderItemEntity.builder().name("Basic plan")
+                .description("Basic subscription").url("https://example.com/product/basic")
+                .image("https://example.com/product/basic.png").sku("BASIC-001").uom("PCS").price(999L).quantity(1)
+                .tax(tax).extra(extra).build();
 
         final PurchaseOrderItem dto = mapper.toDto(entity);
 
@@ -115,15 +108,9 @@ class PurchaseOrderItemMapperTest {
 
     @Test
     void toDtoList() {
-        final PurchaseOrderItemEntity e1 = PurchaseOrderItemEntity.builder()
-                .name("Item 1")
-                .price(100L)
-                .quantity(1)
+        final PurchaseOrderItemEntity e1 = PurchaseOrderItemEntity.builder().name("Item 1").price(100L).quantity(1)
                 .build();
-        final PurchaseOrderItemEntity e2 = PurchaseOrderItemEntity.builder()
-                .name("Item 2")
-                .price(200L)
-                .quantity(2)
+        final PurchaseOrderItemEntity e2 = PurchaseOrderItemEntity.builder().name("Item 2").price(200L).quantity(2)
                 .build();
 
         final List<PurchaseOrderItem> dtos = mapper.toDto(List.of(e1, e2));

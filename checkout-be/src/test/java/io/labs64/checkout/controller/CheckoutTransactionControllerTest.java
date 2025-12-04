@@ -1,20 +1,8 @@
 package io.labs64.checkout.controller;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import java.util.List;
 import java.util.UUID;
 
-import io.labs64.checkout.entity.CheckoutTransactionEntity;
-import io.labs64.checkout.mapper.CheckoutTransactionMapper;
-import io.labs64.checkout.model.CheckoutTransaction;
-import io.labs64.checkout.model.CheckoutTransactionPage;
-import io.labs64.checkout.service.CheckoutTransactionService;
-import io.labs64.checkout.web.tenant.RequestTenantProvider;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -26,6 +14,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import io.labs64.checkout.entity.CheckoutTransactionEntity;
+import io.labs64.checkout.mapper.CheckoutTransactionMapper;
+import io.labs64.checkout.model.CheckoutTransaction;
+import io.labs64.checkout.model.CheckoutTransactionPage;
+import io.labs64.checkout.service.CheckoutTransactionService;
+import io.labs64.checkout.web.tenant.RequestTenantProvider;
 
 @ExtendWith(MockitoExtension.class)
 class CheckoutTransactionControllerTest {
@@ -66,8 +67,7 @@ class CheckoutTransactionControllerTest {
         final Pageable pageable = PageRequest.of(0, 10);
 
         final CheckoutTransactionEntity entity = new CheckoutTransactionEntity();
-        final Page<CheckoutTransactionEntity> entityPage =
-                new PageImpl<>(List.of(entity), pageable, 1);
+        final Page<CheckoutTransactionEntity> entityPage = new PageImpl<>(List.of(entity), pageable, 1);
 
         final CheckoutTransactionPage dtoPage = new CheckoutTransactionPage();
 
@@ -75,8 +75,7 @@ class CheckoutTransactionControllerTest {
         when(service.list(tenantId, query, pageable)).thenReturn(entityPage);
         when(mapper.toPage(entityPage)).thenReturn(dtoPage);
 
-        final ResponseEntity<CheckoutTransactionPage> response =
-                controller.listCheckoutTransactions(query, pageable);
+        final ResponseEntity<CheckoutTransactionPage> response = controller.listCheckoutTransactions(query, pageable);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertSame(dtoPage, response.getBody());

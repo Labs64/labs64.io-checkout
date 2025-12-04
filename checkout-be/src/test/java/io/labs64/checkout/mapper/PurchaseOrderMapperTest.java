@@ -1,5 +1,20 @@
 package io.labs64.checkout.mapper;
 
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -9,29 +24,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.when;
 
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
 import io.labs64.checkout.entity.PurchaseOrderEntity;
 import io.labs64.checkout.entity.PurchaseOrderItemEntity;
+import io.labs64.checkout.mapper.PurchaseOrderMapperImpl;
 import io.labs64.checkout.model.PurchaseOrder;
 import io.labs64.checkout.model.PurchaseOrderCreateRequest;
 import io.labs64.checkout.model.PurchaseOrderItem;
 import io.labs64.checkout.model.PurchaseOrderPage;
 import io.labs64.checkout.model.PurchaseOrderUpdateRequest;
 import io.labs64.checkout.util.AmountCalculator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import io.labs64.checkout.mapper.PurchaseOrderMapperImpl;
 
 @ExtendWith(MockitoExtension.class)
 class PurchaseOrderMapperTest {
@@ -69,10 +70,9 @@ class PurchaseOrderMapperTest {
 
         // stub item mapper to avoid NPE in @AfterMapping
         final PurchaseOrderItemEntity itemEntity = new PurchaseOrderItemEntity();
-        when(purchaseOrderItemMapper.toEntity(anyList()))
-                .thenReturn(List.of(itemEntity));
+        when(purchaseOrderItemMapper.toEntity(anyList())).thenReturn(List.of(itemEntity));
 
-         when(currencyMapper.upperCurrency(currency)).thenReturn(currency);
+        when(currencyMapper.upperCurrency(currency)).thenReturn(currency);
 
         final PurchaseOrderEntity result = mapper.toEntity(source);
 
@@ -109,15 +109,8 @@ class PurchaseOrderMapperTest {
         final OffsetDateTime startsAt = OffsetDateTime.now().plusDays(1);
         final OffsetDateTime endsAt = OffsetDateTime.now().plusDays(5);
 
-        final PurchaseOrderEntity target = PurchaseOrderEntity.builder()
-                .id(id)
-                .tenantId(tenantId)
-                .currency("USD")
-                .extra(originalExtra)
-                .startsAt(startsAt)
-                .endsAt(endsAt)
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
+        final PurchaseOrderEntity target = PurchaseOrderEntity.builder().id(id).tenantId(tenantId).currency("USD")
+                .extra(originalExtra).startsAt(startsAt).endsAt(endsAt).createdAt(createdAt).updatedAt(updatedAt)
                 .build();
 
         final Map<String, Object> newExtra = new HashMap<>();
@@ -150,22 +143,11 @@ class PurchaseOrderMapperTest {
         final Map<String, Object> extra = new HashMap<>();
         extra.put("source", "web_portal");
 
-        final PurchaseOrderItemEntity item = PurchaseOrderItemEntity.builder()
-                .price(1500L)
-                .quantity(2)
-                .build();
+        final PurchaseOrderItemEntity item = PurchaseOrderItemEntity.builder().price(1500L).quantity(2).build();
 
-        final PurchaseOrderEntity entity = PurchaseOrderEntity.builder()
-                .id(id)
-                .tenantId("tenant-1")
-                .currency("USD")
-                .extra(extra)
-                .startsAt(startsAt)
-                .endsAt(endsAt)
-                .items(List.of(item))
-                .createdAt(createdAt)
-                .updatedAt(updatedAt)
-                .build();
+        final PurchaseOrderEntity entity = PurchaseOrderEntity.builder().id(id).tenantId("tenant-1").currency("USD")
+                .extra(extra).startsAt(startsAt).endsAt(endsAt).items(List.of(item)).createdAt(createdAt)
+                .updatedAt(updatedAt).build();
 
         final AmountCalculator.Amounts expectedTotals = AmountCalculator.calculate(entity);
 
@@ -189,11 +171,7 @@ class PurchaseOrderMapperTest {
     @Test
     void toPageSingleItem() {
         final PurchaseOrderEntity e = new PurchaseOrderEntity();
-        final Page<PurchaseOrderEntity> page = new PageImpl<>(
-                List.of(e),
-                PageRequest.of(2, 5),
-                17
-        );
+        final Page<PurchaseOrderEntity> page = new PageImpl<>(List.of(e), PageRequest.of(2, 5), 17);
 
         final PurchaseOrderPage result = mapper.toPage(page);
 

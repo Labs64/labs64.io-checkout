@@ -76,16 +76,9 @@ class CustomerMapperTest {
         final BillingInfo oldBilling = new BillingInfo();
         final ShippingInfo oldShipping = new ShippingInfo();
 
-        final CustomerEntity target = CustomerEntity.builder()
-                .id(id)
-                .tenantId(tenantId)
-                .firstName("OldFirst")
-                .lastName("OldLast")
-                .email("old@example.com")
-                .phone("+111")
-                .billingInfo(oldBilling)
-                .shippingInfo(oldShipping)
-                .build();
+        final CustomerEntity target = CustomerEntity.builder().id(id).tenantId(tenantId).firstName("OldFirst")
+                .lastName("OldLast").email("old@example.com").phone("+111").billingInfo(oldBilling)
+                .shippingInfo(oldShipping).build();
         target.setCreatedAt(createdAt);
         target.setUpdatedAt(updatedAt);
 
@@ -146,17 +139,9 @@ class CustomerMapperTest {
         final Map<String, Object> extra = new HashMap<>();
         extra.put("someKey", "someValue");
 
-        final CustomerEntity entity = CustomerEntity.builder()
-                .id(id)
-                .tenantId("tenant-1")
-                .firstName("John")
-                .lastName("Doe")
-                .email("john.doe@example.com")
-                .phone("+1234567890")
-                .billingInfo(billingInfo)
-                .shippingInfo(shippingInfo)
-                .extra(extra)
-                .build();
+        final CustomerEntity entity = CustomerEntity.builder().id(id).tenantId("tenant-1").firstName("John")
+                .lastName("Doe").email("john.doe@example.com").phone("+1234567890").billingInfo(billingInfo)
+                .shippingInfo(shippingInfo).extra(extra).build();
         entity.setCreatedAt(createdAt);
         entity.setUpdatedAt(updatedAt);
 
@@ -185,9 +170,7 @@ class CustomerMapperTest {
         entity.setFirstName("John");
         entity.setLastName("Doe");
 
-        final Page<CustomerEntity> page = new PageImpl<>(
-                List.of(entity),
-                PageRequest.of(2, 5), // page = 2, size = 5
+        final Page<CustomerEntity> page = new PageImpl<>(List.of(entity), PageRequest.of(2, 5), // page = 2, size = 5
                 17 // total elements
         );
 

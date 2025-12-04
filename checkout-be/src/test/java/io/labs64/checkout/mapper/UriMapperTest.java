@@ -1,16 +1,17 @@
 package io.labs64.checkout.mapper;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 class UriMapperTest {
 
-    private final UriMapper mapper = new UriMapper() {};
+    private final UriMapper mapper = new UriMapper() {
+    };
 
     @Test
     void uriToStringNullReturnsNull() {

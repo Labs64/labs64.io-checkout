@@ -14,4 +14,8 @@ public class CustomerMessages {
     public String notFound(final UUID id) {
         return msg.get("error.not_found", "Customer", "ID", id);
     }
+
+    public String emailDuplicate(final String email) {
+        return msg.get("customer.email.duplicate", email);
+    }
 }

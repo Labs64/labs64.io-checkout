@@ -13,6 +13,8 @@ import jakarta.validation.constraints.NotBlank;
 
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerEntity, UUID> {
+    boolean existsByTenantIdAndEmail(@NotBlank String tenantId, @NotBlank String email);
+
     Optional<CustomerEntity> findByIdAndTenantId(UUID id, @NotBlank String tenantId);
 
     int deleteByIdAndTenantId(UUID id, @NotBlank String tenantId);

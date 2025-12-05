@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import io.labs64.checkout.entity.CustomerEntity;
 import io.labs64.checkout.exception.NotFoundException;
+import io.labs64.checkout.exception.ValidationException;
 import io.labs64.checkout.messages.CustomerMessages;
 import io.labs64.checkout.repository.CustomerRepository;
 import lombok.AllArgsConstructor;
@@ -51,6 +52,14 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public CustomerEntity create(final String tenantId, final CustomerEntity entity) {
         entity.setTenantId(tenantId);
+
+        // check email
+        final String email = entity.getEmail();
+
+        if (StringUtils.isNotBlank(email) && repository.existsByTenantIdAndEmail(tenantId, email)) {
+            throw new ValidationException(msg.emailDuplicate(email));
+        }
+
         final CustomerEntity saved = repository.save(entity);
 
         log.debug("Create customer: {}", saved);

@@ -1,6 +1,10 @@
 package io.labs64.checkout.entity;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -72,6 +76,16 @@ public class CheckoutTransactionEntity {
     @NotBlank
     @Column(name = "payment_method", nullable = false, updatable = false)
     private String paymentMethod;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "consents", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private Map<String, Boolean> consents = new HashMap<>();
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "extra", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private Map<String, Object> extra = new HashMap<>();
 
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

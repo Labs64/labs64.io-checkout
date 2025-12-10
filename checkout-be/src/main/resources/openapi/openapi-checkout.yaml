@@ -264,6 +264,10 @@ paths:
         forwards the request to the configured payment service provider (PSP).
         The response contains the created checkout transaction and next-action
         instructions (e.g., a redirect URL) required to continue the payment flow.
+        
+        If the purchase order defines required consents, the request should include 
+        a consents map. The checkout service validates that all required consents are 
+        accepted before creating the checkout transaction.
       parameters:
         - name: id
           in: path
@@ -371,7 +375,7 @@ components:
       properties:
         firstName:
           type: string
-          description: The customer’s last name.
+          description: The customer’s first name.
           maxLength: 255
           example: "John"
         lastName:
@@ -520,6 +524,30 @@ components:
           items:
             $ref: '#/components/schemas/PurchaseOrderItem'
           default: [ ]
+        consents:
+          type: array
+          description: >
+            List of consent definitions associated with this purchase order.
+            When checkout is called for this purchase order, the checkout 
+            service validates that all consents marked as required=true are 
+            accepted in the corresponding Checkout Transaction. The service 
+            itself does not define how consents are collected; 
+            it only validates the data provided to the endpoint.
+          items:
+            $ref: '#/components/schemas/ConsentDefinition'
+          example:
+            - id: "terms_of_service"
+              label: "I agree to the Terms of Service."
+              url: "https://merchant.example.com/terms"
+              required: true
+            - id: "privacy_policy"
+              label: "I have read and agree to the Privacy Policy."
+              url: "https://merchant.example.com/privacy"
+              required: true
+            - id: "marketing_emails"
+              label: "I want to receive news and special offers by email."
+              url: "https://merchant.example.com/privacy#marketing"
+              required: false
         startsAt:
           type: string
           format: date-time
@@ -758,6 +786,8 @@ components:
         shippingInfo:
           allOf:
             - $ref: '#/components/schemas/ShippingInfo'
+        consents:
+          $ref: '#/components/schemas/ConsentsMap'
         paymentMethod:
           type: string
           description: Code of the selected payment method (e.g., STRIPE).
@@ -806,10 +836,17 @@ components:
             - country
             - address1
             - postalCode
+        consents:
+          anyOf:
+            - $ref: '#/components/schemas/ConsentsMap'
         paymentMethod:
           type: string
           description: Code of the selected payment service/provider (e.g., STRIPE).
           example: "STRIPE"
+        extra:
+          allOf:
+            - $ref: '#/components/schemas/Extra'
+          x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
       required:
         - paymentMethod
 
@@ -889,6 +926,69 @@ components:
             - For 0%, the value is 0.
       required:
         - rate
+
+    ConsentDefinition:
+      type: object
+      description: >
+        Describes a single consent item that is associated with a purchase
+        order. Consents are defined by the tenant and are evaluated by the
+        checkout service when the checkout endpoint is called for this 
+        purchase order.
+      properties:
+        id:
+          type: string
+          description: >
+            Stable identifier of the consent. This value is used as the key
+            in the Checkout Transaction consents map and must remain stable
+            for the lifetime of the purchase order.
+          example: "terms_of_service"
+        label:
+          type: string
+          description: >
+            Human-readable text that describes what the buyer is asked to
+            agree to. It is intended to be presented to the buyer by any
+            client integrating with the checkout service.
+          example: "I agree to the Terms of Service."
+        url:
+          type: string
+          format: uri
+          nullable: true
+          description: >
+            Optional URL pointing to the full text of the terms, policy or
+            agreement associated with this consent. A client may use this
+            URL when presenting the consent to the buyer.
+          example: "https://merchant.example.com/terms"
+        required:
+          type: boolean
+          description: >
+            Indicates whether this consent must be accepted by the buyer in
+            order to successfully complete checkout. When true, the checkout 
+            endpoint will reject the request if the corresponding consent is 
+            not accepted in the Checkout Transaction.
+          example: true
+      required:
+        - id
+        - label
+        - required
+
+    ConsentsMap:
+      type: object
+      description: >
+        Map of consent identifiers to the values accepted by the buyer
+        during checkout. This map is provided by the client when calling
+        checkout and is stored in the resulting Checkout Transaction. 
+        Keys must match ConsentDefinition.id values defined on the associated 
+        purchase order.
+      additionalProperties:
+        type: boolean
+        description: >
+          Indicates whether the buyer accepted the consent with the given
+          identifier. true means accepted; false or a missing key means that
+          the consent was not accepted.
+      example:
+        terms_of_service: true
+        privacy_policy: true
+        marketing_emails: false
 
     Extra:
       type: object

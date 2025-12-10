@@ -13,6 +13,7 @@ import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.type.SqlTypes;
 
+import io.labs64.checkout.model.ConsentDefinition;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -57,6 +58,11 @@ public class PurchaseOrderEntity {
     @NotBlank
     @Column(name = "currency", nullable = false, updatable = false)
     private String currency;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "consents", columnDefinition = "jsonb", nullable = false)
+    @Builder.Default
+    private List<ConsentDefinition> consents = new ArrayList<>();
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "extra", columnDefinition = "jsonb", nullable = false)

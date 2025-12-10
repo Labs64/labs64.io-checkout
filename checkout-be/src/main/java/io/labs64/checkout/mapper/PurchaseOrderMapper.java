@@ -40,6 +40,7 @@ public interface PurchaseOrderMapper {
     @Mapping(target = "tenantId", ignore = true)
     @Mapping(target = "customer", ignore = true)
     @Mapping(target = "currency", ignore = true)
+    @Mapping(target = "consents", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "startsAt", ignore = true)

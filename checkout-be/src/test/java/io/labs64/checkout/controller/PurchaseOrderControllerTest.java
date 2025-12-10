@@ -1,6 +1,7 @@
 package io.labs64.checkout.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -105,8 +108,7 @@ class PurchaseOrderControllerTest {
     @Test
     void createPurchaseOrderWithoutCustomer() {
         final String tenantId = "tenant-1";
-        final PurchaseOrderCreateRequest request = new PurchaseOrderCreateRequest(); // items/currency тут не важливі
-                                                                                     // для контролера
+        final PurchaseOrderCreateRequest request = new PurchaseOrderCreateRequest();
 
         final PurchaseOrderEntity newPo = new PurchaseOrderEntity();
         final PurchaseOrderEntity created = new PurchaseOrderEntity();
@@ -188,16 +190,21 @@ class PurchaseOrderControllerTest {
         final String paymentMethod = "card";
         final BillingInfo billingInfo = new BillingInfo();
         final ShippingInfo shippingInfo = new ShippingInfo();
+        final Map<String, Boolean> consents = Map.of();
+        final Map<String, Object> extra = Map.of();
 
         request.setPaymentMethod(paymentMethod);
         request.setBillingInfo(billingInfo);
         request.setShippingInfo(shippingInfo);
+        request.setConsents(consents);
+        request.setExtra(extra);
 
         final CheckoutTransactionEntity txEntity = new CheckoutTransactionEntity();
         final CheckoutTransaction txDto = new CheckoutTransaction();
 
         when(tenantProvider.requireTenantId()).thenReturn(tenantId);
-        when(service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo)).thenReturn(txEntity);
+        when(service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo, consents, extra))
+                .thenReturn(txEntity);
         when(transactionMapper.toDto(txEntity)).thenReturn(txDto);
 
         final ResponseEntity<CheckoutResponse> response = controller.checkoutPurchaseOrder(id, request);
@@ -211,6 +218,6 @@ class PurchaseOrderControllerTest {
         assertEquals(CheckoutNextAction.TypeEnum.NONE, body.getNextAction().getType());
 
         verify(tenantProvider).requireTenantId();
-        verify(service).checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo);
+        verify(service).checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo, consents, extra);
     }
 }

@@ -1,5 +1,6 @@
 package io.labs64.checkout.service;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -30,5 +31,6 @@ public interface PurchaseOrderService {
     boolean delete(final String tenantId, final UUID id);
 
     CheckoutTransactionEntity checkout(final String tenantId, final UUID id, final String paymentMethod,
-            final BillingInfo billingInfo, final ShippingInfo shippingInfo);
+            final BillingInfo billingInfo, final ShippingInfo shippingInfo, final Map<String, Boolean> consents,
+            final Map<String, Object> extra);
 }

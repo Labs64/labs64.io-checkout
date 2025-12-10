@@ -23,4 +23,8 @@ public class PurchaseOrderMessages {
     public String checkoutExpired(final OffsetDateTime endsAt) {
         return msg.get("purchase_order.checkout.expired", endsAt);
     }
+
+    public String requiredConsentNotAccepted(final String consentId) {
+        return msg.get("purchase_order.checkout.consent_not_accepted", consentId);
+    }
 }

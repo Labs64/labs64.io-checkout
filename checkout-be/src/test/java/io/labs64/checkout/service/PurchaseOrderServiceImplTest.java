@@ -3,6 +3,7 @@ package io.labs64.checkout.service;
 import java.time.OffsetDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -37,6 +38,7 @@ import io.labs64.checkout.exception.NotFoundException;
 import io.labs64.checkout.exception.ValidationException;
 import io.labs64.checkout.messages.PurchaseOrderMessages;
 import io.labs64.checkout.model.BillingInfo;
+import io.labs64.checkout.model.ConsentDefinition;
 import io.labs64.checkout.model.ShippingInfo;
 import io.labs64.checkout.repository.PurchaseOrderRepository;
 
@@ -270,7 +272,7 @@ class PurchaseOrderServiceImplTest {
         when(transactionService.create(eq(tenantId), any(CheckoutTransactionEntity.class))).thenReturn(expected);
 
         final CheckoutTransactionEntity result = service.checkout(tenantId, id, paymentMethod, billingInfo,
-                shippingInfo);
+                shippingInfo, null, null);
 
         assertSame(expected, result);
         verify(repository).findByIdAndTenantId(id, tenantId);
@@ -295,7 +297,7 @@ class PurchaseOrderServiceImplTest {
         when(msg.checkoutNotStarted(startsAt)).thenReturn(message);
 
         final ValidationException ex = assertThrows(ValidationException.class,
-                () -> service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo));
+                () -> service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo, null, null));
 
         assertEquals(message, ex.getMessage());
         verify(repository).findByIdAndTenantId(id, tenantId);
@@ -321,11 +323,78 @@ class PurchaseOrderServiceImplTest {
         when(msg.checkoutExpired(endsAt)).thenReturn(message);
 
         final ValidationException ex = assertThrows(ValidationException.class,
-                () -> service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo));
+                () -> service.checkout(tenantId, id, paymentMethod, billingInfo, shippingInfo, null, null));
 
         assertEquals(message, ex.getMessage());
         verify(repository).findByIdAndTenantId(id, tenantId);
         verify(msg).checkoutExpired(endsAt);
         verifyNoInteractions(transactionService);
+    }
+
+    @Test
+    void checkoutMissingRequiredConsent() {
+        final String tenantId = "tenant-1";
+        final UUID id = UUID.randomUUID();
+        final String paymentMethod = "card";
+        final BillingInfo billingInfo = new BillingInfo();
+        final ShippingInfo shippingInfo = new ShippingInfo();
+
+        // PO with one required consent
+        final PurchaseOrderEntity po = mock(PurchaseOrderEntity.class);
+        final ConsentDefinition consent = new ConsentDefinition();
+        consent.setId("terms_of_service");
+        consent.setRequired(true);
+
+        when(po.getStartsAt()).thenReturn(null);
+        when(po.getEndsAt()).thenReturn(null);
+        when(po.getConsents()).thenReturn(List.of(consent));
+        when(repository.findByIdAndTenantId(id, tenantId)).thenReturn(Optional.of(po));
+
+        final String message = String.format("Required consent '%s' must be accepted", consent.getId());
+        when(msg.requiredConsentNotAccepted(consent.getId())).thenReturn(message);
+
+        // client did not provide this consent (empty map)
+        final ValidationException ex = assertThrows(ValidationException.class, () -> service.checkout(tenantId, id,
+                paymentMethod, billingInfo, shippingInfo, Collections.emptyMap(), null));
+
+        assertEquals(message, ex.getMessage());
+        verify(repository).findByIdAndTenantId(id, tenantId);
+        verify(msg).requiredConsentNotAccepted(consent.getId());
+        verifyNoInteractions(transactionService);
+    }
+
+    @Test
+    void checkoutWithRequiredConsentAccepted() {
+        final String tenantId = "tenant-1";
+        final UUID id = UUID.randomUUID();
+        final String paymentMethod = "card";
+        final BillingInfo billingInfo = new BillingInfo();
+        final ShippingInfo shippingInfo = new ShippingInfo();
+
+        // PO with one required consent
+        final PurchaseOrderEntity po = mock(PurchaseOrderEntity.class);
+        final ConsentDefinition consent = new ConsentDefinition();
+        consent.setId("terms_of_service");
+        consent.setRequired(true);
+
+        when(po.getStartsAt()).thenReturn(null);
+        when(po.getEndsAt()).thenReturn(null);
+        when(po.getConsents()).thenReturn(List.of(consent));
+        when(repository.findByIdAndTenantId(id, tenantId)).thenReturn(Optional.of(po));
+
+        final CheckoutTransactionEntity expected = new CheckoutTransactionEntity();
+        when(transactionService.create(eq(tenantId), any(CheckoutTransactionEntity.class))).thenReturn(expected);
+
+        final Map<String, Boolean> consents = Map.of(consent.getId(), true);
+
+        final CheckoutTransactionEntity result = service.checkout(tenantId, id, paymentMethod, billingInfo,
+                shippingInfo, consents, null);
+
+        assertSame(expected, result);
+        verify(repository).findByIdAndTenantId(id, tenantId);
+        verify(transactionService).create(eq(tenantId), any(CheckoutTransactionEntity.class));
+
+        // no error messages
+        verifyNoInteractions(msg);
     }
 }

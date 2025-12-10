@@ -1,6 +1,7 @@
 package io.labs64.checkout.service;
 
 import java.time.OffsetDateTime;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -19,6 +20,7 @@ import io.labs64.checkout.exception.ValidationException;
 import io.labs64.checkout.messages.PurchaseOrderMessages;
 import io.labs64.checkout.model.BillingInfo;
 import io.labs64.checkout.model.CheckoutTransactionStatus;
+import io.labs64.checkout.model.ConsentDefinition;
 import io.labs64.checkout.model.ShippingInfo;
 import io.labs64.checkout.repository.PurchaseOrderRepository;
 import lombok.AllArgsConstructor;
@@ -104,9 +106,21 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Override
     @Transactional
     public CheckoutTransactionEntity checkout(final String tenantId, final UUID id, final String paymentMethod,
-            final BillingInfo billingInfo, final ShippingInfo shippingInfo) {
+            final BillingInfo billingInfo, final ShippingInfo shippingInfo, final Map<String, Boolean> consents,
+            final Map<String, Object> extra) {
         final PurchaseOrderEntity purchaseOrder = get(tenantId, id);
 
+        // validation
+        validateCheckoutWindow(purchaseOrder);
+        validateRequiredConsents(purchaseOrder, consents);
+
+        return transactionService.create(tenantId,
+                CheckoutTransactionEntity.builder().purchaseOrder(purchaseOrder).paymentMethod(paymentMethod)
+                        .billingInfo(billingInfo).shippingInfo(shippingInfo).status(CheckoutTransactionStatus.PENDING)
+                        .consents(consents).extra(extra).build());
+    }
+
+    private void validateCheckoutWindow(final PurchaseOrderEntity purchaseOrder) {
         final OffsetDateTime now = OffsetDateTime.now();
         final OffsetDateTime startsAt = purchaseOrder.getStartsAt();
         final OffsetDateTime endsAt = purchaseOrder.getEndsAt();
@@ -118,10 +132,27 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         if (endsAt != null && endsAt.isBefore(now)) {
             throw new ValidationException(msg.checkoutExpired(endsAt));
         }
+    }
 
-        return transactionService.create(tenantId,
-                CheckoutTransactionEntity.builder().purchaseOrder(purchaseOrder).paymentMethod(paymentMethod)
-                        .billingInfo(billingInfo).shippingInfo(shippingInfo).status(CheckoutTransactionStatus.PENDING)
-                        .build());
+    private void validateRequiredConsents(final PurchaseOrderEntity purchaseOrder,
+            final Map<String, Boolean> consents) {
+        if (purchaseOrder.getConsents() == null || purchaseOrder.getConsents().isEmpty()) {
+            return;
+        }
+
+        final Map<String, Boolean> safeConsents = consents != null ? consents : Map.of();
+
+        for (final ConsentDefinition consentDef : purchaseOrder.getConsents()) {
+            if (!consentDef.getRequired()) {
+                continue;
+            }
+
+            final String consentId = consentDef.getId();
+            final Boolean accepted = safeConsents.get(consentId);
+
+            if (!Boolean.TRUE.equals(accepted)) {
+                throw new ValidationException(msg.requiredConsentNotAccepted(consentId));
+            }
+        }
     }
 }

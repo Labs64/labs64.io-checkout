@@ -1,5 +1,6 @@
 package io.labs64.checkout.controller;
 
+import java.util.Map;
 import java.util.UUID;
 
 import org.springframework.data.domain.Page;
@@ -87,9 +88,11 @@ public class PurchaseOrderController implements PurchaseOrderApi {
         final String paymentMethod = request.getPaymentMethod();
         final BillingInfo billingInfo = request.getBillingInfo();
         final ShippingInfo shippingInfo = request.getShippingInfo();
+        final Map<String, Boolean> consents = request.getConsents();
+        final Map<String, Object> extra = request.getExtra();
 
         final CheckoutTransactionEntity transaction = service.checkout(tenantId, id, paymentMethod, billingInfo,
-                shippingInfo);
+                shippingInfo, consents, extra);
 
         // TODO(RVA): only for demonstration
         final CheckoutNextAction nextAction = new CheckoutNextAction(CheckoutNextAction.TypeEnum.NONE);

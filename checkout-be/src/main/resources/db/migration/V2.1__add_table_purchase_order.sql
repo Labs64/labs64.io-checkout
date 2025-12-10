@@ -2,8 +2,9 @@ CREATE TABLE purchase_order
 (
     id          UUID PRIMARY KEY,
     tenant_id   TEXT        NOT NULL,
-    customer_id UUID        NULL REFERENCES customer (id),
+    customer_id UUID NULL REFERENCES customer (id),
     currency    TEXT        NOT NULL,
+    consents    JSONB       NOT NULL DEFAULT '[]'::jsonb,
     extra       JSONB       NOT NULL DEFAULT '{}'::jsonb,
     created_at  TIMESTAMPTZ NOT NULL,
     updated_at  TIMESTAMPTZ NOT NULL,

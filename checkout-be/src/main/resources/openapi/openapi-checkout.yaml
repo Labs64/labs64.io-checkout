@@ -952,7 +952,6 @@ components:
         url:
           type: string
           format: uri
-          nullable: true
           description: >
             Optional URL pointing to the full text of the terms, policy or
             agreement associated with this consent. A client may use this

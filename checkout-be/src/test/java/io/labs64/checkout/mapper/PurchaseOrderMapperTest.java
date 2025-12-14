@@ -63,7 +63,7 @@ class PurchaseOrderMapperTest {
 
         final String currency = "USD";
 
-        final PurchaseOrderCreateRequest source = new PurchaseOrderCreateRequest(items, currency);
+        final PurchaseOrderCreateRequest source = new PurchaseOrderCreateRequest(items);
         source.setStartsAt(startsAt);
         source.setEndsAt(endsAt);
         source.setExtra(extra);

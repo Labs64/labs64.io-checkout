@@ -14,37 +14,36 @@
     <parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>3.5.8</version>
-		<relativePath/> <!-- lookup parent from repository -->
+		<version>4.0.0</version>
 	</parent>
 
     <properties>
         <!-- API VERSIONS -->
         <api.version>v1</api.version>
         <!-- DEPENDENCIES -->
-        <java.version>21</java.version>
-        <spring-cloud.version>2025.0.0</spring-cloud.version>
-        <logstash.version>8.1</logstash.version>
-        <springdoc.version>2.8.11</springdoc.version>
-        <openapitools.version>0.2.7</openapitools.version>
-        <junit-jupiter.version>5.13.4</junit-jupiter.version>
-        <jackson-datatype-jsr310.version>2.19.2</jackson-datatype-jsr310.version>
-        <commons-lang3.version>3.18.0</commons-lang3.version>
+        <java.version>25</java.version>
+        <spring-cloud.version>2025.1.0</spring-cloud.version>
+        <logstash.version>9.0</logstash.version>
+        <springdoc.version>3.0.0</springdoc.version>
+        <openapitools.version>0.2.8</openapitools.version>
+        <junit-jupiter.version>6.0.1</junit-jupiter.version>
+        <jackson-datatype-jsr310.version>2.20.1</jackson-datatype-jsr310.version>
+        <commons-lang3.version>3.20.0</commons-lang3.version>
         <kubernetes-client.version>7.4.0</kubernetes-client.version>
-        <opentelemetry-exporter-otlp.version>1.53.0</opentelemetry-exporter-otlp.version>
-        <micrometer-tracing.version>1.5.3</micrometer-tracing.version>
+        <opentelemetry-exporter-otlp.version>1.57.0</opentelemetry-exporter-otlp.version>
+        <micrometer-tracing.version>1.6.1</micrometer-tracing.version>
         <labs64.code-formatting.version>1.0.0</labs64.code-formatting.version>
         <mapstruct.version>1.6.3</mapstruct.version>
-        <lombok.version>1.18.38</lombok.version>
-        <postgresql.version>42.7.7</postgresql.version>
-        <flyway.version>11.12.0</flyway.version>
+        <lombok.version>1.18.42</lombok.version>
+        <postgresql.version>42.7.8</postgresql.version>
+        <flyway.version>11.19.0</flyway.version>
         <!-- PLUGINS -->
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
         <openapi-generator-maven-plugin.version>7.17.0</openapi-generator-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.1</build-helper-maven-plugin.version>
-        <maven-dependency-plugin.version>3.8.1</maven-dependency-plugin.version>
-        <spotless-maven-plugin.version>2.46.1</spotless-maven-plugin.version>
-        <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.9.0</maven-dependency-plugin.version>
+        <spotless-maven-plugin.version>3.1.0</spotless-maven-plugin.version>
+        <maven-compiler-plugin.version>3.14.1</maven-compiler-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -323,8 +322,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>25</source>
+                    <target>25</target>
                     <annotationProcessorPaths>
                         <path>
                             <groupId>org.projectlombok</groupId>

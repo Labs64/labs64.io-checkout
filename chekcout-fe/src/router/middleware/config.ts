@@ -2,6 +2,9 @@ import type { MiddlewareConfig } from '@/types/router/middleware';
 
 // middleware
 import loadEnv from '@/router/middleware/loadEnv';
+import loadPurchaseOrder from '@/router/middleware/loadPurchaseOrder';
+import loadPaymentMethods from '@/router/middleware/loadPaymentMethods';
+import loadTenantConfig from '@/router/middleware/loadTenantConfig';
 
 const config: MiddlewareConfig = {
   /**
@@ -10,7 +13,7 @@ const config: MiddlewareConfig = {
    */
   global: {
     // executed before any route
-    before: [loadEnv],
+    before: [loadEnv, loadPurchaseOrder, loadTenantConfig],
 
     // executed after any route
     after: [],
@@ -20,7 +23,9 @@ const config: MiddlewareConfig = {
    * The application's route middleware.
    * These middleware may be assigned to groups or used individually.
    */
-  route: {},
+  route: {
+    loadPaymentMethods,
+  },
 };
 
 export default config;

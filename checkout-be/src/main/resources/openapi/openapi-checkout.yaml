@@ -570,6 +570,9 @@ components:
               type: string
               format: uuid
               readOnly: true
+            tenantId:
+              type: string
+              readOnly: true
             customer:
               allOf:
                 - $ref: '#/components/schemas/Customer'

@@ -1,11 +1,8 @@
 <template>
   <main>
-    <Suspense>
-      <RouterView />
-    </Suspense>
+    <RouterView />
   </main>
 </template>
-
 
 <script setup lang="ts">
 import { RouterView } from 'vue-router';

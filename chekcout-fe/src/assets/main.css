@@ -5,3 +5,5 @@
 /* Components */
 @import "./components/hr.css";
 @import "./components/card.css";
+
+@import "./utilities.css";

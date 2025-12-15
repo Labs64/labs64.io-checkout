@@ -1,14 +1,24 @@
-import './assets/main.css'
+import './assets/main.css';
 
-import { createApp } from 'vue'
-import { createPinia } from 'pinia'
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 
-import App from './views/App.vue'
-import router from './router'
+import App from './views/App.vue';
+import i18n from './i18n';
+import router from './router';
+import veeValidate from '@/plugins/veeValidate';
+import persistPlugin from '@/stores/plugins/persistPlugin';
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(createPinia())
-app.use(router)
+const pinia = createPinia();
+pinia.use(persistPlugin);
 
-app.mount('#app')
+app.use(pinia);
+app.use(i18n);
+app.use(router);
+app.use(veeValidate);
+
+app.mount('#app');
+
+// Добавить переключатель языка

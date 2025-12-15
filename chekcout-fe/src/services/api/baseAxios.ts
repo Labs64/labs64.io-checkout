@@ -1,5 +1,13 @@
 import axios from 'axios';
 
-const baseAxios = axios.create();
+const tenantId = 'SOME-TENANT';
+
+const baseAxios = axios.create({
+  headers: {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+    'X-Tenant-Id': tenantId,
+  },
+});
 
 export default baseAxios;

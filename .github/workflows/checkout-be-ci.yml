@@ -80,12 +80,12 @@ jobs:
 
       - name: Create Maven settings.xml
         env:
-          REPO_URL: https://nexus.labs64.com/repository/nlic-group
-          REPO_USERNAME: ${{ secrets.REPO_USER }}
-          REPO_PASSWORD: ${{ secrets.REPO_PASS }}
+          REPO_URL: https://nexus.labs64.com/repository/nlic-group/
+          REPO_USER: ${{ secrets.REPO_USER }}
+          REPO_PASS: ${{ secrets.REPO_PASS }}
         run: |
           mkdir -p ~/.m2
-          cat > ~/.m2/settings.xml <<'XML'
+          cat > ~/.m2/settings.xml <<XML
           <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
                     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                     xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
@@ -94,7 +94,7 @@ jobs:
               <mirror>
                 <id>labs64-mirror</id>
                 <name>Labs64 Maven Mirror</name>
-                <url>${env.REPO_URL}</url>
+                <url>${REPO_URL}</url>
                 <mirrorOf>*</mirrorOf>
               </mirror>
             </mirrors>
@@ -102,8 +102,8 @@ jobs:
             <servers>
               <server>
                 <id>labs64-mirror</id>
-                <username>${env.REPO_USERNAME}</username>
-                <password>${env.REPO_PASSWORD}</password>
+                <username>${REPO_USER}</username>
+                <password>${REPO_PASS}</password>
               </server>
             </servers>
           </settings>

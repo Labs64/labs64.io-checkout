@@ -1,0 +1,9 @@
+/* Bootstrap */
+@import 'bootstrap/dist/css/bootstrap.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Components */
+@import "./components/hr.css";
+@import "./components/card.css";
+
+@import "./utilities.css";

@@ -78,8 +78,40 @@ jobs:
           java-version: "21"
           cache: maven
 
+      - name: Create Maven settings.xml
+        env:
+          REPO_URL: https://nexus.labs64.com/repository/nlic-group
+          REPO_USERNAME: ${{ secrets.REPO_USER }}
+          REPO_PASSWORD: ${{ secrets.REPO_PASS }}
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<'XML'
+          <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd">
+
+            <mirrors>
+              <mirror>
+                <id>labs64-mirror</id>
+                <name>Labs64 Maven Mirror</name>
+                <url>${env.REPO_URL}</url>
+                <mirrorOf>*</mirrorOf>
+              </mirror>
+            </mirrors>
+
+            <servers>
+              <server>
+                <id>labs64-mirror</id>
+                <username>${env.REPO_USERNAME}</username>
+                <password>${env.REPO_PASSWORD}</password>
+              </server>
+            </servers>
+          </settings>
+          XML
+
       - name: Maven verify
-        run: mvn verify
+        working-directory: checkout-be
+        run: mvn -B -ntp -s ~/.m2/settings.xml verify
 
       - name: Upload test reports
         if: always()

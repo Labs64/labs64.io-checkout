@@ -54,7 +54,6 @@ jobs:
           --health-retries 30
 
     env:
-      # якщо твої тести/апп читають ці env (як ми робили у application.yml)
       POSTGRES_HOST: localhost
       POSTGRES_PORT: "5432"
       POSTGRES_DB: checkout
@@ -80,7 +79,7 @@ jobs:
           cache: maven
 
       - name: Maven verify
-        run: ./mvnw -B -ntp -Dstyle.color=always verify
+        run: mvn verify --file checkout-be/pom.xml
 
       - name: Upload test reports
         if: always()

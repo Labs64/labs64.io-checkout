@@ -1,4 +1,0 @@
-.card:has(> .card-header):not(:has(> .card-body, > .list-group, > .card-footer)) > .card-header {
-  border-radius: var(--bs-card-inner-border-radius);
-  border-bottom: none;
-}

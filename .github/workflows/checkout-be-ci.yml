@@ -1,0 +1,92 @@
+name: Labs64.IO - Checkout Backend - CI
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - "checkout-be/**"
+      - ".github/workflows/checkout-be-ci.yml"
+  pull_request:
+    paths:
+      - "checkout-be/**"
+      - ".github/workflows/checkout-be-ci.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: checkout-be-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: checkout-be
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: checkout
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d checkout"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+
+      rabbitmq:
+        image: rabbitmq:3-management
+        env:
+          RABBITMQ_DEFAULT_USER: guest
+          RABBITMQ_DEFAULT_PASS: guest
+        ports:
+          - 5672:5672
+          - 15672:15672
+        options: >-
+          --health-cmd "rabbitmq-diagnostics -q ping"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 30
+
+    env:
+      # якщо твої тести/апп читають ці env (як ми робили у application.yml)
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: checkout
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+
+      RABBITMQ_HOST: localhost
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+
+      SPRING_PROFILES_ACTIVE: test
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Maven verify
+        run: ./mvnw -B -ntp -Dstyle.color=always verify
+
+      - name: Upload test reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkout-be-test-reports
+          path: |
+            checkout-be/target/surefire-reports/**
+            checkout-be/target/failsafe-reports/**

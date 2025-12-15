@@ -18,6 +18,7 @@ logging:
 spring:
   application:
     name: labs64.io-checkout
+
   cloud:
     stream:
       bindings:
@@ -45,15 +46,15 @@ spring:
     encoding: UTF-8
 
   rabbitmq:
-    host: rabbitmq.default.svc.cluster.local
-    port: 5672
-    username:
-    password:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
 
   datasource:
-    url: jdbc:postgresql://postgresql-primary.default.svc.cluster.local:5432/checkout
-    username:
-    password:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:checkout}
+    username: ${POSTGRES_USERNAME:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
@@ -66,7 +67,6 @@ spring:
 #    default-schema: checkout
 #    schemas: [ checkout ]
 #    create-schemas: true
-
 
 checkout:
   currency:

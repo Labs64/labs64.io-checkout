@@ -79,7 +79,7 @@ jobs:
           cache: maven
 
       - name: Maven verify
-        run: mvn verify --file checkout-be/pom.xml
+        run: mvn verify
 
       - name: Upload test reports
         if: always()

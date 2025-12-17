@@ -5,10 +5,6 @@ management.endpoints.web.exposure.include: health,info
 management.endpoint.health.probes.enabled: true
 management.health.livenessState.enabled: true
 management.health.readinessState.enabled: true
-management:
-  tracing:
-    sampling:
-      probability: 1.0
 
 logging:
   level:
@@ -23,11 +19,13 @@ spring:
     stream:
       bindings:
         checkout-out-0:
-          destination: labs64-checkout-topic
+          destination: labs64-audit-topic
           binder: rabbit
+          content-type: application/json
         checkout-in-0:
-          destination: labs64-checkout-topic
+          destination: labs64-audit-topic
           binder: rabbit
+          content-type: application/json
       binders:
         rabbit:
           type: rabbit
@@ -52,7 +50,7 @@ spring:
     password: ${RABBITMQ_PASSWORD:guest}
 
   datasource:
-    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:checkout}
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:checkout}?timeZone=UTC
     username: ${POSTGRES_USERNAME:postgres}
     password: ${POSTGRES_PASSWORD:postgres}
 
@@ -60,13 +58,12 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: none
+    properties:
+      hibernate.jdbc.time_zone: UTC
 
   flyway:
     enabled: false
     locations: classpath:db/migration
-#    default-schema: checkout
-#    schemas: [ checkout ]
-#    create-schemas: true
 
 checkout:
   currency:

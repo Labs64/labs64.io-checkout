@@ -15,13 +15,45 @@ docker: build
 run: build
     mvn spring-boot:run -Dspring-boot.run.profiles=local
 
-# profile local
-install-local:
-    mvn clean install "-Dspring.profiles.active=local"
-
-
 # check maven dependencies/plugins/properties updates
 check-updates:
     mvn versions:display-plugin-updates -Dmaven.version.ignore='(?i).*[.-]?(alpha|beta|RC|M)\d*'
     mvn versions:display-property-updates -Dmaven.version.ignore='(?i).*[.-]?(alpha|beta|RC|M)\d*'
     mvn versions:display-dependency-updates -DprocessDependencyManagement=false -Dmaven.version.ignore='(?i).*[.-]?(alpha|beta|RC|M)\d*'
+
+# Development tools
+# NOTE: `dev-up` only starts services (no auto-restart on code/jar changes).
+# To auto-restart `checkout-be` after `mvn package/install`, run `dev-watch`
+# (it uses docker-compose `develop.watch`).
+dev-up:
+    mvn -f pom.xml -B -ntp -DskipTests clean install
+    docker compose \
+      -f docker-compose.dev.yml \
+      up -d --build
+
+# Runs in foreground: watches the filesystem and restarts services according to `develop.watch`.
+# Tip: run `mvn -DskipTests package` once so the jar exists before starting the container.
+dev-watch:
+    mvn -f pom.xml -B -ntp -DskipTests clean install
+    docker compose \
+      -f docker-compose.dev.yml \
+      watch
+
+# Stop services (keeps volumes)
+dev-down:
+    docker compose \
+      -f docker-compose.dev.yml \
+      down
+
+# Tail logs for local debugging
+dev-logs:
+    docker compose \
+      -f docker-compose.dev.yml \
+      logs -f --tail=200
+
+# Full cleanup: stop + remove volumes + remove orphan containers
+# Use when you want a fresh Postgres/Rabbit state.
+dev-clean:
+    docker compose \
+      -f docker-compose.dev.yml \
+      down -v --remove-orphans

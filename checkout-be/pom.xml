@@ -26,17 +26,8 @@
         <logstash.version>9.0</logstash.version>
         <springdoc.version>3.0.0</springdoc.version>
         <openapitools.version>0.2.8</openapitools.version>
-        <junit-jupiter.version>6.0.1</junit-jupiter.version>
-        <jackson-datatype-jsr310.version>2.20.1</jackson-datatype-jsr310.version>
-        <commons-lang3.version>3.20.0</commons-lang3.version>
-        <kubernetes-client.version>7.4.0</kubernetes-client.version>
-        <opentelemetry-exporter-otlp.version>1.57.0</opentelemetry-exporter-otlp.version>
-        <micrometer-tracing.version>1.6.1</micrometer-tracing.version>
-        <labs64.code-formatting.version>1.0.0</labs64.code-formatting.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.42</lombok.version>
-        <postgresql.version>42.7.8</postgresql.version>
-        <flyway.version>11.19.0</flyway.version>
         <!-- PLUGINS -->
         <maven-enforcer-plugin.version>3.6.2</maven-enforcer-plugin.version>
         <openapi-generator-maven-plugin.version>7.17.0</openapi-generator-maven-plugin.version>
@@ -81,6 +72,10 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-flyway</artifactId>
+        </dependency>
+        <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
             <version>${logstash.version}</version>
@@ -98,44 +93,14 @@
             <version>${openapitools.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-            <version>${jackson-datatype-jsr310.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>${commons-lang3.version}</version>
         </dependency>
 
         <!-- Spring Cloud SDK -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-stream-binder-kafka</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.fabric8</groupId>
-            <artifactId>kubernetes-client</artifactId>
-            <version>${kubernetes-client.version}</version>
-        </dependency>
-
-        <!-- Micrometer Tracing + OTEL bridge -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing</artifactId>
-            <version>${micrometer-tracing.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-otel</artifactId>
-            <version>${micrometer-tracing.version}</version>
-        </dependency>
-        <!-- OTLP Exporter -->
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-exporter-otlp</artifactId>
-            <version>${opentelemetry-exporter-otlp.version}</version>
+            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
         </dependency>
 
         <!-- Lombok (optional, for reducing boilerplate code) -->
@@ -161,33 +126,21 @@
         <!-- Flyaway -->
         <dependency>
             <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-            <version>${flyway.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.flywaydb</groupId>
             <artifactId>flyway-database-postgresql</artifactId>
-            <version>${flyway.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Postgres Driver -->
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>${postgresql.version}</version>
+            <scope>runtime</scope>
         </dependency>
 
         <!-- Testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <version>${junit-jupiter.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -268,54 +221,6 @@
                         </configuration>
                     </execution>
                 </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <version>${maven-dependency-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>unpack-formatting-config</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>com.labs64.commons</groupId>
-                                    <artifactId>code-formatting</artifactId>
-                                    <version>${labs64.code-formatting.version}</version>
-                                    <type>zip</type>
-                                    <outputDirectory>${project.build.directory}/formatting</outputDirectory>
-                                </artifactItem>
-                            </artifactItems>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>com.diffplug.spotless</groupId>
-                <artifactId>spotless-maven-plugin</artifactId>
-                <version>${spotless-maven-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <java>
-                        <importOrder>
-                            <file>${project.build.directory}/formatting/labs64.importorder</file>
-                        </importOrder>
-                        <eclipse>
-                            <file>${project.build.directory}/formatting/labs64_eclipse_formatter.xml</file>
-                        </eclipse>
-                    </java>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

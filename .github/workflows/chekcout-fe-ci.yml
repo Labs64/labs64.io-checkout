@@ -1,0 +1,204 @@
+name: Labs64.IO - Checkout UI - CI
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - "checkout-fe/**"
+      - "checkout-be/**"
+      - ".github/workflows/checkout-fe-ci.yml"
+      - ".github/actions/checkout-deps/**"
+      - ".github/compose/**"
+  pull_request:
+    paths:
+      - "checkout-fe/**"
+      - "checkout-be/**"
+      - ".github/workflows/checkout-fe-ci.yml"
+      - ".github/actions/checkout-deps/**"
+      - ".github/compose/**"
+  workflow_dispatch:
+
+concurrency:
+  group: checkout-fe-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: checkout-fe
+
+    env:
+      CI: "true"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            checkout-fe/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Unit tests
+        run: npm run test:unit
+
+      - name: Build
+        run: npm run build
+
+      - name: Upload dist artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkout-fe-dist
+          path: checkout-fe/dist/**
+
+  e2e-playwright:
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    defaults:
+      run:
+        shell: bash
+
+    env:
+      CI: "true"
+
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: checkout
+      POSTGRES_USERNAME: postgres
+      POSTGRES_PASSWORD: postgres
+
+      RABBITMQ_HOST: localhost
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+
+      SPRING_PROFILES_ACTIVE: test
+      SERVER_PORT: "8080"
+
+      VITE_API_BASE_URL: "http://localhost:8080"
+      BASE_URL: "http://localhost:4173"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Start deps
+        uses: ./.github/actions/checkout-deps
+        with:
+          action: up
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: |
+            checkout-fe/package-lock.json
+
+      - name: Install FE dependencies
+        working-directory: checkout-fe
+        run: npm ci
+
+      - name: Install Playwright browsers
+        working-directory: checkout-fe
+        run: npx playwright install --with-deps
+
+      - name: Build BE (skip tests)
+        working-directory: checkout-be
+        run: mvn -B -DskipTests package
+
+      - name: Start BE (background)
+        run: |
+          mkdir -p artifacts
+          JAR="$(ls -1 checkout-be/target/*.jar | grep -v 'original' | head -n 1)"
+          echo "Using JAR: $JAR"
+          nohup java -jar "$JAR" > artifacts/backend.log 2>&1 &
+          echo $! > artifacts/backend.pid
+
+      - name: Wait for BE
+        run: |
+          for i in {1..60}; do
+            if curl -fsS "http://localhost:8080/actuator/health" >/dev/null 2>&1; then
+              echo "BE is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "BE did not become ready in time"
+          tail -n 200 artifacts/backend.log || true
+          exit 1
+
+      - name: Build FE
+        working-directory: checkout-fe
+        run: npm run build-only
+
+      - name: Start FE preview (background)
+        run: |
+          nohup npm --prefix checkout-fe run preview -- --host 0.0.0.0 --port 4173 > artifacts/ui-preview.log 2>&1 &
+          echo $! > artifacts/ui-preview.pid
+
+      - name: Wait for FE
+        run: |
+          for i in {1..60}; do
+            if curl -fsS "http://localhost:4173" >/dev/null 2>&1; then
+              echo "FE is up"
+              exit 0
+            fi
+            sleep 2
+          done
+          echo "FE did not become ready in time"
+          tail -n 200 artifacts/ui-preview.log || true
+          exit 1
+
+      - name: Run Playwright
+        working-directory: checkout-fe
+        run: npm run test:e2e
+
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkout-fe-playwright-report
+          path: |
+            checkout-fe/playwright-report/**
+            checkout-fe/test-results/**
+          if-no-files-found: ignore
+
+      - name: Upload logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: checkout-e2e-logs
+          path: artifacts/**
+          if-no-files-found: ignore
+
+      - name: Stop deps
+        if: always()
+        uses: ./.github/actions/checkout-deps
+        with:
+          action: down

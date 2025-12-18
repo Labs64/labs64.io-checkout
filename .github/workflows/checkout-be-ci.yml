@@ -6,10 +6,14 @@ on:
     paths:
       - "checkout-be/**"
       - ".github/workflows/checkout-be-ci.yml"
+      - ".github/actions/checkout-deps/**"
+      - ".github/compose/**"
   pull_request:
     paths:
       - "checkout-be/**"
       - ".github/workflows/checkout-be-ci.yml"
+      - ".github/actions/checkout-deps/**"
+      - ".github/compose/**"
   workflow_dispatch:
 
 concurrency:
@@ -23,35 +27,6 @@ jobs:
     defaults:
       run:
         working-directory: checkout-be
-
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: checkout
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres -d checkout"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 30
-
-      rabbitmq:
-        image: rabbitmq:3-management
-        env:
-          RABBITMQ_DEFAULT_USER: guest
-          RABBITMQ_DEFAULT_PASS: guest
-        ports:
-          - 5672:5672
-          - 15672:15672
-        options: >-
-          --health-cmd "rabbitmq-diagnostics -q ping"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 30
 
     env:
       POSTGRES_HOST: localhost
@@ -78,8 +53,12 @@ jobs:
           java-version: "25"
           cache: maven
 
+      - name: Start deps
+        uses: ./.github/actions/checkout-deps
+        with:
+          action: up
+
       - name: Maven verify
-        working-directory: checkout-be
         run: mvn -B verify
 
       - name: Upload test reports
@@ -90,3 +69,9 @@ jobs:
           path: |
             checkout-be/target/surefire-reports/**
             checkout-be/target/failsafe-reports/**
+
+      - name: Stop deps
+        if: always()
+        uses: ./.github/actions/checkout-deps
+        with:
+          action: down

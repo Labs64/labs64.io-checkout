@@ -338,6 +338,5 @@ async function validate(): Promise<{ valid: boolean; errors: string[] }> {
 
 function copyFromBilling() {
   form = merge(form, billingStore.form);
-  console.log(form);
 }
 </script>

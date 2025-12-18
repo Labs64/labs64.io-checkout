@@ -1,6 +1,9 @@
 APP_NAME := "checkout-ui"
 DOCKER_REGISTRY := "localhost:5005"
 
+DEV_COMPOSE := "docker-compose.dev.yml"
+DEV_SERVICE := "checkout-fe"
+
 # build application
 build:
     npm install
@@ -13,5 +16,23 @@ docker: build
     docker push {{DOCKER_REGISTRY}}/{{APP_NAME}}:latest
     docker images | grep "{{APP_NAME}}"
 
-docker-run:
-    docker run --rm -p 8080:80 {{APP_NAME}}:latest
+# run application
+run:
+    docker run --rm -p 5173:80 {{APP_NAME}}:latest
+
+# check dependencies
+check-updates:
+    npm outdated
+
+# dev tools
+dev-up:
+    docker compose -f {{DEV_COMPOSE}} up -d --remove-orphans {{DEV_SERVICE}}
+
+dev-down:
+    docker compose -f {{DEV_COMPOSE}} down --remove-orphans
+
+dev-logs:
+    docker compose -f {{DEV_COMPOSE}} logs -f --tail=200 {{DEV_SERVICE}}
+
+dev-clean:
+    docker compose -f {{DEV_COMPOSE}} down -v --remove-orphans

@@ -39,6 +39,7 @@ export default defineConfigWithVueTs(
       'no-console': ['error', { allow: ['warn', 'error'] }],
       'comma-dangle': ['error', 'always-multiline'],
       'object-curly-newline': ['error', { consistent: true }],
+      'no-unused-vars': ['off', { caughtErrors: 'none' }],
     },
   },
 );

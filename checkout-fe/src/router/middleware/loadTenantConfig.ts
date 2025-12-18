@@ -5,7 +5,7 @@ import type { Middleware } from '@/types/router/middleware';
 import useTenantConfigStore from '@/stores/tenantConfig';
 import usePurchaseOrderStore from '@/stores/purchaseOrder';
 
-const middleware: Middleware = async (to) => {
+const middleware: Middleware = async () => {
   const { isLoaded, load } = useTenantConfigStore();
   const { purchaseOrder } = usePurchaseOrderStore();
 

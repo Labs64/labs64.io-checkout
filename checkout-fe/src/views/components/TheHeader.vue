@@ -19,13 +19,8 @@
 <script setup lang="ts">
 import { defineProps } from 'vue';
 
-// i18n
-import { useI18n } from 'vue-i18n';
-
 // props
 defineProps<{ brandName?: string | null; logo?: string | null }>();
-
-const { t } = useI18n();
 </script>
 
 <style scoped>

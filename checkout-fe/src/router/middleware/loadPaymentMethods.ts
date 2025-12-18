@@ -1,13 +1,10 @@
 // types
 import type { Middleware } from '@/types/router/middleware';
 
-// lodash
-import { castArray } from 'lodash-es';
-
 // stores
 import usePaymentStore from '@/stores/payment';
 
-const middleware: Middleware = async (to) => {
+const middleware: Middleware = async () => {
   const store = usePaymentStore();
 
   if (!store.isLoaded) {

@@ -1,8 +1,3 @@
-import baseAxios from '@/services/api/baseAxios';
-
-// types
-import type { PurchaseOrder } from '@/types/services/api/backend';
-
 // composable
 import useEnv from '@/composables/useEnv';
 import type { TenantConfig } from '@/types/services/api/tenantConfig';
@@ -11,6 +6,8 @@ const { getEnv } = useEnv();
 
 export async function fetchTenantConfig(tenantId: string): Promise<TenantConfig> {
   const endpoint = `${getEnv('VITE_TENANT_CONFIG_URL')}/${tenantId}`;
+
+  console.warn(endpoint);
 
   // TODO(RVA): hardcoded data
   return {

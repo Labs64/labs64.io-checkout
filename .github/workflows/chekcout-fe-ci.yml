@@ -157,24 +157,6 @@ jobs:
         working-directory: checkout-fe
         run: npm run build-only
 
-      - name: Start FE preview (background)
-        run: |
-          nohup npm --prefix checkout-fe run preview -- --host 0.0.0.0 --port 4173 > artifacts/ui-preview.log 2>&1 &
-          echo $! > artifacts/ui-preview.pid
-
-      - name: Wait for FE
-        run: |
-          for i in {1..60}; do
-            if curl -fsS "http://localhost:4173" >/dev/null 2>&1; then
-              echo "FE is up"
-              exit 0
-            fi
-            sleep 2
-          done
-          echo "FE did not become ready in time"
-          tail -n 200 artifacts/ui-preview.log || true
-          exit 1
-
       - name: Run Playwright
         working-directory: checkout-fe
         run: npm run test:e2e

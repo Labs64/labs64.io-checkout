@@ -22,7 +22,8 @@ run:
 
 # check dependencies
 check-updates:
-    npm outdated
+    npm outdated || true
+    docker scout cves {{APP_NAME}}:latest
 
 # dev tools
 dev-up:

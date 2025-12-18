@@ -17,8 +17,6 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue';
-
 // props
 defineProps<{ brandName?: string | null; logo?: string | null }>();
 </script>

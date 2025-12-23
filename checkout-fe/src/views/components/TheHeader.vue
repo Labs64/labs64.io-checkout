@@ -12,11 +12,17 @@
       <div class="fw-semibold text-nowrap">
         {{ brandName }}
       </div>
+
+      <!-- language block -->
+      <LanguageSwitcher />
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
+// components
+import LanguageSwitcher from '@/views/components/LanguageSwitcher.vue';
+
 // props
 defineProps<{ brandName?: string | null; logo?: string | null }>();
 </script>

@@ -1,9 +1,15 @@
-/* Bootstrap */
+/* Vendor styles */
 @import 'bootstrap/dist/css/bootstrap.css';
 @import 'bootstrap-icons/font/bootstrap-icons.css';
+@import 'flag-icons/css/flag-icons.min.css';
+@import 'nprogress/nprogress.css';
+
+/* Vendor overrides */
+@import 'overrides/nprogress.css';
 
 /* Components */
-@import "./components/hr.css";
-@import "./components/card.css";
+@import './components/hr.css';
+@import './components/card.css';
 
-@import "./utilities.css";
+/* Utilities */
+@import './utilities.css';

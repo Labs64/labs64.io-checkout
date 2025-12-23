@@ -1,12 +1,18 @@
 import type { Routes } from '@/types/router/routes';
-import CheckoutPage from '@/views/pages/CheckoutPage.vue';
 
 const routes: Routes = [
   {
     path: '/checkout/:id',
     name: 'checkout',
-    component: CheckoutPage,
-    meta: { middleware: ['loadPaymentMethods'] },
+    component: () => import('@/views/pages/CheckoutPage.vue'),
+    meta: { middleware: ['ensureCheckoutContext'] },
+  },
+
+  // 404 page
+  {
+    path: '/:pathMatch(.*)*',
+    name: '404Page',
+    component: () => import('@/views/pages/404Page.vue'),
   },
 ];
 

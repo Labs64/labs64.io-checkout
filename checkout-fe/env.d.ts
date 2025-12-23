@@ -10,6 +10,7 @@ interface ImportMetaEnv {
 
   // i18n
   readonly VITE_I18N_LOCALE: string;
+  readonly VITE_I18N_AUTODETECT_LOCALE: string;
   readonly VITE_I18N_FALLBACK_LOCALE: string;
 
   // API

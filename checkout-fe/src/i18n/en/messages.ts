@@ -1,5 +1,6 @@
 export default {
   common: {
+    checkout: 'Checkout',
     change: 'Change',
     buy: 'Buy Now',
 
@@ -43,5 +44,13 @@ export default {
 
   payment: {
     title: 'Payment',
+  },
+
+  error: {
+    notFound: {
+      title: 'Error 404',
+      description: 'The page you are looking for was moved, removed or might never have existed.',
+      back: 'Go back',
+    },
   },
 };

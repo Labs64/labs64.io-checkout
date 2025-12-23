@@ -68,9 +68,14 @@
   </div>
 </template>
 
-<script setup async lang="ts">
+<script setup lang="ts">
+import { computed } from 'vue';
+
 // i18n
 import { useI18n } from 'vue-i18n';
+
+// composable
+import { useAppHead } from '@/composables/useAppHead';
 
 // components
 import TheHeader from '@/views/components/TheHeader.vue';
@@ -88,4 +93,10 @@ const { t } = useI18n();
 
 const tenantConfigStore = useTenantConfigStore();
 const { config } = tenantConfigStore;
+
+const title = computed(() => {
+  return `${config?.brandName} | ${t('common.checkout')}`;
+});
+
+useAppHead({ title });
 </script>

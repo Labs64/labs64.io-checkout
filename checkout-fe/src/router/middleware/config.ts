@@ -13,7 +13,7 @@ const config: MiddlewareConfig = {
    */
   global: {
     // executed before any route
-    before: [loadEnv, loadPurchaseOrder, loadTenantConfig],
+    before: [loadEnv],
 
     // executed after any route
     after: [],
@@ -24,7 +24,7 @@ const config: MiddlewareConfig = {
    * These middleware may be assigned to groups or used individually.
    */
   route: {
-    loadPaymentMethods,
+    ensureCheckoutContext: [loadPaymentMethods, loadPurchaseOrder, loadTenantConfig],
   },
 };
 

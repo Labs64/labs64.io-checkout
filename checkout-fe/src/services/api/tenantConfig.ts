@@ -1,13 +1,13 @@
 // composable
-// import useEnv from '@/composables/useEnv';
+import useEnv from '@/composables/useEnv';
 import type { TenantConfig } from '@/types/services/api/tenantConfig';
 
-// const { getEnv } = useEnv();
+const { getEnv } = useEnv();
 
 export async function fetchTenantConfig(tenantId: string): Promise<TenantConfig> {
-  // const endpoint = `${getEnv('VITE_TENANT_CONFIG_URL')}/${tenantId}`;
+  const endpoint = `${getEnv('VITE_TENANT_CONFIG_URL')}/${tenantId}`;
 
-  // console.warn(endpoint);
+  console.warn(endpoint);
 
   // TODO(RVA): hardcoded data
   return {

@@ -6,7 +6,7 @@ import { useI18n } from 'vue-i18n';
 // stores
 import useTenantConfigStore from '@/stores/tenantConfig';
 
-export function useAppHead<I = UseHeadInput>(input?: UseHeadInput, options?: UseHeadOptions) {
+export function useAppHead(input?: UseHeadInput, options?: UseHeadOptions) {
   const tenantConfigStore = useTenantConfigStore();
   const { config } = tenantConfigStore;
 
@@ -19,8 +19,11 @@ export function useAppHead<I = UseHeadInput>(input?: UseHeadInput, options?: Use
     htmlAttrs: { lang: locale },
   };
 
-  return useHead({
-    ...defaultInput,
-    ...input,
-  });
+  return useHead(
+    {
+      ...defaultInput,
+      ...input,
+    },
+    options,
+  );
 }

@@ -37,7 +37,9 @@ services:
     working_dir: /app
     environment:
       JAR_FILE: checkout-0.0.1-SNAPSHOT.jar
-      JAVA_TOOL_OPTIONS: "-Duser.timezone=UTC"
+      JAVA_TOOL_OPTIONS: >-
+        -Duser.timezone=UTC
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       SPRING_PROFILES_ACTIVE: local
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/checkout
       SPRING_DATASOURCE_USERNAME: postgres
@@ -46,6 +48,7 @@ services:
       SPRING_RABBITMQ_PORT: "5672"
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
+      SPRING_FLYWAY_ENABLED: true
     ports:
       - "8010:8080"
       - "5010:5005"

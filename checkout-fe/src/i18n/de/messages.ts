@@ -3,6 +3,7 @@ export default {
     checkout: 'Zur Kasse',
     change: 'Ändern',
     buy: 'Jetzt kaufen',
+    unknown: 'unbekannt',
 
     form: {
       firstName: 'Vorname',
@@ -27,6 +28,11 @@ export default {
       subtotal: 'Zwischensumme (exkl. Steuern)', // netAmount
       tax: 'Steuern',
       total: 'Gesamtbetrag',
+    },
+
+    availability: {
+      upcoming: 'Diese Bestellung hat noch nicht begonnen. Sie ist ab {date} verfügbar.',
+      expired: 'Diese Bestellung ist nicht mehr gültig. Sie endete am {date}.',
     },
   },
 

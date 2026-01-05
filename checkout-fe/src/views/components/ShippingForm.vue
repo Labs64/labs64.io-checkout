@@ -125,9 +125,13 @@
                 :class="{ 'is-invalid': !!errors.country }"
                 :label="t('common.form.country')"
               >
-                <option value="US">United States</option>
-                <option value="GE">Germany</option>
-                <option value="UA">Ukraine</option>
+                <option
+                  v-for="{ code, name } in countries"
+                  :key="`country-${code}`"
+                  :value="code"
+                >
+                  {{ name }}
+                </option>
               </VField>
 
               <label>{{ t('common.form.country') }}<span class="text-danger">&nbsp;*</span></label>
@@ -152,7 +156,7 @@
                 name="city"
                 type="text"
                 class="form-control"
-                :class="{ 'is-invalid': !!errors.name }"
+                :class="{ 'is-invalid': !!errors.city }"
                 :label="t('common.form.city')"
                 :placeholder="t('common.form.city')"
               />
@@ -172,16 +176,11 @@
             <div class="form-floating">
               <VField
                 v-model="form.state"
-                as="select"
                 name="state"
-                class="form-select"
+                class="form-control"
                 :class="{ 'is-invalid': !!errors.state }"
                 :label="t('common.form.state')"
-              >
-                <option value="CT">Connecticut</option>
-                <option value="MS">Mississippi</option>
-                <option value="HI">Hawaii</option>
-              </VField>
+              />
 
               <label>{{ t('common.form.state') }}</label>
 
@@ -202,7 +201,7 @@
                 name="postalCode"
                 type="text"
                 class="form-control"
-                :class="{ 'is-invalid': !!errors.state }"
+                :class="{ 'is-invalid': !!errors.postalCode }"
                 :label="t('common.form.postalCode')"
                 :placeholder="t('common.form.postalCode')"
               />
@@ -274,7 +273,7 @@
       v-show="isOpened"
       class="card-footer"
     >
-      <BFormCheckbox v-model="billingStore.$persistRemember">
+      <BFormCheckbox v-model="shippingStore.$persistRemember">
         <span class="small text-secondary">{{ t('shipping.saveDetails') }}</span>
       </BFormCheckbox>
     </div>
@@ -296,6 +295,11 @@ import type { Form } from 'vee-validate';
 
 // lodash
 import { merge } from 'lodash-es';
+
+// composables
+import { useCountries } from '@/composables/useCountries';
+
+// components
 import FormToggleButton from '@/views/components/FormToggleButton.vue';
 
 const { t } = useI18n();
@@ -306,8 +310,24 @@ const billingStore = useBillingStore();
 let { form } = shippingStore;
 const isOpened = ref(!(form.lastName && form.country && form.city && form.postalCode && form.address1));
 const fullName = computed(() => `${form.firstName} ${form.lastName}`);
+
+const { countries } = useCountries();
+
+const countriesByCode = computed(() => {
+  const map = new Map<string, string>();
+  for (const c of countries.value) {
+    map.set(c.code, c.name);
+  }
+  return map;
+});
+
+const countryName = computed(() => {
+  const code = form.country;
+  return (code && countriesByCode.value.get(code)) || '';
+});
+
 const fullAddress = computed(() =>
-  [form.address1, form.city, form.state, form.postalCode, form.country].filter((v) => v).join(', '),
+  [form.address1, form.city, form.state, form.postalCode, countryName.value].filter((v) => v).join(', '),
 );
 
 const formRef = ref<typeof Form | null>(null);

@@ -8,8 +8,8 @@
     <!-- BUTTON -->
     <template #button-content>
       <span
-        v-if="currentLanguage"
-        :class="['me-1', currentLanguage.flag]"
+        v-if="currentLocale"
+        :class="['me-1', flags[currentLocale]]"
         aria-hidden="true"
       />
     </template>
@@ -23,10 +23,10 @@
     >
       <div class="d-flex align-items-center">
         <span
-          :class="['me-2', getLanguage(loc)?.flag]"
+          :class="['me-2', flags[loc]]"
           aria-hidden="true"
         />
-        <span class="me-1">{{ getLanguage(loc)?.name }}</span>
+        <span class="me-1 text-capitalize">{{ getLanguage(loc) }}</span>
         <span class="text-muted text-uppercase small"> ({{ loc }}) </span>
       </div>
     </BDropdownItem>
@@ -46,12 +46,6 @@ const availableLocalesTyped = computed<Locales[]>(() =>
   availableLocales.filter((loc): loc is Locales => SUPPORTED_LOCALES.includes(loc as Locales)),
 );
 
-const languages: Record<Locales, { flag: string; name: string }> = {
-  en: { flag: 'fi fi-gb', name: 'English' },
-  de: { flag: 'fi fi-de', name: 'Deutsche' },
-  uk: { flag: 'fi fi-ua', name: 'Українська' },
-};
-
 const currentLocale = computed<Locales>({
   get: () => (locale.value as Locales) ?? 'en',
   set: (value) => {
@@ -59,10 +53,28 @@ const currentLocale = computed<Locales>({
   },
 });
 
-const currentLanguage = computed(() => languages[currentLocale.value]);
+const flags: Record<Locales, string> = {
+  en: 'fi fi-gb',
+  de: 'fi fi-de',
+  uk: 'fi fi-ua',
+};
+
+const displayNamesCache = new Map<Locales, Intl.DisplayNames>();
+
+function getDisplayNames(loc: Locales): Intl.DisplayNames {
+  const cached = displayNamesCache.get(loc);
+
+  if (cached) {
+    return cached;
+  }
+
+  const dn = new Intl.DisplayNames([loc], { type: 'language' });
+  displayNamesCache.set(loc, dn);
+  return dn;
+}
 
 function getLanguage(loc: Locales) {
-  return languages[loc];
+  return getDisplayNames(loc).of(loc) ?? loc;
 }
 
 function onChangeLocale(loc: Locales) {

@@ -166,9 +166,13 @@
                 :class="{ 'is-invalid': !!errors.country }"
                 :label="t('common.form.country')"
               >
-                <option value="US">United States</option>
-                <option value="GE">Germany</option>
-                <option value="UA">Ukraine</option>
+                <option
+                  v-for="country in countries"
+                  :key="`country-${country.code}`"
+                  :value="country.code"
+                >
+                  {{ country.name }}
+                </option>
               </VField>
 
               <label>{{ t('common.form.country') }}</label>
@@ -212,16 +216,11 @@
             <div class="form-floating">
               <VField
                 v-model="form.state"
-                as="select"
                 name="state"
-                class="form-select"
+                class="form-control"
                 :class="{ 'is-invalid': !!errors.state }"
                 :label="t('common.form.state')"
-              >
-                <option value="CT">Connecticut</option>
-                <option value="MS">Mississippi</option>
-                <option value="HI">Hawaii</option>
-              </VField>
+              />
 
               <label>{{ t('common.form.state') }}</label>
 
@@ -335,6 +334,11 @@ import type { Form } from 'vee-validate';
 
 // lodash
 import { merge } from 'lodash-es';
+
+// composables
+import { useCountries } from '@/composables/useCountries';
+
+// components
 import FormToggleButton from '@/views/components/FormToggleButton.vue';
 
 const { t } = useI18n();
@@ -345,6 +349,7 @@ const shippingStore = useShippingStore();
 let { form } = billingStore;
 const isOpened = ref(!form.lastName);
 const fullName = computed(() => `${form.firstName} ${form.lastName}`);
+const { countries } = useCountries();
 
 const formRef = ref<typeof Form | null>(null);
 

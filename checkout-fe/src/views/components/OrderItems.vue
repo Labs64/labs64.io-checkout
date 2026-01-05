@@ -91,7 +91,7 @@
 // stores
 import usePurchaseOrderStore from '@/stores/purchaseOrder';
 
-// composables
+// composable
 import { useMoney } from '@/composables/useMoney';
 
 // components

@@ -3,6 +3,7 @@ export default {
     checkout: 'Checkout',
     change: 'Change',
     buy: 'Buy Now',
+    unknown: 'unknown',
 
     form: {
       firstName: 'First Name',
@@ -27,6 +28,11 @@ export default {
       subtotal: 'Subtotal (excl. tax)', // netAmount
       tax: 'Tax',
       total: 'Order total',
+    },
+
+    availability: {
+      upcoming: 'This purchase order hasn’t started yet. It will be available on {date}.',
+      expired: 'This purchase order is no longer valid. It ended on {date}.',
     },
   },
 

@@ -33,6 +33,20 @@ export default defineStore('purchaseOrder', {
       const endsAt = state.purchaseOrder?.endsAt;
       return endsAt ? new Date(endsAt) : null;
     },
+
+    isUpcoming(): boolean {
+      const start = this.startsAt?.getTime();
+      return start ? Date.now() < start : false;
+    },
+
+    isExpired(): boolean {
+      const end = this.endsAt?.getTime();
+      return end ? Date.now() > end : false;
+    },
+
+    isActive(): boolean {
+      return !this.isUpcoming && !this.isExpired;
+    },
   },
 
   actions: {

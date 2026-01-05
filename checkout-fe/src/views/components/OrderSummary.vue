@@ -24,63 +24,92 @@
       </span>
     </div>
 
-    <template v-if="consents">
-      <VForm
-        ref="formRef"
-        v-slot="{ errors }"
-      >
-        <div
-          v-for="consent in consents"
-          :key="consent.id"
-          class="form-check mb-1"
-        >
-          <LocalScope
-            v-slot="{ name }"
-            :name="`consents.${consent.id}`"
-          >
-            <VField
-              v-model="consentStore.values[consent.id]"
-              :rules="{ required: consent.required }"
-              :name="name"
-              type="checkbox"
-              class="form-check-input"
-              :value="true"
-              :unchecked-value="false"
-            />
-            <label
-              class="form-check-label small"
-              :class="{ 'text-danger': errors[name] }"
-            >
-              {{ consent.label }}
-
-              <a
-                v-if="consent.url"
-                :href="consent.url"
-                target="_blank"
-              >
-                <i
-                  class="bi bi-box-arrow-up-right ms-1"
-                  aria-hidden="true"
-                />
-              </a>
-            </label>
-          </LocalScope>
-        </div>
-      </VForm>
-    </template>
-
-    <div class="hr-line-solid my-3" />
-    <button
-      class="btn btn-primary w-100"
-      @click="validate"
+    <!-- ✅ STATUS BLOCK -->
+    <div
+      v-if="!isActive"
+      class="mt-2"
     >
-      {{ t('common.buy') }}
-    </button>
+      <div
+        class="alert d-flex gap-2 align-items-center mb-0 py-2 px-3 alert-light border"
+        :class="{ 'border-danger-subtle': isExpired }"
+        role="alert"
+      >
+        <i
+          class="bi flex-shrink-0"
+          :class="{ 'bi-clock text-body-secondary': isUpcoming, 'bi-x-circle text-danger': isExpired }"
+          aria-hidden="true"
+        />
+
+        <p class="mb-0 small fw-semibold">
+          <template v-if="isUpcoming">
+            {{ t('order.availability.upcoming', { date: startsAt }) }}
+          </template>
+          <template v-else>
+            {{ t('order.availability.expired', { date: endsAt }) }}
+          </template>
+        </p>
+      </div>
+    </div>
+
+    <template v-else>
+      <template v-if="consents">
+        <VForm
+          ref="formRef"
+          v-slot="{ errors }"
+        >
+          <div
+            v-for="consent in consents"
+            :key="consent.id"
+            class="form-check mb-1"
+          >
+            <LocalScope
+              v-slot="{ name }"
+              :name="`consents.${consent.id}`"
+            >
+              <VField
+                v-model="consentStore.values[consent.id]"
+                :rules="{ required: consent.required }"
+                :name="name"
+                type="checkbox"
+                class="form-check-input"
+                :value="true"
+                :unchecked-value="false"
+              />
+              <label
+                class="form-check-label small"
+                :class="{ 'text-danger': errors[name] }"
+              >
+                {{ consent.label }}
+
+                <a
+                  v-if="consent.url"
+                  :href="consent.url"
+                  target="_blank"
+                >
+                  <i
+                    class="bi bi-box-arrow-up-right ms-1"
+                    aria-hidden="true"
+                  />
+                </a>
+              </label>
+            </LocalScope>
+          </div>
+        </VForm>
+      </template>
+
+      <div class="hr-line-solid my-3" />
+      <button
+        class="btn btn-primary w-100"
+        @click="validate"
+      >
+        {{ t('common.buy') }}
+      </button>
+    </template>
   </BCard>
 </template>
 
 <script setup async lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 // local scope
 import { LocalScope } from '@allindevelopers/vue-local-scope';
@@ -98,9 +127,22 @@ import { useMoney } from '@/composables/useMoney';
 // types
 import type { Form } from 'vee-validate';
 
-const { t } = useI18n();
+const { t, d } = useI18n();
 
 const purchaseOrderStore = usePurchaseOrderStore();
+
+const { isActive, isUpcoming, isExpired } = purchaseOrderStore;
+
+const startsAt = computed(() => {
+  const { startsAt } = purchaseOrderStore;
+  return startsAt ? d(startsAt, 'iso') : t('common.unknown');
+});
+
+const endsAt = computed(() => {
+  const { endsAt } = purchaseOrderStore;
+  return endsAt ? d(endsAt, 'iso') : t('common.unknown');
+});
+
 const { purchaseOrder } = purchaseOrderStore;
 
 const { money } = useMoney(purchaseOrder?.currency);

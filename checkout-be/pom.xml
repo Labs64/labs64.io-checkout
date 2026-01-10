@@ -24,7 +24,7 @@
         <java.version>25</java.version>
         <spring-cloud.version>2025.1.0</spring-cloud.version>
         <logstash.version>9.0</logstash.version>
-        <springdoc.version>3.0.0</springdoc.version>
+        <springdoc.version>3.0.1</springdoc.version>
         <openapitools.version>0.2.8</openapitools.version>
         <mapstruct.version>1.6.3</mapstruct.version>
         <lombok.version>1.18.42</lombok.version>

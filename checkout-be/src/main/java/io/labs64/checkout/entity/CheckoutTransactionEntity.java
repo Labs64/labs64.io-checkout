@@ -95,6 +95,6 @@ public class CheckoutTransactionEntity {
     @Column(name = "updated_at", nullable = false)
     private OffsetDateTime updatedAt;
 
-    @Column(name = "closed_at", nullable = false)
+    @Column(name = "closed_at")
     private OffsetDateTime closedAt;
 }

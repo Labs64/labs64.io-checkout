@@ -1,10 +1,29 @@
 server:
   port: 8080
+  shutdown: graceful
 
-management.endpoints.web.exposure.include: health,info
-management.endpoint.health.probes.enabled: true
-management.health.livenessState.enabled: true
-management.health.readinessState.enabled: true
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: when-authorized
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
 
 logging:
   level:

@@ -59,4 +59,8 @@ export default {
       back: 'Zurück',
     },
   },
+
+  languageSwitcher: {
+    browserOption: 'Browsersprache',
+  },
 };

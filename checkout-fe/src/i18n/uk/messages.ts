@@ -60,4 +60,8 @@ export default {
       back: 'Повернутися назад',
     },
   },
+
+  languageSwitcher: {
+    browserOption: 'Мова браузера',
+  },
 };

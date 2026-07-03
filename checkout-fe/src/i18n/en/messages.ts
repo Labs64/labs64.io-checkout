@@ -59,4 +59,8 @@ export default {
       back: 'Go back',
     },
   },
+
+  languageSwitcher: {
+    browserOption: 'Based on browser',
+  },
 };

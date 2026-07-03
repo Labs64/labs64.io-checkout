@@ -5,7 +5,7 @@ import { isEmpty } from 'lodash-es';
 
 // locales
 import * as en from '@/i18n/en';
-import * as ge from '@/i18n/de';
+import * as de from '@/i18n/de';
 import * as uk from '@/i18n/uk';
 
 // storage
@@ -58,13 +58,13 @@ const i18n = createI18n<[Messages], Locales>({
   warnHtmlMessage: false,
   messages: {
     en: en.messages,
-    de: ge.messages,
+    de: de.messages,
     uk: uk.messages,
   },
 
   datetimeFormats: {
     en: en.datetimeFormats,
-    de: ge.datetimeFormats,
+    de: de.datetimeFormats,
     uk: uk.datetimeFormats,
   },
 

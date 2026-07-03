@@ -100,10 +100,11 @@ function getLanguage(loc: Locales) {
 }
 
 function onChangeLocale(loc: Locales) {
-  if (!isBrowserMode.value && loc === currentLocale.value) {
+  if (loc === currentLocale.value && !isBrowserMode.value) {
     return;
   }
 
+  // store unsecured (false) — locale is not sensitive data
   StorageService.set(LOCALE_STORAGE_KEY, loc, false);
   isBrowserMode.value = false;
   currentLocale.value = loc;

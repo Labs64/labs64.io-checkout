@@ -21,7 +21,7 @@ export function useAppHead(input?: UseHeadInput, options?: UseHeadOptions) {
 
   return useHead(
     {
-      ...defaultInput,
+      ...(defaultInput as any),
       ...input,
     },
     options,

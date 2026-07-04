@@ -12,7 +12,7 @@ Whitelabel checkout page: Vue 3 frontend + Spring Boot backend.
 
 | Path | Service | Stack | Port |
 |------|---------|-------|------|
-| `checkout-be/` | Backend | Java 25, Spring Boot 4.0.5, Maven | 8080 |
+| `checkout-be/` | Backend | Java 25, Spring Boot 4.1.0, Maven | 8080 |
 | `checkout-fe/` | Frontend | Vue 3, Vite 7, Pinia, TypeScript | 5173 (dev) |
 
 ## Critical guardrails

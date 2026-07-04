@@ -80,6 +80,13 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
+        <!-- Micrometer Prometheus registry: serves /actuator/prometheus for the
+             infrastructure-owned metrics scrape (matches auditflow). Java metrics stay on
+             Micrometer/Prometheus, never app-side OTLP — see OBSERVABILITY.md / RFC 03. -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>

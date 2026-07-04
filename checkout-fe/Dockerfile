@@ -14,20 +14,24 @@ COPY . .
 # Build the app
 RUN npm run build
 
-# Stage 2: Nginx runtime
-FROM nginx:alpine
+# Stage 2: Nginx runtime (non-root, unprivileged — runs as UID 101, listens on 8080)
+FROM nginxinc/nginx-unprivileged:1.27-alpine
 
-# Copy custom Nginx config
+# File operations need root; the base image drops back to the unprivileged user for runtime.
+USER root
+
+# Copy custom Nginx config (listens on 8080 — see nginx.conf)
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Remove default static files
+# Remove default static files and copy the built SPA
 RUN rm -rf /usr/share/nginx/html/*
-
-# Copy built files from the builder stage
 COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose HTTP port
-EXPOSE 80
+# Drop back to the non-root user for runtime
+USER 101
+
+# Expose non-privileged HTTP port
+EXPOSE 8080
 
 # Start Nginx
 CMD ["nginx", "-g", "daemon off;"]

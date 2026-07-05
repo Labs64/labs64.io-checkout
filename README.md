@@ -1,10 +1,11 @@
 <p align="center"><img src="https://raw.githubusercontent.com/Labs64/.github/refs/heads/master/assets/labs64-io-ecosystem.png"></p>
 
 # Labs64.IO :: Checkout
-## Labs64.IO - Whitelabel Checkout Page
 
 ![Docker Image Version](https://img.shields.io/docker/v/labs64/ecommerce?logo=docker&logoColor=%23E14817&color=%23E14817) - TODO
 [![📖 Documentation](https://img.shields.io/badge/📖-Documentation-AB6543.svg)](https://github.com/Labs64/labs64.io-docs)
+
+## Whitelabel Checkout Page
 
 DESCRIPTION - TODO
 

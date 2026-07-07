@@ -2,7 +2,7 @@ server:
   port: 8080
   shutdown: graceful
 
-# Trusted gateway auth-context (RFC-03, AuthContextFilter).
+# Trusted gateway auth-context (AuthContextFilter).
 # Fail-closed: non-public paths 401 without valid X-Auth-* headers from the
 # gateway. The tenant derives from X-Auth-Tenant; tenant.default is a
 # dev-only fallback for gateway-less runs (never set it in production).

@@ -16,7 +16,7 @@ import lombok.Setter;
 
 /**
  * Supplies the tenant for the current request from the trusted gateway
- * auth-context ({@code X-Auth-Tenant}, RFC-03). The explicit setter remains
+ * auth-context ({@code X-Auth-Tenant}). The explicit setter remains
  * for tests and non-web callers; when unset, the bound
  * {@link io.labs64.authcontext.UserContext} is consulted, then the dev-only
  * {@code labs64.tenant.default} fallback (for gateway-less local runs).

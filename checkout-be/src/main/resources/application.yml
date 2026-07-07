@@ -15,7 +15,7 @@ labs64:
       - /swagger-ui
       - /error
   tenant:
-    default: ""
+    default: "" # empty = no fallback (production); set a value only for gateway-less local dev
 
 # Actuator Configuration
 management:

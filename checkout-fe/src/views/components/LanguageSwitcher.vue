@@ -18,6 +18,7 @@
     <BDropdownItem
       v-for="loc in availableLocalesTyped"
       :key="`locale-${loc}`"
+      :active="!isBrowserMode && loc === currentLocale"
       class="d-flex align-items-center justify-content-between"
       @click="onChangeLocale(loc)"
     >
@@ -30,21 +31,42 @@
         <span class="text-muted text-uppercase small"> ({{ loc }}) </span>
       </div>
     </BDropdownItem>
+
+    <BDropdownDivider />
+
+    <!-- BROWSER DEFAULT OPTION -->
+    <BDropdownItem
+      :active="isBrowserMode"
+      class="d-flex align-items-center"
+      @click="onUseBrowserLocale"
+    >
+      <span class="me-2 bi bi-globe2" aria-hidden="true" />
+      <span>{{ t('languageSwitcher.browserOption') }}</span>
+    </BDropdownItem>
   </BDropdown>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
 // types
 import { type Locales, SUPPORTED_LOCALES } from '@/types/i18n';
 
-const { availableLocales, locale } = useI18n();
+// i18n
+import { LOCALE_STORAGE_KEY, detectBrowserLocale } from '@/i18n';
+
+// storage
+import StorageService from '@/services/storage';
+
+const { availableLocales, locale, t } = useI18n();
 
 const availableLocalesTyped = computed<Locales[]>(() =>
   availableLocales.filter((loc): loc is Locales => SUPPORTED_LOCALES.includes(loc as Locales)),
 );
+
+// true when no explicit locale is persisted (using browser-based detection)
+const isBrowserMode = ref(!StorageService.has(LOCALE_STORAGE_KEY));
 
 const currentLocale = computed<Locales>({
   get: () => (locale.value as Locales) ?? 'en',
@@ -78,10 +100,19 @@ function getLanguage(loc: Locales) {
 }
 
 function onChangeLocale(loc: Locales) {
-  if (loc === currentLocale.value) {
+  if (loc === currentLocale.value && !isBrowserMode.value) {
     return;
   }
 
+  // store unsecured (false) — locale is not sensitive data
+  StorageService.set(LOCALE_STORAGE_KEY, loc, false);
+  isBrowserMode.value = false;
   currentLocale.value = loc;
+}
+
+function onUseBrowserLocale() {
+  StorageService.remove(LOCALE_STORAGE_KEY);
+  isBrowserMode.value = true;
+  currentLocale.value = detectBrowserLocale();
 }
 </script>

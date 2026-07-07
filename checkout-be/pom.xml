@@ -37,6 +37,13 @@
         <maven-compiler-plugin.version>3.15.0</maven-compiler-plugin.version>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -69,9 +76,18 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Trusted gateway auth-context (RFC-03): X-Auth-* parsing, fail-closed
+             enforcement and propagation. Served by JitPack from Labs64/labs64.io-commons. -->
+        <dependency>
+            <groupId>com.github.Labs64.labs64.io-commons</groupId>
+            <artifactId>l64-auth-context-spring-boot-starter</artifactId>
+            <version>v0.1.0</version>
         </dependency>
         <!-- Micrometer Prometheus registry: serves /actuator/prometheus for the
              infrastructure-owned metrics scrape (matches auditflow). Java metrics stay on

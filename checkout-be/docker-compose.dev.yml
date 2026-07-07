@@ -49,6 +49,10 @@ services:
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
       SPRING_FLYWAY_ENABLED: true
+      # Gateway-less local run: no trusted X-Auth-* headers exist, so disable
+      # the fail-closed auth-context filter and use a fixed dev tenant.
+      LABS64_AUTHCONTEXT_ENABLED: "false"
+      LABS64_TENANT_DEFAULT: t_dev
     ports:
       - "8010:8080"
       - "5010:5005"

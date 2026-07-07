@@ -5,8 +5,10 @@ info:
   description: REST API for handling the checkout process.
 
 servers:
-  - url: /api/v1
-    description: Base path for Checkout API
+  - url: /checkout/api/v1
+    description: Via API Gateway (Traefik owns and strips the version prefix)
+  - url: /
+    description: Local Development Server (direct, root-mapped)
 
 tags:
   - name: Customer
@@ -1009,7 +1011,7 @@ components:
         - VALIDATION_ERROR  # The request payload failed validation rules.
         - CONFLICT          # Resource conflict (e.g., FK restriction, duplicate, etc.)
         - CONSENT_REQUIRED  # Consent required
-        - MISSING_TENANT_ID # Missing header "X-Tenant-Id"
+        - MISSING_TENANT_ID # No tenant in the request context (gateway X-Auth-Tenant)
       example: "NOT_FOUND"
 
     ErrorResponse:

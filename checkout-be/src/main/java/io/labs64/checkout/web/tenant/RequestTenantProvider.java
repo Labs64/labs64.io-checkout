@@ -42,10 +42,12 @@ public class RequestTenantProvider implements TenantProvider {
     @Nullable
     public String getTenantId() {
         if (tenantId != null) {
-            return tenantId;
+            return StringUtils.trimToNull(tenantId);
         }
-        return UserContextHolder.get().map(UserContext::tenantId)
-                .orElse(StringUtils.isNotBlank(defaultTenantId) ? defaultTenantId : null);
+        return UserContextHolder.get()
+                .map(UserContext::tenantId)
+                .map(StringUtils::trimToNull)
+                .orElse(StringUtils.trimToNull(defaultTenantId));
     }
 
     public String requireTenantId() {

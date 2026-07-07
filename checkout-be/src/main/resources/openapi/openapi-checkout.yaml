@@ -7,7 +7,7 @@ info:
 servers:
   - url: /checkout/api/v1
     description: Via API Gateway (Traefik owns and strips the version prefix)
-  - url: http://localhost:8080
+  - url: /
     description: Local Development Server (direct, root-mapped)
 
 tags:

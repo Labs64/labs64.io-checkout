@@ -2,6 +2,21 @@ server:
   port: 8080
   shutdown: graceful
 
+# Trusted gateway auth-context (RFC-03, l64-auth-context-spring-boot-starter).
+# Fail-closed: non-public paths 401 without valid X-Auth-* headers from the
+# gateway. The tenant derives from X-Auth-Tenant; tenant.default is a
+# dev-only fallback for gateway-less runs (never set it in production).
+labs64:
+  auth-context:
+    enabled: true
+    public-paths:
+      - /actuator
+      - /v3/api-docs
+      - /swagger-ui
+      - /error
+  tenant:
+    default: ""
+
 # Actuator Configuration
 management:
   endpoints:

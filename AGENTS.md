@@ -26,7 +26,7 @@ Whitelabel checkout page: Vue 3 frontend + Spring Boot backend.
 
 - **Package**: `io.labs64.checkout`
 - **Key services**: `PurchaseOrderService`, `CustomerService`, `CheckoutTransactionService`
-- **Multi-tenancy**: `TenantHeaderFilter` extracts tenant; `RequestTenantProvider` supplies it.
+- **Multi-tenancy**: tenant derives from the trusted gateway auth-context (`X-Auth-Tenant`, RFC-03 via `l64-auth-context-spring-boot-starter`); `RequestTenantProvider` supplies it (dev fallback: `labs64.tenant.default`).
 - **Validation**: custom validators for currency, tax rate, time range, extras.
 - **Database**: PostgreSQL. **Broker**: RabbitMQ → auditflow-be.
 

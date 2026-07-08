@@ -16,7 +16,9 @@ import io.labs64.checkout.model.CheckoutTransactionPage;
 import io.labs64.checkout.service.CheckoutTransactionService;
 import io.labs64.checkout.web.tenant.RequestTenantProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -27,6 +29,8 @@ public class CheckoutTransactionController implements CheckoutTransactionApi {
 
     @Override
     public ResponseEntity<CheckoutTransaction> getCheckoutTransaction(final UUID id) {
+        log.info("Checkout transaction get requested | id={}", id);
+
         final CheckoutTransactionEntity entity = service.get(id);
         final CheckoutTransaction response = mapper.toDto(entity);
 
@@ -37,6 +41,8 @@ public class CheckoutTransactionController implements CheckoutTransactionApi {
     public ResponseEntity<CheckoutTransactionPage> listCheckoutTransactions(final String query,
             final Pageable pageable) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Checkout transaction list requested | tenantId={}, query={}", tenantId, query);
+
         final Page<CheckoutTransactionEntity> list = service.list(tenantId, query, pageable);
         final CheckoutTransactionPage page = mapper.toPage(list);
 

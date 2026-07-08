@@ -19,7 +19,9 @@ import io.labs64.checkout.model.CustomerUpdateRequest;
 import io.labs64.checkout.service.CustomerService;
 import io.labs64.checkout.web.tenant.RequestTenantProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -31,6 +33,7 @@ public class CustomerController implements CustomerApi {
     @Override
     public ResponseEntity<Customer> getCustomer(final UUID id) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Customer get requested | tenantId={}, id={}", tenantId, id);
 
         final CustomerEntity entity = service.get(tenantId, id);
         final Customer response = mapper.toDto(entity);
@@ -41,6 +44,8 @@ public class CustomerController implements CustomerApi {
     @Override
     public ResponseEntity<CustomerPage> listCustomers(final String query, final Pageable pageable) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Customer list requested | tenantId={}, query={}", tenantId, query);
+
         final Page<CustomerEntity> list = service.list(tenantId, query, pageable);
         final CustomerPage page = mapper.toPage(list);
 
@@ -50,6 +55,8 @@ public class CustomerController implements CustomerApi {
     @Override
     public ResponseEntity<Customer> createCustomer(final CustomerCreateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Customer create requested | tenantId={}", tenantId);
+
         final CustomerEntity entity = service.create(tenantId, mapper.toEntity(request));
         final Customer response = mapper.toDto(entity);
 
@@ -59,6 +66,8 @@ public class CustomerController implements CustomerApi {
     @Override
     public ResponseEntity<Customer> updateCustomer(final UUID id, final CustomerUpdateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Customer update requested | tenantId={}, id={}", tenantId, id);
+
         final CustomerEntity entity = service.update(tenantId, id, (po) -> mapper.updateEntity(request, po));
         final Customer response = mapper.toDto(entity);
 

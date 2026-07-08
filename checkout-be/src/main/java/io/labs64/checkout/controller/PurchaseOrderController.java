@@ -29,7 +29,9 @@ import io.labs64.checkout.service.CustomerService;
 import io.labs64.checkout.service.PurchaseOrderService;
 import io.labs64.checkout.web.tenant.RequestTenantProvider;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 @Validated
 @RestController
@@ -42,6 +44,8 @@ public class PurchaseOrderController implements PurchaseOrderApi {
 
     @Override
     public ResponseEntity<PurchaseOrder> getPurchaseOrder(final UUID id) {
+        log.info("Purchase order get requested | id={}", id);
+
         final PurchaseOrderEntity entity = service.get(id);
         final PurchaseOrder response = mapper.toDto(entity);
 
@@ -51,6 +55,8 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     @Override
     public ResponseEntity<PurchaseOrderPage> listPurchaseOrders(final String query, final Pageable pageable) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Purchase order list requested | tenantId={}, query={}", tenantId, query);
+
         final Page<PurchaseOrderEntity> list = service.list(tenantId, query, pageable);
         final PurchaseOrderPage page = mapper.toPage(list);
 
@@ -60,6 +66,8 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     @Override
     public ResponseEntity<PurchaseOrder> createPurchaseOrder(final PurchaseOrderCreateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Purchase order create requested | tenantId={}, customerId={}", tenantId, request.getCustomerId());
+
         final PurchaseOrderEntity newPurchaseOrder = mapper.toEntity(request);
 
         if (request.getCustomerId() != null) {
@@ -76,6 +84,8 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     @Override
     public ResponseEntity<PurchaseOrder> updatePurchaseOrder(final UUID id, final PurchaseOrderUpdateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
+        log.info("Purchase order update requested | tenantId={}, id={}", tenantId, id);
+
         final PurchaseOrderEntity entity = service.update(tenantId, id, (po) -> mapper.updateEntity(request, po));
         final PurchaseOrder response = mapper.toDto(entity);
 
@@ -86,6 +96,9 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     public ResponseEntity<CheckoutResponse> checkoutPurchaseOrder(final UUID id, final CheckoutRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
         final String paymentMethod = request.getPaymentMethod();
+        log.info("Purchase order checkout requested | tenantId={}, id={}, paymentMethod={}", tenantId, id,
+                paymentMethod);
+
         final BillingInfo billingInfo = request.getBillingInfo();
         final ShippingInfo shippingInfo = request.getShippingInfo();
         final Map<String, Boolean> consents = request.getConsents();

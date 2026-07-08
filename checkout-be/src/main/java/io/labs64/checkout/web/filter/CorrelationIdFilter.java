@@ -1,6 +1,7 @@
 package io.labs64.checkout.web.filter;
 
 import java.io.IOException;
+import java.util.Set;
 import java.util.UUID;
 
 import org.springframework.core.Ordered;
@@ -32,11 +33,28 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
     public static final String CORRELATION_ID_HEADER = "X-Correlation-ID";
     public static final String CORRELATION_ID_MDC_KEY = "correlationId";
 
+    /** Paths that bypass correlation-ID processing (health probes, favicon). */
+    private static final Set<String> SKIP_PATHS = Set.of(
+            "/actuator/health",
+            "/actuator/health/liveness",
+            "/actuator/health/readiness",
+            "/favicon.ico"
+    );
+
     @Override
     protected void doFilterInternal(final HttpServletRequest request, final HttpServletResponse response,
             final FilterChain filterChain) throws ServletException, IOException {
+        if (SKIP_PATHS.contains(request.getRequestURI())) {
+            filterChain.doFilter(request, response);
+            return;
+        }
+
         String correlationId = request.getHeader(CORRELATION_ID_HEADER);
-        if (correlationId == null || correlationId.isBlank()) {
+
+        // Validate the incoming correlation ID: accept only safe UUID-like values
+        // (alphanumeric, hyphens, underscores, max 64 chars) to prevent log injection
+        // and header injection.
+        if (correlationId == null || correlationId.isBlank() || !isValidCorrelationId(correlationId)) {
             correlationId = UUID.randomUUID().toString();
         }
 
@@ -48,6 +66,18 @@ public class CorrelationIdFilter extends OncePerRequestFilter {
         } finally {
             MDC.remove(CORRELATION_ID_MDC_KEY);
         }
+    }
+
+    /**
+     * Validates that a correlation ID contains only safe characters.
+     * Accepts UUID format and similar alphanumeric identifiers up to 64 characters.
+     * Rejects anything that could be used for log injection (newlines, CRLF) or header injection.
+     */
+    private boolean isValidCorrelationId(final String correlationId) {
+        if (correlationId.length() > 64) {
+            return false;
+        }
+        return correlationId.matches("[a-zA-Z0-9\\-_]+");
     }
 }
 

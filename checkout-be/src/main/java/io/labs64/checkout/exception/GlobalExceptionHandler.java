@@ -36,7 +36,7 @@ public class GlobalExceptionHandler {
 
         final ErrorResponse error = buildErrorResponse(ErrorCode.VALIDATION_ERROR, message, request);
 
-        log.warn("Validation failed: {}", ex.getMessage());
+        log.warn("Validation failed: {}", ex.toString());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
                 : ex.getMessage();
         final ErrorResponse error = buildErrorResponse(ex.getErrorCode(), message, request);
 
-        log.warn("Validation failed: {}", ex.getMessage());
+        log.warn("Validation failed: {}", ex.toString());
         return ResponseEntity.status(ex.getStatus()).body(error);
     }
 
@@ -59,14 +59,14 @@ public class GlobalExceptionHandler {
 
         final ErrorResponse error = buildErrorResponse(ErrorCode.VALIDATION_ERROR, message, req);
 
-        log.warn("Constraint violation: {}", ex.getMessage());
+        log.warn("Constraint violation: {}", ex.toString());
         return ResponseEntity.badRequest().body(error);
     }
 
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResponse> handleApiException(final ApiException ex, final HttpServletRequest request) {
         final ErrorResponse error = buildErrorResponse(ex.getErrorCode(), ex.getMessage(), request);
-        log.warn("API exception: {}", ex.getMessage());
+        log.warn("API exception: {}", ex.toString());
         return ResponseEntity.status(ex.getStatus()).body(error);
     }
 

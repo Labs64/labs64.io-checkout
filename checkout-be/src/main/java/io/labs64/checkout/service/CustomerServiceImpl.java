@@ -62,7 +62,7 @@ public class CustomerServiceImpl implements CustomerService {
 
         final CustomerEntity saved = repository.save(entity);
 
-        log.debug("Create customer: {}", saved);
+        log.debug("Create customer | id={}", saved.getId());
         return saved;
     }
 
@@ -72,7 +72,7 @@ public class CustomerServiceImpl implements CustomerService {
         return repository.findByIdAndTenantId(id, tenantId).map((entity) -> {
             updater.accept(entity);
 
-            log.debug("Update customer: {}", entity);
+            log.debug("Update customer | id={}", entity.getId());
 
             return entity;
         }).orElseThrow(() -> new NotFoundException(msg.notFound(id)));
@@ -82,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Transactional
     public boolean delete(final String tenantId, final UUID id) {
         final int affected = repository.deleteByIdAndTenantId(id, tenantId);
-        log.debug("Delete customer id={} tenant={} affected={}", id, tenantId, affected);
+        log.debug("Delete customer | id={} affected={}", id, affected);
         return affected > 0;
     }
 }

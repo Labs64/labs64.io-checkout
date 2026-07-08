@@ -63,7 +63,7 @@ public class CheckoutTransactionServiceImpl implements CheckoutTransactionServic
         entity.setTenantId(tenantId);
         final CheckoutTransactionEntity saved = repository.save(entity);
 
-        log.debug("Create checkout transaction: {}", saved);
+        log.debug("Create checkout transaction | id={}", saved.getId());
         return saved;
     }
 }

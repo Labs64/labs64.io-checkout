@@ -78,7 +78,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
 
         final PurchaseOrderEntity saved = repository.save(entity);
 
-        log.debug("Create purchase order: {}", saved);
+        log.debug("Create purchase order | id={}", saved.getId());
         return saved;
     }
 
@@ -89,7 +89,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
         return repository.findByIdAndTenantId(id, tenantId).map((entity) -> {
             updater.accept(entity);
 
-            log.debug("Update purchase order: {}", entity);
+            log.debug("Update purchase order | id={}", entity.getId());
 
             return entity;
         }).orElseThrow(() -> new NotFoundException(msg.notFound(id)));
@@ -99,7 +99,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     @Transactional
     public boolean delete(final String tenantId, final UUID id) {
         final int affected = repository.deleteByIdAndTenantId(id, tenantId);
-        log.debug("Delete purchase order id={} tenant={} affected={}", id, tenantId, affected);
+        log.debug("Delete purchase order | id={} affected={}", id, affected);
         return affected > 0;
     }
 

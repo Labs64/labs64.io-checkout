@@ -55,7 +55,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     @Override
     public ResponseEntity<PurchaseOrderPage> listPurchaseOrders(final String query, final Pageable pageable) {
         final String tenantId = tenantProvider.requireTenantId();
-        log.info("Purchase order list requested | tenantId={}, query={}", tenantId, query);
+        log.info("Purchase order list requested | query={}", query);
 
         final Page<PurchaseOrderEntity> list = service.list(tenantId, query, pageable);
         final PurchaseOrderPage page = mapper.toPage(list);
@@ -66,7 +66,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     @Override
     public ResponseEntity<PurchaseOrder> createPurchaseOrder(final PurchaseOrderCreateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
-        log.info("Purchase order create requested | tenantId={}, customerId={}", tenantId, request.getCustomerId());
+        log.info("Purchase order create requested | customerId={}", request.getCustomerId());
 
         final PurchaseOrderEntity newPurchaseOrder = mapper.toEntity(request);
 
@@ -84,7 +84,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     @Override
     public ResponseEntity<PurchaseOrder> updatePurchaseOrder(final UUID id, final PurchaseOrderUpdateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
-        log.info("Purchase order update requested | tenantId={}, id={}", tenantId, id);
+        log.info("Purchase order update requested | id={}", id);
 
         final PurchaseOrderEntity entity = service.update(tenantId, id, (po) -> mapper.updateEntity(request, po));
         final PurchaseOrder response = mapper.toDto(entity);
@@ -96,7 +96,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     public ResponseEntity<CheckoutResponse> checkoutPurchaseOrder(final UUID id, final CheckoutRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
         final String paymentMethod = request.getPaymentMethod();
-        log.info("Purchase order checkout requested | tenantId={}, id={}, paymentMethod={}", tenantId, id,
+        log.info("Purchase order checkout requested | id={}, paymentMethod={}", id,
                 paymentMethod);
 
         final BillingInfo billingInfo = request.getBillingInfo();

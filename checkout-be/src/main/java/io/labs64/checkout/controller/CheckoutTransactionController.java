@@ -41,7 +41,7 @@ public class CheckoutTransactionController implements CheckoutTransactionApi {
     public ResponseEntity<CheckoutTransactionPage> listCheckoutTransactions(final String query,
             final Pageable pageable) {
         final String tenantId = tenantProvider.requireTenantId();
-        log.info("Checkout transaction list requested | tenantId={}, query={}", tenantId, query);
+        log.info("Checkout transaction list requested | query={}", query);
 
         final Page<CheckoutTransactionEntity> list = service.list(tenantId, query, pageable);
         final CheckoutTransactionPage page = mapper.toPage(list);

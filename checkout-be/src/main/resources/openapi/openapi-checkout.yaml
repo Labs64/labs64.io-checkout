@@ -5,10 +5,8 @@ info:
   description: REST API for handling the checkout process.
 
 servers:
-  - url: /checkout/api/v1
-    description: Via API Gateway (Traefik owns and strips the version prefix)
-  - url: /
-    description: Local Development Server (direct, root-mapped)
+  - url: /api/v1
+    description: Via API Gateway (Traefik strips the module prefix)
 
 tags:
   - name: Customer

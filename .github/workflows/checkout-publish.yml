@@ -1,0 +1,117 @@
+name: Labs64.IO - Checkout - Publish Docker
+
+# Publishes the Checkout component images to Docker Hub on GitHub Release:
+#   * checkout-be -> labs64/checkout       (image names match the Helm chart repositories)
+#   * checkout-fe -> labs64/checkout-ui
+#
+# Docker Hub auth uses DOCKERHUB_USERNAME / DOCKERHUB_TOKEN.
+# To also push to Artifactory later, enable the commented "Login to Artifactory"
+# steps and add the registry host to the `tags:` of each build-push step.
+
+permissions:
+  contents: read
+  packages: write
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  publish-be:
+    name: Build & Push Backend image (labs64/checkout)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+
+      # The checkout-be Dockerfile copies target/*.jar, so build the jar first.
+      # Unit/integration tests already gate merges via checkout-be-ci.yml.
+      - name: Build backend JAR
+        run: mvn -B -ntp -DskipTests package --file ./checkout-be/pom.xml
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # - name: Login to Artifactory
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ vars.ARTIFACTORY_REGISTRY }}
+      #     username: ${{ secrets.L64_PUB_CI_USERNAME }}
+      #     password: ${{ secrets.L64_PUB_CI_PASSWORD }}
+
+      - name: Get release tag name
+        id: get_release_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push backend image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./checkout-be
+          push: true
+          platforms: linux/amd64,linux/arm64/v8
+          tags: |
+            labs64/checkout:latest
+            labs64/checkout:${{ steps.get_release_tag.outputs.RELEASE_TAG }}
+          cache-from: type=gha,scope=${{ github.workflow }}-be
+          cache-to: type=gha,mode=max,scope=${{ github.workflow }}-be
+
+  publish-fe:
+    name: Build & Push UI image (labs64/checkout-ui)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      # - name: Login to Artifactory
+      #   uses: docker/login-action@v3
+      #   with:
+      #     registry: ${{ vars.ARTIFACTORY_REGISTRY }}
+      #     username: ${{ secrets.L64_PUB_CI_USERNAME }}
+      #     password: ${{ secrets.L64_PUB_CI_PASSWORD }}
+
+      - name: Get release tag name
+        id: get_release_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+
+      # The checkout-fe Dockerfile is a self-contained multi-stage build (npm build inside).
+      - name: Build and push UI image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./checkout-fe
+          push: true
+          platforms: linux/amd64,linux/arm64/v8
+          tags: |
+            labs64/checkout-ui:latest
+            labs64/checkout-ui:${{ steps.get_release_tag.outputs.RELEASE_TAG }}
+          cache-from: type=gha,scope=${{ github.workflow }}-fe
+          cache-to: type=gha,mode=max,scope=${{ github.workflow }}-fe

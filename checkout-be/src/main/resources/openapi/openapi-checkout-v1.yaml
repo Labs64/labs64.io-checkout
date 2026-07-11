@@ -1061,6 +1061,7 @@ components:
 
     ErrorResponse:
       type: object
+      additionalProperties: false
       description: Standard error response returned by the Checkout API.
       required:
         - code
@@ -1072,16 +1073,14 @@ components:
         message:
           type: string
           description: Human-readable message describing the error.
-          example: "Checkout with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
         timestamp:
           type: string
           format: date-time
           description: Time when the error occurred.
-          example: "2025-08-19T12:34:56Z"
         traceId:
           type: string
-          description: Optional trace ID for correlating logs or debugging.
-          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          nullable: true
+          description: Optional correlation/trace ID for distributed tracing.
 
     PaginatedResponse:
       type: object

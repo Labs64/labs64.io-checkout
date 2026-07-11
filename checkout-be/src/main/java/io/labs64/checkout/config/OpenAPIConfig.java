@@ -53,7 +53,7 @@ public class OpenAPIConfig {
         return openApi -> {
             try {
                 YamlPropertiesFactoryBean yaml = new YamlPropertiesFactoryBean();
-                yaml.setResources(new ClassPathResource("openapi/openapi-checkout.yaml"));
+                yaml.setResources(new ClassPathResource("openapi/openapi-checkout-v1.yaml"));
                 Properties props = yaml.getObject();
                 if (props != null) {
                     Info info = new Info();

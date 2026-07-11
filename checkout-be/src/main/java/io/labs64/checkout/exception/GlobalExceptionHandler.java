@@ -14,6 +14,7 @@ import io.labs64.checkout.model.ErrorCode;
 import io.labs64.checkout.model.ErrorResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
+import org.openapitools.jackson.nullable.JsonNullable;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -85,7 +86,7 @@ public class GlobalExceptionHandler {
         final ErrorResponse error = new ErrorResponse();
         error.setCode(code);
         error.setMessage(message);
-        error.setTraceId(traceId);
+        error.setTraceId(JsonNullable.of(traceId));
         error.setTimestamp(OffsetDateTime.now());
 
         return error;

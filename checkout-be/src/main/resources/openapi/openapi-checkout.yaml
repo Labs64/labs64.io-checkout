@@ -2,7 +2,10 @@ openapi: 3.0.0
 info:
   title: Checkout API
   version: 1.0.0
-  description: REST API for handling the checkout process.
+  description: Whitelabel checkout page — REST API for managing customers, purchase orders, and checkout transactions.
+  contact:
+    name: Labs64.IO
+    url: https://labs64.io
 
 servers:
   - url: /api/v1

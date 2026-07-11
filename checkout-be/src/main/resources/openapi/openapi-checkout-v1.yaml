@@ -2,7 +2,10 @@ openapi: 3.0.0
 info:
   title: Checkout API
   version: 1.0.0
-  description: REST API for handling the checkout process.
+  description: Whitelabel checkout page — REST API for managing customers, purchase orders, and checkout transactions.
+  contact:
+    name: Labs64.IO
+    url: https://labs64.io
 
 servers:
   - url: /api/v1
@@ -26,6 +29,10 @@ paths:
     get:
       summary: Returns a list of customers
       operationId: listCustomers
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - customer:read
       tags:
         - Customer
       description: Retrieves a paginated list of customers.
@@ -47,6 +54,10 @@ paths:
     post:
       summary: Create a new customer
       operationId: createCustomer
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - customer:write
       tags:
        - Customer
       requestBody:
@@ -73,6 +84,10 @@ paths:
     get:
       summary: Retrieve a customer by its ID
       operationId: getCustomer
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - customer:read
       tags:
         - Customer
       parameters:
@@ -98,6 +113,10 @@ paths:
     patch:
       summary: Partially update a customer
       operationId: updateCustomer
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - customer:write
       tags:
         - Customer
       parameters:
@@ -139,6 +158,10 @@ paths:
     post:
       summary: Create a new purchase order
       operationId: createPurchaseOrder
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - purchase-order:write
       tags: [ PurchaseOrder ]
       description: |
         Creates a purchase order that defines items and totals used during checkout.
@@ -166,6 +189,10 @@ paths:
     get:
       summary: Returns a list of purchase orders
       operationId: listPurchaseOrders
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - purchase-order:read
       tags: [ PurchaseOrder ]
       description: Retrieves a paginated list of purchase orders.
       x-spring-paginated: true
@@ -188,6 +215,10 @@ paths:
     get:
       summary: Retrieve a purchase order by its ID
       operationId: getPurchaseOrder
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - purchase-order:read
       tags: [ PurchaseOrder ]
       parameters:
         - name: id
@@ -213,6 +244,10 @@ paths:
     patch:
       summary: Partially update a purchase order
       operationId: updatePurchaseOrder
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - purchase-order:write
       tags: [ PurchaseOrder ]
       description: |
         Partially updates a purchase order. In V1 only "extra" can be updated.
@@ -255,6 +290,10 @@ paths:
     post:
       summary: Initiate checkout for a purchase order
       operationId: checkoutPurchaseOrder
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - purchase-order:checkout
       tags:
         - PurchaseOrder
       description: |
@@ -320,6 +359,10 @@ paths:
     get:
       summary: Returns a list of checkout transactions
       operationId: listCheckoutTransactions
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - checkout-transaction:read
       tags:
         - CheckoutTransaction
       description: Retrieves a paginated list of checkout transactions.
@@ -343,6 +386,10 @@ paths:
     get:
       summary: Retrieve a checkout transaction by its ID
       operationId: getCheckoutTransaction
+      x-labs64-auth:
+        tenant: true
+        scopes:
+          - checkout-transaction:read
       tags:
         - CheckoutTransaction
       parameters:
@@ -1014,6 +1061,7 @@ components:
 
     ErrorResponse:
       type: object
+      additionalProperties: false
       description: Standard error response returned by the Checkout API.
       required:
         - code
@@ -1025,16 +1073,14 @@ components:
         message:
           type: string
           description: Human-readable message describing the error.
-          example: "Checkout with ID '550e8400-e29b-41d4-a716-446655440000' was not found."
         timestamp:
           type: string
           format: date-time
           description: Time when the error occurred.
-          example: "2025-08-19T12:34:56Z"
         traceId:
           type: string
-          description: Optional trace ID for correlating logs or debugging.
-          example: "f47ac10b-58cc-4372-a567-0e02b2c3d479"
+          nullable: true
+          description: Optional correlation/trace ID for distributed tracing.
 
     PaginatedResponse:
       type: object

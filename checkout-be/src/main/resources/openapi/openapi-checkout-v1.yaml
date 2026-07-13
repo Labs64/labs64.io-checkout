@@ -219,6 +219,7 @@ paths:
         tenant: true
         scopes:
           - purchase-order:read
+        resource: PurchaseOrder
       tags: [ PurchaseOrder ]
       parameters:
         - name: id
@@ -248,6 +249,7 @@ paths:
         tenant: true
         scopes:
           - purchase-order:write
+        resource: PurchaseOrder
       tags: [ PurchaseOrder ]
       description: |
         Partially updates a purchase order. In V1 only "extra" can be updated.
@@ -294,6 +296,7 @@ paths:
         tenant: true
         scopes:
           - purchase-order:checkout
+        resource: PurchaseOrder
       tags:
         - PurchaseOrder
       description: |

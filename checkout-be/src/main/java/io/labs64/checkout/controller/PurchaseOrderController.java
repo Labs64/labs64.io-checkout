@@ -44,7 +44,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     private final CheckoutTransactionMapper transactionMapper;
 
     @Override
-    @Authorize(action = "readPurchaseOrder", resource = "#id", resourceType = "PurchaseOrder")
+    @Authorize(action = "getPurchaseOrder", resource = "#id", resourceType = "PurchaseOrder")
     public ResponseEntity<PurchaseOrder> getPurchaseOrder(final UUID id) {
         log.info("Purchase order get requested | id={}", id);
 

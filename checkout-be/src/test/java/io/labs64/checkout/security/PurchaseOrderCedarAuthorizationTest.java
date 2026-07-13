@@ -36,7 +36,8 @@ import io.labs64.checkout.model.CheckoutRequest;
 import io.labs64.checkout.service.PurchaseOrderService;
 
 /**
- * RFC-05 P4 fan-out: the REAL checkout domain policy set + resolver + PEP.
+ * RFC-05 P4 fan-out: the REAL checkout domain policy set (generated from
+ * OpenAPI x-labs64-auth, {@code classpath:auth-policy-domain.cedar}) + resolver + PEP.
  * The tenant-guard cases matter most here: getPurchaseOrder's lookup is not
  * tenant-scoped, so Cedar is the layer that actually blocks cross-tenant
  * reads once enforcing.
@@ -68,7 +69,7 @@ class PurchaseOrderCedarAuthorizationTest {
         properties.setEnabled(true);
         properties.setMode(mode);
         CedarAuthorizationService service = new CedarAuthorizationService(properties,
-                new ClassPathResource("cedar/domain.cedar"));
+                new ClassPathResource("auth-policy-domain.cedar"));
         return new AuthorizeInterceptor(service,
                 List.of(new PurchaseOrderCedarEntityResolver(purchaseOrderService)),
                 List.of(decisions::add));

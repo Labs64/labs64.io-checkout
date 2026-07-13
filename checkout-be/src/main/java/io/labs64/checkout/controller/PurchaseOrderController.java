@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.labs64.authcontext.cedar.Authorize;
 import io.labs64.checkout.api.PurchaseOrderApi;
 import io.labs64.checkout.entity.CheckoutTransactionEntity;
 import io.labs64.checkout.entity.CustomerEntity;
@@ -43,6 +44,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     private final CheckoutTransactionMapper transactionMapper;
 
     @Override
+    @Authorize(action = "readPurchaseOrder", resource = "#id", resourceType = "PurchaseOrder")
     public ResponseEntity<PurchaseOrder> getPurchaseOrder(final UUID id) {
         log.info("Purchase order get requested | id={}", id);
 
@@ -82,6 +84,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     }
 
     @Override
+    @Authorize(action = "updatePurchaseOrder", resource = "#id", resourceType = "PurchaseOrder")
     public ResponseEntity<PurchaseOrder> updatePurchaseOrder(final UUID id, final PurchaseOrderUpdateRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
         log.info("Purchase order update requested | id={}", id);
@@ -93,6 +96,7 @@ public class PurchaseOrderController implements PurchaseOrderApi {
     }
 
     @Override
+    @Authorize(action = "checkoutPurchaseOrder", resource = "#id", resourceType = "PurchaseOrder")
     public ResponseEntity<CheckoutResponse> checkoutPurchaseOrder(final UUID id, final CheckoutRequest request) {
         final String tenantId = tenantProvider.requireTenantId();
         final String paymentMethod = request.getPaymentMethod();

@@ -8,6 +8,14 @@ build:
 test:
     mvn clean verify
 
+# validate the domain Cedar policy set against the shared commons schema
+# (RFC-05 one-schema gate; requires: cargo install cedar-policy-cli)
+cedar-validate:
+    cedar validate \
+      --schema ../../labs64.io-commons/auth-policy-cedar/schema.cedarschema \
+      --schema-format cedar \
+      --policies src/main/resources/cedar/domain.cedar
+
 # build docker image
 docker: build
     docker build -t {{APP_NAME}}:latest .

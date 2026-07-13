@@ -7,6 +7,14 @@ server:
 # gateway. The tenant derives from X-Auth-Tenant; tenant.default is a
 # dev-only fallback for gateway-less runs (never set it in production).
 labs64:
+  auth:
+    # Cedar domain authorization (RFC-05 P4 fan-out). SHADOW evaluates + audits
+    # every decision without blocking; flip to ENFORCE only after the shadow
+    # diff is clean (deploy-time override via LABS64_CEDAR_MODE).
+    cedar:
+      enabled: ${LABS64_CEDAR_ENABLED:true}
+      mode: ${LABS64_CEDAR_MODE:SHADOW}
+      policy-location: classpath:cedar/domain.cedar
   auth-context:
     enabled: true
     public-paths:

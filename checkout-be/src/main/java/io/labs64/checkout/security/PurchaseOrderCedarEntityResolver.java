@@ -13,7 +13,7 @@ import io.labs64.checkout.service.PurchaseOrderService;
 
 /**
  * Supplies the Cedar {@code PurchaseOrder} resource for {@code @Authorize}
- * checks (RFC-05 P4). Deliberately uses the tenant-agnostic lookup: the
+ * checks. Deliberately uses the tenant-agnostic lookup: the
  * entity's REAL tenant feeds the Cedar tenant guard, which is the structural
  * backstop for handlers whose own lookup is not tenant-scoped
  * (getPurchaseOrder fetches by id only).

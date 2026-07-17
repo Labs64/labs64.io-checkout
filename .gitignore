@@ -14,21 +14,11 @@ node_modules/
 dist/
 dist-ssr/
 *.tsbuildinfo
-
-# --- Test output ---
 test-results/
 playwright-report/
 cypress/videos/
 cypress/screenshots/
 coverage/
-
-# --- Logs ---
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
 # --- Environment ---
 .env
@@ -39,23 +29,16 @@ lerna-debug.log*
 .idea/
 .vscode/
 !.vscode/extensions.json
-*.iws
 *.iml
+*.iws
 *.ipr
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
 .DS_Store
+*.swp
+*~
 
-# --- Spring Boot ---
-HELP.md
-.mvn/wrapper/maven-wrapper.jar
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings/
-.springBeans
-.sts4-cache
+# --- Logs ---
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*

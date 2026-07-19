@@ -34,9 +34,15 @@ public class PurchaseOrderResourceResolver implements ResourceResolver {
     @Override
     public ResourceEntity resolve(final String resourceType, @Nullable final Object resourceRef,
             final AuthContext context) {
+        if (resourceRef == null) {
+            return ResourceEntity.builder(resourceType, "collection")
+                    .attribute("tenant", context.tenantId())
+                    .build();
+        }
+
         final UUID id = UUID.fromString(String.valueOf(resourceRef));
         final PurchaseOrderEntity purchaseOrder = purchaseOrderService.get(id); // module 404 on miss
-        return ResourceEntity.builder("PurchaseOrder", purchaseOrder.getId().toString())
+        return ResourceEntity.builder(resourceType, purchaseOrder.getId().toString())
                 .attribute("tenant", purchaseOrder.getTenantId())
                 .build();
     }

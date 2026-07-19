@@ -14,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 
@@ -53,6 +52,9 @@ class PurchaseOrderServiceImplTest {
 
     @Mock
     private PurchaseOrderMessages msg;
+
+    @Mock
+    private io.labs64.authcontext.authorization.QueryPlanner queryPlanner;
 
     @InjectMocks
     private PurchaseOrderServiceImpl service;
@@ -140,34 +142,9 @@ class PurchaseOrderServiceImplTest {
         verify(msg).notFound(id);
     }
 
-    @Test
-    void listWithoutQuery() {
-        final String tenantId = "tenant-1";
-        final Pageable pageable = PageRequest.of(0, 10);
-        final PurchaseOrderEntity entity = new PurchaseOrderEntity();
-        final Page<PurchaseOrderEntity> page = new PageImpl<>(List.of(entity));
-
-        when(repository.findByTenantId(tenantId, pageable)).thenReturn(page);
-
-        final Page<PurchaseOrderEntity> result = service.list(tenantId, null, pageable);
-
-        assertSame(page, result);
-        verify(repository).findByTenantId(tenantId, pageable);
-    }
-
-    @Test
-    void listWithBlankQuery() {
-        final String tenantId = "tenant-1";
-        final Pageable pageable = PageRequest.of(0, 10);
-        final Page<PurchaseOrderEntity> page = Page.empty(pageable);
-
-        when(repository.findByTenantId(tenantId, pageable)).thenReturn(page);
-
-        final Page<PurchaseOrderEntity> result = service.list(tenantId, "   ", pageable);
-
-        assertSame(page, result);
-        verify(repository).findByTenantId(tenantId, pageable);
-    }
+    // The query-less (and blank-query) list path is now the Data PEP
+    // (PlanResources -> JPA Specification) — covered end-to-end by
+    // PurchaseOrderListPlanTest.
 
     @Test
     void listWithQuery() {

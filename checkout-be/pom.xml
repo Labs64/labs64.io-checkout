@@ -39,11 +39,12 @@
         <!-- OpenAPI auth preprocessor paths -->
         <openapi.source>${project.basedir}/src/main/resources/openapi/openapi-checkout-v1.yaml</openapi.source>
         <openapi.generated>${project.build.directory}/generated-openapi/openapi-checkout-v1.yaml</openapi.generated>
-        <!-- Cedar policies generated from x-labs64-auth. auth-policy.module must
-             equal the module's gateway prefix (= bundle-sources.yaml name).
-             edge → traefik; domain → @Authorize PEP. -->
-        <auth-policy-cedar.generated>${project.build.directory}/generated-resources/auth-policy.cedar</auth-policy-cedar.generated>
-        <auth-policy-cedar-domain.generated>${project.build.directory}/generated-resources/auth-policy-domain.cedar</auth-policy-cedar-domain.generated>
+        <!-- Cerbos policies + routes manifest generated from x-labs64-auth.
+             auth-policy.module must equal the module's gateway prefix
+             (= policy-sources.yaml name); it is baked into the Cerbos resource
+             kind (checkout -> checkout_api). Generated output is a build
+             artifact only — the central Cerbos PDP owns the live policy set. -->
+        <auth-policy-cerbos.output>${project.build.directory}/cerbos</auth-policy-cerbos.output>
         <auth-policy.module>checkout</auth-policy.module>
     </properties>
 
@@ -92,15 +93,13 @@
         <dependency>
             <groupId>io.labs64</groupId>
             <artifactId>auth-context-spring-boot-starter</artifactId>
-            <version>0.3.2</version>
+            <version>0.4.0</version>
         </dependency>
-        <!-- Cedar domain PDP: optional in the starter - the
-             adopting module supplies the engine (uber = bundled natives). -->
+        <!-- Data PEP (pilot): Cerbos PlanResources -> JPA Specification. -->
         <dependency>
-            <groupId>com.cedarpolicy</groupId>
-            <artifactId>cedar-java</artifactId>
-            <version>4.10.0</version>
-            <classifier>uber</classifier>
+            <groupId>io.labs64</groupId>
+            <artifactId>authz-queryplan-jpa</artifactId>
+            <version>0.4.0</version>
         </dependency>
         <!-- Micrometer Prometheus registry: serves /actuator/prometheus for the
              infrastructure-owned metrics scrape (matches auditflow). Java metrics stay on
@@ -239,10 +238,8 @@
                                 <argument>${openapi.source}</argument>
                                 <argument>--openapi-output</argument>
                                 <argument>${openapi.generated}</argument>
-                                <argument>--cedar-output</argument>
-                                <argument>${auth-policy-cedar.generated}</argument>
-                                <argument>--cedar-domain-output</argument>
-                                <argument>${auth-policy-cedar-domain.generated}</argument>
+                                <argument>--cerbos-output</argument>
+                                <argument>${auth-policy-cerbos.output}</argument>
                                 <argument>--module</argument>
                                 <argument>${auth-policy.module}</argument>
                             </arguments>

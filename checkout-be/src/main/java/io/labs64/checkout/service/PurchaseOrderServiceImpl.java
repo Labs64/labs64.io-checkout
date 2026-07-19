@@ -9,10 +9,15 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
+import io.labs64.authcontext.authorization.QueryPlan;
+import io.labs64.authcontext.authorization.QueryPlanner;
+import io.labs64.authcontext.core.AuthContextHolder;
+import io.labs64.authz.queryplan.jpa.QueryPlanSpecifications;
 import io.labs64.checkout.entity.CheckoutTransactionEntity;
 import io.labs64.checkout.entity.PurchaseOrderEntity;
 import io.labs64.checkout.exception.NotFoundException;
@@ -34,6 +39,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
     private final PurchaseOrderRepository repository;
     private final CheckoutTransactionService transactionService;
     private final PurchaseOrderMessages msg;
+    private final QueryPlanner queryPlanner;
 
     @Override
     @Transactional(readOnly = true)
@@ -66,7 +72,19 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             // TODO(RVA): implement query reader(NLQL)
             return Page.empty();
         }
-        return repository.findByTenantId(tenantId, pageable);
+        // Data PEP (pilot): ask the PDP which PurchaseOrders this
+        // principal may list, then push the answer down as a row filter.
+        final QueryPlan plan = queryPlanner.plan(AuthContextHolder.get().orElseThrow(),
+                "listPurchaseOrders", "PurchaseOrder");
+        if (plan instanceof QueryPlan.AlwaysDenied) {
+            return Page.empty();
+        }
+        final Specification<PurchaseOrderEntity> authzSpec =
+                QueryPlanSpecifications.toSpecification(plan, Map.of("tenant", "tenantId"));
+        // Defense in depth: the request tenant filter stays ANDed with the plan.
+        final Specification<PurchaseOrderEntity> spec = authzSpec.and(
+                (root, q, cb) -> cb.equal(root.get("tenantId"), tenantId));
+        return repository.findAll(spec, pageable);
     }
 
     @Override

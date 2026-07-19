@@ -36,7 +36,7 @@ import io.labs64.checkout.model.CheckoutRequest;
 import io.labs64.checkout.service.PurchaseOrderService;
 
 /**
- * RFC-07 rename migration: exercises the checkout {@link PurchaseOrderResourceResolver}
+ * rename migration: exercises the checkout {@link PurchaseOrderResourceResolver}
  * + {@link AuthorizeInterceptor} against a stub {@link AuthorizationService} that
  * mirrors the Cerbos domain-policy semantics (scope-per-action + structural
  * tenant guard). The real Cerbos client is covered by the commons

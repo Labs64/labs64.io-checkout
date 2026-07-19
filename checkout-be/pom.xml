@@ -95,7 +95,7 @@
             <artifactId>auth-context-spring-boot-starter</artifactId>
             <version>0.4.0</version>
         </dependency>
-        <!-- Data PEP (RFC-07 pilot): Cerbos PlanResources -> JPA Specification. -->
+        <!-- Data PEP (pilot): Cerbos PlanResources -> JPA Specification. -->
         <dependency>
             <groupId>io.labs64</groupId>
             <artifactId>authz-queryplan-jpa</artifactId>

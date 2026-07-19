@@ -32,7 +32,7 @@ services:
       timeout: 5s
       retries: 30
 
-  # Central authorization PDP (RFC-07). Serves the module's own generated
+  # Central authorization PDP. Serves the module's own generated
   # policy set from target/cerbos (produced by `mvn package`). HTTP :3592,
   # gRPC :3593 (the Java SDK talks gRPC).
   cerbos:

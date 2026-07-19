@@ -193,7 +193,7 @@ paths:
         tenant: true
         scopes:
           - purchase-order:read
-        # Data PEP (RFC-07 pilot): the generated PurchaseOrder domain policy
+        # Data PEP (pilot): the generated PurchaseOrder domain policy
         # backs the PlanResources row filter in PurchaseOrderServiceImpl.list.
         resource: PurchaseOrder
       tags: [ PurchaseOrder ]

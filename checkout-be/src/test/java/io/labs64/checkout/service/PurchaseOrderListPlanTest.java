@@ -29,7 +29,7 @@ import io.labs64.checkout.messages.PurchaseOrderMessages;
 import io.labs64.checkout.repository.PurchaseOrderRepository;
 
 /**
- * RFC-07 Data-PEP pilot: {@code PurchaseOrderServiceImpl.list} turns the PDP
+ * Data-PEP pilot: {@code PurchaseOrderServiceImpl.list} turns the PDP
  * PlanResources answer into a JPA row filter. A {@code Conditional} plan flows
  * to {@code repository.findAll(Specification, Pageable)}; an {@code AlwaysDenied}
  * plan short-circuits to an empty page without touching the repository

@@ -72,7 +72,7 @@ public class PurchaseOrderServiceImpl implements PurchaseOrderService {
             // TODO(RVA): implement query reader(NLQL)
             return Page.empty();
         }
-        // Data PEP (RFC-07 pilot): ask the PDP which PurchaseOrders this
+        // Data PEP (pilot): ask the PDP which PurchaseOrders this
         // principal may list, then push the answer down as a row filter.
         final QueryPlan plan = queryPlanner.plan(AuthContextHolder.get().orElseThrow(),
                 "listPurchaseOrders", "PurchaseOrder");

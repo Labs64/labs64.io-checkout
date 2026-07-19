@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.labs64.authcontext.cedar.Authorize;
+import io.labs64.authcontext.authorization.Authorize;
 import io.labs64.checkout.api.PurchaseOrderApi;
 import io.labs64.checkout.entity.CheckoutTransactionEntity;
 import io.labs64.checkout.entity.CustomerEntity;

@@ -32,11 +32,29 @@ services:
       timeout: 5s
       retries: 30
 
+  # Central authorization PDP (RFC-07). Serves the module's own generated
+  # policy set from target/cerbos (produced by `mvn package`). HTTP :3592,
+  # gRPC :3593 (the Java SDK talks gRPC).
+  cerbos:
+    image: ghcr.io/cerbos/cerbos:0.51.0
+    command: ["server"]
+    volumes:
+      - ./target/cerbos/policies:/policies:ro
+    ports:
+      - "3592:3592"
+      - "3593:3593"
+    healthcheck:
+      test: ["CMD", "/cerbos", "healthcheck", "--kind=grpc"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
   checkout-be:
     image: eclipse-temurin:25-jdk-alpine
     working_dir: /app
     environment:
       JAR_FILE: checkout-0.0.1-SNAPSHOT.jar
+      LABS64_AUTH_AUTHZ_PDPADDRESS: cerbos:3593
       JAVA_TOOL_OPTIONS: >-
         -Duser.timezone=UTC
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
@@ -60,6 +78,8 @@ services:
       postgres:
         condition: service_healthy
       rabbitmq:
+        condition: service_healthy
+      cerbos:
         condition: service_healthy
     volumes:
       - ./target:/app/target:ro

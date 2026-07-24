@@ -93,13 +93,13 @@
         <dependency>
             <groupId>io.labs64</groupId>
             <artifactId>auth-context-spring-boot-starter</artifactId>
-            <version>0.4.0</version>
+            <version>0.1.0-SNAPSHOT</version>
         </dependency>
         <!-- Data PEP (pilot): Cerbos PlanResources -> JPA Specification. -->
         <dependency>
             <groupId>io.labs64</groupId>
             <artifactId>authz-queryplan-jpa</artifactId>
-            <version>0.4.0</version>
+            <version>0.1.0-SNAPSHOT</version>
         </dependency>
         <!-- Micrometer Prometheus registry: serves /actuator/prometheus for the
              infrastructure-owned metrics scrape (matches auditflow). Java metrics stay on

@@ -66,11 +66,22 @@ jobs:
           context: ./checkout-be
           push: true
           platforms: linux/amd64,linux/arm64/v8
+          build-args: |
+            GIT_REVISION=${{ github.sha }}
           tags: |
             labs64/checkout:latest
             labs64/checkout:${{ steps.get_release_tag.outputs.RELEASE_TAG }}
           cache-from: type=gha,scope=${{ github.workflow }}-be
           cache-to: type=gha,mode=max,scope=${{ github.workflow }}-be
+
+      - name: Verify required OCI labels
+        run: |
+          docker pull labs64/checkout:latest
+          LABELS="$(docker inspect --format '{{json .Config.Labels}}' labs64/checkout:latest)"
+          for key in org.opencontainers.image.licenses org.opencontainers.image.revision org.opencontainers.image.source io.labs64.edition; do
+            echo "$LABELS" | jq -e --arg k "$key" 'has($k) and (.[$k] | length > 0)' >/dev/null \
+              || { echo "::error::missing or empty OCI label '$key' on labs64/checkout:latest"; exit 1; }
+          done
 
   publish-fe:
     name: Build & Push UI image (labs64/checkout-ui)
@@ -110,8 +121,19 @@ jobs:
           context: ./checkout-fe
           push: true
           platforms: linux/amd64,linux/arm64/v8
+          build-args: |
+            GIT_REVISION=${{ github.sha }}
           tags: |
             labs64/checkout-ui:latest
             labs64/checkout-ui:${{ steps.get_release_tag.outputs.RELEASE_TAG }}
           cache-from: type=gha,scope=${{ github.workflow }}-fe
           cache-to: type=gha,mode=max,scope=${{ github.workflow }}-fe
+
+      - name: Verify required OCI labels
+        run: |
+          docker pull labs64/checkout-ui:latest
+          LABELS="$(docker inspect --format '{{json .Config.Labels}}' labs64/checkout-ui:latest)"
+          for key in org.opencontainers.image.licenses org.opencontainers.image.revision org.opencontainers.image.source io.labs64.edition; do
+            echo "$LABELS" | jq -e --arg k "$key" 'has($k) and (.[$k] | length > 0)' >/dev/null \
+              || { echo "::error::missing or empty OCI label '$key' on labs64/checkout-ui:latest"; exit 1; }
+          done

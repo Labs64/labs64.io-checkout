@@ -6,13 +6,11 @@ on:
     paths:
       - "checkout-be/**"
       - ".github/workflows/checkout-be-ci.yml"
-      - ".github/actions/checkout-deps/**"
       - ".github/compose/**"
   pull_request:
     paths:
       - "checkout-be/**"
       - ".github/workflows/checkout-be-ci.yml"
-      - ".github/actions/checkout-deps/**"
       - ".github/compose/**"
   workflow_dispatch:
 
@@ -20,60 +18,21 @@ concurrency:
   group: checkout-be-ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   build-test:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: checkout-be
-
-    env:
-      POSTGRES_HOST: localhost
-      POSTGRES_PORT: "5432"
-      POSTGRES_DB: checkout
-      POSTGRES_USERNAME: postgres
-      POSTGRES_PASSWORD: postgres
-
-      RABBITMQ_HOST: localhost
-      RABBITMQ_PORT: "5672"
-      RABBITMQ_USERNAME: guest
-      RABBITMQ_PASSWORD: guest
-
-      SPRING_PROFILES_ACTIVE: test
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Set up Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "25"
-          cache: maven
-
-      - name: Start deps
-        uses: ./.github/actions/checkout-deps
-        with:
-          action: up
-
-      - name: Maven verify
-        run: mvn -B verify
-
-      - name: Upload test reports
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: checkout-be-test-reports
-          path: |
-            checkout-be/target/surefire-reports/**
-            checkout-be/target/failsafe-reports/**
-
-      - name: Stop deps
-        if: always()
-        uses: ./.github/actions/checkout-deps
-        with:
-          action: down
-
-
+    uses: Labs64/labs64.io-workspace/.github/workflows/java-ci.yml@master
+    with:
+      working-directory: checkout-be
+      maven-goals: verify
+      artifact-name: checkout-be-test-reports
+      # checkout-be's own application.yml defaults (POSTGRES_HOST=localhost,
+      # POSTGRES_PORT=5432, POSTGRES_DB=checkout, guest/guest RabbitMQ, ...)
+      # already match these compose services exactly, so no extra env is
+      # needed here. (The pre-migration workflow also set
+      # SPRING_PROFILES_ACTIVE=test, a profile with no matching config
+      # anywhere in the repo — dropped as a no-op.)
+      compose-file: .github/compose/checkout-deps.yml
+      compose-project: checkout

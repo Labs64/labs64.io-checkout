@@ -15,8 +15,9 @@ import io.labs64.authcontext.test.ModulePepHarness;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.request;
 
 /**
- * Item 2 (roadmap): every operation that declares {@code x-labs64-auth} in the
- * canonical spec is called without credentials and must be refused.
+ * Item 2 (roadmap): every operation protected by effective OpenAPI
+ * {@code security} or {@code x-labs64.auth} in the canonical spec is called
+ * without credentials and must be refused.
  *
  * <p>Checkout declares no public operations at all, so the whole API surface is
  * expected here — which makes the completeness guard the important assertion:

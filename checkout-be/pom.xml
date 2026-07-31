@@ -39,8 +39,7 @@
         <!-- OpenAPI auth preprocessor paths -->
         <openapi.source>${project.basedir}/src/main/resources/openapi/openapi-checkout-v1.yaml</openapi.source>
         <openapi.generated>${project.build.directory}/generated-openapi/openapi-checkout-v1.yaml</openapi.generated>
-        <!-- Cerbos policies + routes manifest generated from OpenAPI security
-             and x-labs64.auth.
+        <!-- Cerbos policies + routes manifest generated from x-labs64.auth.
              auth-policy.module must equal the module's gateway prefix
              (= policy-sources.yaml name); it is baked into the Cerbos resource
              kind (checkout -> checkout_api). Generated output is a build

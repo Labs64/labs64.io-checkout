@@ -201,7 +201,7 @@ paths:
             - purchase-order:read
           # Data PEP (pilot): the generated PurchaseOrder domain policy
           # backs the PlanResources row filter in PurchaseOrderServiceImpl.list.
-          resource: PurchaseOrder
+          resourceType: PurchaseOrder
       tags: [ PurchaseOrder ]
       description: Retrieves a paginated list of purchase orders.
       x-spring-paginated: true
@@ -229,7 +229,8 @@ paths:
           tenant: true
           scopes:
             - purchase-order:read
-          resource: PurchaseOrder
+          resourceType: PurchaseOrder
+          resource: "#id"
       tags: [ PurchaseOrder ]
       parameters:
         - name: id
@@ -260,7 +261,8 @@ paths:
           tenant: true
           scopes:
             - purchase-order:write
-          resource: PurchaseOrder
+          resourceType: PurchaseOrder
+          resource: "#id"
       tags: [ PurchaseOrder ]
       description: |
         Partially updates a purchase order. In V1 only "extra" can be updated.
@@ -308,7 +310,8 @@ paths:
           tenant: true
           scopes:
             - purchase-order:checkout
-          resource: PurchaseOrder
+          resourceType: PurchaseOrder
+          resource: "#id"
       tags:
         - PurchaseOrder
       description: |

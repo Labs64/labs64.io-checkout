@@ -1,4 +1,5 @@
 APP_NAME := "checkout"
+REGISTRY  := "localhost:5005"
 
 # build application
 build:
@@ -8,11 +9,11 @@ build:
 test:
     mvn clean verify
 
-# build docker image
+# Build Docker image and push to local registry
 docker: build
     docker build -t {{APP_NAME}}:latest .
-    docker tag {{APP_NAME}}:latest localhost:5005/{{APP_NAME}}:latest
-    docker push localhost:5005/{{APP_NAME}}:latest
+    docker tag {{APP_NAME}}:latest {{REGISTRY}}/{{APP_NAME}}:latest
+    docker push {{REGISTRY}}/{{APP_NAME}}:latest
     docker images | grep "{{APP_NAME}}"
 
 # run application

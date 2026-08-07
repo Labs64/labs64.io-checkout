@@ -1,4 +1,4 @@
-openapi: 3.0.0
+openapi: 3.1.0
 info:
   title: Checkout API
   version: 1.0.0
@@ -46,12 +46,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: A list of customers.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomerPage'
+                $ref: "#/components/schemas/CustomerPage"
     post:
       summary: Create a new customer
       operationId: createCustomer
@@ -61,26 +61,26 @@ paths:
           scopes:
             - customer:write
       tags:
-       - Customer
+        - Customer
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CustomerCreateRequest'
+              $ref: "#/components/schemas/CustomerCreateRequest"
       responses:
-        '201':
+        "201":
           description: Customer created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'
-        '400':
+                $ref: "#/components/schemas/Customer"
+        "400":
           description: Invalid request payload.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /customers/{id}:
     get:
@@ -98,21 +98,20 @@ paths:
           in: path
           required: true
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       responses:
-        '200':
+        "200":
           description: Customer found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'
-        '404':
+                $ref: "#/components/schemas/Customer"
+        "404":
           description: Customer not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
     patch:
       summary: Partially update a customer
       operationId: updateCustomer
@@ -128,34 +127,32 @@ paths:
           in: path
           required: true
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              allOf:
-                - $ref: '#/components/schemas/CustomerUpdateRequest'
+              $ref: "#/components/schemas/CustomerUpdateRequest"
       responses:
-        '200':
+        "200":
           description: Customer updated successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Customer'
-        '400':
+                $ref: "#/components/schemas/Customer"
+        "400":
           description: Invalid request payload.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Customer not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   # PURCHASE ORDER
   /purchase-orders:
@@ -167,7 +164,7 @@ paths:
           tenant: true
           scopes:
             - purchase-order:write
-      tags: [ PurchaseOrder ]
+      tags: [PurchaseOrder]
       description: |
         Creates a purchase order that defines items and totals used during checkout.
         Order line items are provided in the request; totals are computed server-side.
@@ -177,20 +174,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PurchaseOrderCreateRequest'
+              $ref: "#/components/schemas/PurchaseOrderCreateRequest"
       responses:
-        '201':
+        "201":
           description: Purchase order created successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PurchaseOrder'
-        '400':
+                $ref: "#/components/schemas/PurchaseOrder"
+        "400":
           description: Invalid request payload.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
     get:
       summary: Returns a list of purchase orders
       operationId: listPurchaseOrders
@@ -202,7 +199,7 @@ paths:
           # Data PEP (pilot): the generated PurchaseOrder domain policy
           # backs the PlanResources row filter in PurchaseOrderServiceImpl.list.
           resourceType: PurchaseOrder
-      tags: [ PurchaseOrder ]
+      tags: [PurchaseOrder]
       description: Retrieves a paginated list of purchase orders.
       x-spring-paginated: true
       parameters:
@@ -213,12 +210,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: A list of purchase orders.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PurchaseOrderPage'
+                $ref: "#/components/schemas/PurchaseOrderPage"
 
   /purchase-orders/{id}:
     get:
@@ -231,28 +228,27 @@ paths:
             - purchase-order:read
           resourceType: PurchaseOrder
           resource: "#id"
-      tags: [ PurchaseOrder ]
+      tags: [PurchaseOrder]
       parameters:
         - name: id
           in: path
           required: true
           description: UUID of the purchase order to retrieve.
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       responses:
-        '200':
+        "200":
           description: Purchase order found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PurchaseOrder'
-        '404':
+                $ref: "#/components/schemas/PurchaseOrder"
+        "404":
           description: Purchase order not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
     patch:
       summary: Partially update a purchase order
       operationId: updatePurchaseOrder
@@ -263,7 +259,7 @@ paths:
             - purchase-order:write
           resourceType: PurchaseOrder
           resource: "#id"
-      tags: [ PurchaseOrder ]
+      tags: [PurchaseOrder]
       description: |
         Partially updates a purchase order. In V1 only "extra" can be updated.
       parameters:
@@ -272,34 +268,33 @@ paths:
           required: true
           description: UUID of the purchase order to update.
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       requestBody:
         description: Fields to update in the purchase order.
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/PurchaseOrderUpdateRequest'
+              $ref: "#/components/schemas/PurchaseOrderUpdateRequest"
       responses:
-        '200':
+        "200":
           description: Purchase order updated successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PurchaseOrder'
-        '400':
+                $ref: "#/components/schemas/PurchaseOrder"
+        "400":
           description: Invalid request payload.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Purchase order not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   /purchase-orders/{id}/checkout:
     post:
@@ -321,7 +316,7 @@ paths:
         forwards the request to the configured payment service provider (PSP).
         The response contains the created checkout transaction and next-action
         instructions (e.g., a redirect URL) required to continue the payment flow.
-        
+
         If the purchase order defines required consents, the request should include 
         a consents map. The checkout service validates that all required consents are 
         accepted before creating the checkout transaction.
@@ -331,46 +326,45 @@ paths:
           required: true
           description: UUID of the purchase order to checkout.
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       requestBody:
         description: Buyer-provided details required to initiate checkout.
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CheckoutRequest'
+              $ref: "#/components/schemas/CheckoutRequest"
       responses:
-        '200':
+        "200":
           description: Checkout initiated successfully.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CheckoutResponse'
-        '400':
+                $ref: "#/components/schemas/CheckoutResponse"
+        "400":
           description: Invalid request payload.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '404':
+                $ref: "#/components/schemas/ErrorResponse"
+        "404":
           description: Purchase order not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '409':
+                $ref: "#/components/schemas/ErrorResponse"
+        "409":
           description: Purchase order is expired or not eligible for checkout.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '502':
+                $ref: "#/components/schemas/ErrorResponse"
+        "502":
           description: Upstream payment service error.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
   # CHECKOUT TRANSACTION
   /checkout-transactions:
@@ -394,12 +388,12 @@ paths:
           schema:
             type: string
       responses:
-        '200':
+        "200":
           description: A list of checkout transactions.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CheckoutTransactionPage'
+                $ref: "#/components/schemas/CheckoutTransactionPage"
 
   /checkout-transactions/{id}:
     get:
@@ -418,24 +412,27 @@ paths:
           required: true
           description: UUID of the checkout transaction to retrieve.
           schema:
-            type: string
-            format: uuid
+            $ref: "#/components/schemas/UUID"
       responses:
-        '200':
+        "200":
           description: Checkout transaction found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CheckoutTransaction'
-        '404':
+                $ref: "#/components/schemas/CheckoutTransaction"
+        "404":
           description: Checkout transaction not found.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ErrorResponse'
+                $ref: "#/components/schemas/ErrorResponse"
 
 components:
   schemas:
+    UUID:
+      type: string
+      format: uuid
+
     CustomerBase:
       type: object
       additionalProperties: false
@@ -447,7 +444,7 @@ components:
           example: "John"
         lastName:
           type: string
-          description:  The customer’s last name.
+          description: The customer’s last name.
           maxLength: 255
           example: "Doe"
         email:
@@ -462,19 +459,16 @@ components:
           maxLength: 50
           example: "+1234567890"
         billingInfo:
-          allOf:
-            - $ref: "#/components/schemas/BillingInfo"
+          $ref: "#/components/schemas/BillingInfo"
         shippingInfo:
-          allOf:
-            - $ref: "#/components/schemas/ShippingInfo"
+          $ref: "#/components/schemas/ShippingInfo"
           required:
             - city
             - country
             - address1
             - postalCode
         extra:
-          allOf:
-            - $ref: '#/components/schemas/Extra'
+          $ref: "#/components/schemas/Extra"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
 
     Customer:
@@ -483,12 +477,12 @@ components:
         Customer record used to reuse identity, contact, and address information across multiple 
         purchase orders.
       allOf:
-        - $ref: '#/components/schemas/CustomerBase'
-        - type: object
+        - $ref: "#/components/schemas/CustomerBase"
+        - title: InlineObject
+          type: object
           properties:
             id:
-              type: string
-              format: uuid
+              $ref: "#/components/schemas/UUID"
               readOnly: true
             createdAt:
               type: string
@@ -500,25 +494,29 @@ components:
               readOnly: true
 
     CustomerCreateRequest:
+      type: object
       allOf:
-        - $ref: '#/components/schemas/CustomerBase'
+        - $ref: "#/components/schemas/CustomerBase"
       required:
         - lastName
 
     CustomerUpdateRequest:
+      title: CustomerUpdateRequest
+      type: object
       allOf:
-        - $ref: '#/components/schemas/CustomerBase'
+        - $ref: "#/components/schemas/CustomerBase"
 
     CustomerPage:
       allOf:
-        - $ref: '#/components/schemas/PaginatedResponse'
-        - type: object
+        - $ref: "#/components/schemas/PaginatedResponse"
+        - title: InlineObject
+          type: object
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/Customer'
-              default: [ ]
+                $ref: "#/components/schemas/Customer"
+              default: []
           required:
             - items
 
@@ -565,12 +563,10 @@ components:
             Number of units of this item in the purchase order.
           minimum: 1
         tax:
-          allOf:
-            - $ref: '#/components/schemas/Tax'
+          $ref: "#/components/schemas/Tax"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidTaxRate"
         extra:
-          allOf:
-            - $ref: '#/components/schemas/Extra'
+          $ref: "#/components/schemas/Extra"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
       required:
         - name
@@ -583,14 +579,13 @@ components:
       x-class-extra-annotation: "@io.labs64.checkout.validation.ValidTimeRange"
       properties:
         currency:
-          allOf:
-            - $ref: '#/components/schemas/Currency'
+          $ref: "#/components/schemas/Currency"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidCurrency"
         items:
           type: array
           items:
-            $ref: '#/components/schemas/PurchaseOrderItem'
-          default: [ ]
+            $ref: "#/components/schemas/PurchaseOrderItem"
+          default: []
         consents:
           type: array
           description: >
@@ -601,7 +596,7 @@ components:
             itself does not define how consents are collected; 
             it only validates the data provided to the endpoint.
           items:
-            $ref: '#/components/schemas/ConsentDefinition'
+            $ref: "#/components/schemas/ConsentDefinition"
           example:
             - id: "terms_of_service"
               label: "I agree to the Terms of Service."
@@ -622,27 +617,25 @@ components:
           type: string
           format: date-time
         extra:
-          allOf:
-            - $ref: '#/components/schemas/Extra'
+          $ref: "#/components/schemas/Extra"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
 
     PurchaseOrder:
       description: Purchase order holding items and totals for checkout.
       x-class-extra-annotation: "@io.labs64.checkout.validation.ValidTimeRange"
       allOf:
-        - $ref: '#/components/schemas/PurchaseOrderBase'
-        - type: object
+        - $ref: "#/components/schemas/PurchaseOrderBase"
+        - title: InlineObject
+          type: object
           properties:
             id:
-              type: string
-              format: uuid
+              $ref: "#/components/schemas/UUID"
               readOnly: true
             tenantId:
               type: string
               readOnly: true
             customer:
-              allOf:
-                - $ref: '#/components/schemas/Customer'
+              $ref: "#/components/schemas/Customer"
               readOnly: true
             netAmount:
               type: integer
@@ -672,18 +665,16 @@ components:
 
     PurchaseOrderCreateRequest:
       x-class-extra-annotation: "@io.labs64.checkout.validation.ValidTimeRange"
-      allOf:
-        - $ref: '#/components/schemas/PurchaseOrderBase'
+      $ref: "#/components/schemas/PurchaseOrderBase"
       properties:
         items:
           type: array
           minItems: 1
           items:
-            $ref: '#/components/schemas/PurchaseOrderItem'
-          default: [ ]
+            $ref: "#/components/schemas/PurchaseOrderItem"
+          default: []
         customerId:
-          type: string
-          format: uuid
+          $ref: "#/components/schemas/UUID"
           description: Optional identifier of the customer associated with this purchase order.
       required:
         - currency
@@ -695,22 +686,22 @@ components:
       description: Only "extra" can be updated.
       properties:
         extra:
-          allOf:
-            - $ref: '#/components/schemas/Extra'
+          $ref: "#/components/schemas/Extra"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
       required:
         - extra
 
     PurchaseOrderPage:
       allOf:
-        - $ref: '#/components/schemas/PaginatedResponse'
-        - type: object
+        - $ref: "#/components/schemas/PaginatedResponse"
+        - title: InlineObject
+          type: object
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/PurchaseOrder'
-              default: [ ]
+                $ref: "#/components/schemas/PurchaseOrder"
+              default: []
           required:
             - items
 
@@ -830,34 +821,29 @@ components:
       type: string
       description: Represents the current state of a checkout transaction.
       enum:
-        - PENDING     # Awaiting payment confirmation or further action.
-        - FAILED      # The payment attempt failed or was declined.
-        - CANCELED    # The transaction was canceled before completion.
-        - COMPLETED   # The payment was successfully completed.
+        - PENDING # Awaiting payment confirmation or further action.
+        - FAILED # The payment attempt failed or was declined.
+        - CANCELED # The transaction was canceled before completion.
+        - COMPLETED # The payment was successfully completed.
 
     CheckoutTransaction:
       type: object
       description: Represents a checkout transaction created when the buyer submits the purchase.
       properties:
         id:
-          type: string
-          format: uuid
+          $ref: "#/components/schemas/UUID"
           readOnly: true
         status:
-          allOf:
-            - $ref: '#/components/schemas/CheckoutTransactionStatus'
+          $ref: "#/components/schemas/CheckoutTransactionStatus"
           readOnly: true
         purchaseOrder:
-          allOf:
-            - $ref: '#/components/schemas/PurchaseOrder'
+          $ref: "#/components/schemas/PurchaseOrder"
         billingInfo:
-          allOf:
-            - $ref: '#/components/schemas/BillingInfo'
+          $ref: "#/components/schemas/BillingInfo"
         shippingInfo:
-          allOf:
-            - $ref: '#/components/schemas/ShippingInfo'
+          $ref: "#/components/schemas/ShippingInfo"
         consents:
-          $ref: '#/components/schemas/ConsentsMap'
+          $ref: "#/components/schemas/ConsentsMap"
         paymentMethod:
           type: string
           description: Code of the selected payment method (e.g., STRIPE).
@@ -877,14 +863,15 @@ components:
 
     CheckoutTransactionPage:
       allOf:
-        - $ref: '#/components/schemas/PaginatedResponse'
-        - type: object
+        - $ref: "#/components/schemas/PaginatedResponse"
+        - title: InlineObject
+          type: object
           properties:
             items:
               type: array
               items:
-                $ref: '#/components/schemas/CheckoutTransaction'
-              default: [ ]
+                $ref: "#/components/schemas/CheckoutTransaction"
+              default: []
           required:
             - items
 
@@ -893,13 +880,11 @@ components:
       description: Payload submitted to initiate checkout for a purchase order.
       properties:
         billingInfo:
-          allOf:
-            - $ref: '#/components/schemas/BillingInfo'
+          $ref: "#/components/schemas/BillingInfo"
           required:
             - lastName
         shippingInfo:
-          allOf:
-            - $ref: '#/components/schemas/ShippingInfo'
+          $ref: "#/components/schemas/ShippingInfo"
           required:
             - lastName
             - city
@@ -908,14 +893,13 @@ components:
             - postalCode
         consents:
           anyOf:
-            - $ref: '#/components/schemas/ConsentsMap'
+            - $ref: "#/components/schemas/ConsentsMap"
         paymentMethod:
           type: string
           description: Code of the selected payment service/provider (e.g., STRIPE).
           example: "STRIPE"
         extra:
-          allOf:
-            - $ref: '#/components/schemas/Extra'
+          $ref: "#/components/schemas/Extra"
           x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
       required:
         - paymentMethod
@@ -925,9 +909,9 @@ components:
       description: Result of initiating checkout, including the created transaction and next-action instructions.
       properties:
         transaction:
-          $ref: '#/components/schemas/CheckoutTransaction'
+          $ref: "#/components/schemas/CheckoutTransaction"
         nextAction:
-          $ref: '#/components/schemas/CheckoutNextAction'
+          $ref: "#/components/schemas/CheckoutNextAction"
       required:
         - transaction
         - nextAction
@@ -939,7 +923,7 @@ components:
         type:
           type: string
           description: Next action that the client must perform.
-          enum: [ REDIRECT, NONE ]
+          enum: [REDIRECT, NONE]
           example: REDIRECT
         redirectUrl:
           type: string
@@ -956,7 +940,7 @@ components:
     Currency:
       type: string
       description: ISO-4217 currency code (3 uppercase letters).
-      pattern: '^[A-Z]{3}$'
+      pattern: "^[A-Z]{3}$"
       example: USD
 
     TaxRateType:
@@ -982,8 +966,7 @@ components:
           example: "S"
         rateType:
           description: Type of rate calculation (percentage of price or fixed amount per unit)
-          allOf:
-            - $ref : '#/components/schemas/TaxRateType'
+          $ref: "#/components/schemas/TaxRateType"
           default: PERCENTAGE
         rate:
           type: number
@@ -1071,11 +1054,11 @@ components:
       type: string
       description: Unique error code identifying the type of error.
       enum:
-        - NOT_FOUND         # The requested resource was not found.
-        - INTERNAL_ERROR    # An unexpected server-side error occurred.
-        - VALIDATION_ERROR  # The request payload failed validation rules.
-        - CONFLICT          # Resource conflict (e.g., FK restriction, duplicate, etc.)
-        - CONSENT_REQUIRED  # Consent required
+        - NOT_FOUND # The requested resource was not found.
+        - INTERNAL_ERROR # An unexpected server-side error occurred.
+        - VALIDATION_ERROR # The request payload failed validation rules.
+        - CONFLICT # Resource conflict (e.g., FK restriction, duplicate, etc.)
+        - CONSENT_REQUIRED # Consent required
         - MISSING_TENANT_ID # No tenant in the request context (gateway X-Auth-Tenant)
       example: "NOT_FOUND"
 
@@ -1089,7 +1072,7 @@ components:
         - timestamp
       properties:
         code:
-          $ref: '#/components/schemas/ErrorCode'
+          $ref: "#/components/schemas/ErrorCode"
         message:
           type: string
           description: Human-readable message describing the error.

@@ -86,7 +86,7 @@ public class GlobalExceptionHandler {
         final ErrorResponse error = new ErrorResponse();
         error.setCode(code);
         error.setMessage(message);
-        error.setTraceId(JsonNullable.of(traceId));
+        error.setTraceId(traceId);
         error.setTimestamp(OffsetDateTime.now());
 
         return error;

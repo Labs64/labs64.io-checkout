@@ -14,14 +14,14 @@ export function useAppHead(input?: UseHeadInput, options?: UseHeadOptions) {
 
   const { locale } = useI18n();
 
-  const defaultInput = {
+  const defaultInput: UseHeadInput = {
     link: [{ rel: 'icon', href: favicon, sizes: 'any' }],
     htmlAttrs: { lang: locale },
   };
 
   return useHead(
     {
-      ...(defaultInput as any),
+      ...defaultInput,
       ...input,
     },
     options,

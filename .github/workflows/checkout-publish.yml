@@ -37,3 +37,19 @@ jobs:
       mode: release
       version: ${{ github.event.release.tag_name }}
     secrets: inherit
+
+  # Opens a PR in labs64.io-helm-charts pinning both digests into charts/checkout.
+  # Both images are required: the chart has a single appVersion, so pinning one
+  # without the other would deploy a pair that no release validated.
+  propagate-to-chart:
+    name: Pin digests in charts/checkout
+    needs: [publish-be, publish-fe]
+    uses: Labs64/labs64.io-workspace/.github/workflows/chart-update-dispatch.yml@master
+    with:
+      chart: checkout
+      version: ${{ github.event.release.tag_name }}
+      images: |
+        ${{ needs.publish-be.outputs.image-ref }}
+        ${{ needs.publish-fe.outputs.image-ref }}
+    secrets:
+      CHART_DISPATCH_TOKEN: ${{ secrets.CHART_DISPATCH_TOKEN }}

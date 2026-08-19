@@ -2,9 +2,9 @@
 
 # Labs64.IO :: Checkout
 
-[![Docker Image Version](https://img.shields.io/docker/v/labs64/checkout?logo=docker&logoColor=%23E14817&color=%23E14817)](https://hub.docker.com/r/labs64/checkout)
-[![Docker Image Version (UI)](https://img.shields.io/docker/v/labs64/checkout-ui?logo=docker&logoColor=%23E14817&color=%23E14817)](https://hub.docker.com/r/labs64/checkout-ui)
-[![Helm Chart](https://img.shields.io/badge/Helm%20Chart-checkout-0F1689?logo=helm)](https://artifacthub.io/packages/helm/labs64io-helm-charts/checkout)
+[![Docker Image Version](https://img.shields.io/docker/v/labs64/checkout?logo=docker&logoColor=white&color=1C90ED)](https://hub.docker.com/r/labs64/checkout)
+[![Docker Image Version (UI)](https://img.shields.io/docker/v/labs64/checkout-ui?logo=docker&logoColor=white&color=1C90ED)](https://hub.docker.com/r/labs64/checkout-ui)
+[![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/labs64io-helm-charts)](https://artifacthub.io/packages/helm/labs64io-helm-charts/checkout)
 [![📖 Documentation](https://img.shields.io/badge/📖-Documentation-AB6543.svg)](https://github.com/Labs64/labs64.io-docs)
 
 ## Whitelabel Checkout Page

@@ -21,7 +21,7 @@ jobs:
       mode: release
       version: ${{ github.event.release.tag_name }}
       # The checkout-be Dockerfile copies target/*.jar, so build the jar first.
-      # Unit/integration tests already gate merges via checkout-be-ci.yml.
+      # Unit/integration tests already gate merges via labs64io-be-ci.yml.
       build-command: mvn -B -ntp -DskipTests package --file ./checkout-be/pom.xml
       java-version: "25"
     secrets: inherit

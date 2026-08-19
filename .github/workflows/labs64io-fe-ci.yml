@@ -6,14 +6,14 @@ on:
     paths:
       - "checkout-fe/**"
       - "checkout-be/**"
-      - ".github/workflows/checkout-fe-ci.yml"
+      - ".github/workflows/labs64io-fe-ci.yml"
       - ".github/actions/checkout-deps/**"
       - ".github/compose/**"
   pull_request:
     paths:
       - "checkout-fe/**"
       - "checkout-be/**"
-      - ".github/workflows/checkout-fe-ci.yml"
+      - ".github/workflows/labs64io-fe-ci.yml"
       - ".github/actions/checkout-deps/**"
       - ".github/compose/**"
   workflow_dispatch:

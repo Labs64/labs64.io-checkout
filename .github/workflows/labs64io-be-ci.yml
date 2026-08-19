@@ -5,12 +5,12 @@ on:
     branches: [ "master" ]
     paths:
       - "checkout-be/**"
-      - ".github/workflows/checkout-be-ci.yml"
+      - ".github/workflows/labs64io-be-ci.yml"
       - ".github/compose/**"
   pull_request:
     paths:
       - "checkout-be/**"
-      - ".github/workflows/checkout-be-ci.yml"
+      - ".github/workflows/labs64io-be-ci.yml"
       - ".github/compose/**"
   workflow_dispatch:
 

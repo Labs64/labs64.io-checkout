@@ -30,7 +30,7 @@ The repository ships two services:
 - Multi-tenant: tenant is derived from the trusted gateway auth-context (`X-Auth-Tenant`).
 - Currency, tax-rate, time-range and extras validation.
 - i18n-ready UI (`vue-i18n`) with runtime config injected via a mounted `env.json` ConfigMap.
-- OpenAPI-first backend — the contract at `checkout-be/src/main/resources/openapi/openapi-checkout.yaml` is the source of truth.
+- OpenAPI-first backend — the contract at `checkout-be/src/main/resources/openapi/openapi-checkout-v1.yaml` is the source of truth.
 
 For the full developer guide (build/run/test, where to make changes), see [`AGENTS.md`](AGENTS.md).
 

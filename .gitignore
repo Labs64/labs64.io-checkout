@@ -29,6 +29,7 @@ coverage/
 .idea/
 .vscode/
 !.vscode/extensions.json
+.claude/
 *.iml
 *.iws
 *.ipr

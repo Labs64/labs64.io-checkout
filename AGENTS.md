@@ -17,7 +17,7 @@ Whitelabel checkout page: Vue 3 frontend + Spring Boot backend.
 
 ## Critical guardrails
 
-1. **OpenAPI-first**: canonical spec at `checkout-be/src/main/resources/openapi/openapi-checkout.yaml`.
+1. **OpenAPI-first**: canonical spec at `checkout-be/src/main/resources/openapi/openapi-checkout-v1.yaml`.
 2. **Never edit generated Java** under `target/`.
 3. **Never hardcode credentials** — env vars or K8s Secrets only.
 4. **Preserve `l64user`** (uid/gid 1064) in Dockerfiles.
@@ -61,7 +61,7 @@ Local URLs: Swagger `:8080/swagger-ui.html`, frontend `:5173`.
 
 | Goal | Where |
 |------|-------|
-| API contract | `checkout-be/src/main/resources/openapi/openapi-checkout.yaml` |
+| API contract | `checkout-be/src/main/resources/openapi/openapi-checkout-v1.yaml` |
 | Backend service | `checkout-be/src/main/java/io/labs64/checkout/service/` |
 | REST controller | `checkout-be/src/main/java/io/labs64/checkout/controller/` |
 | Custom validator | `checkout-be/src/main/java/io/labs64/checkout/validation/` |

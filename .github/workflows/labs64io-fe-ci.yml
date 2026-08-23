@@ -155,3 +155,18 @@ jobs:
         uses: ./.github/actions/checkout-deps
         with:
           action: down
+
+  # Edge image — pushed to Docker Hub as :edge after a green master build, gated on
+  # the Playwright run above as well as the unit build: this workflow's green means
+  # both. The checkout-fe Dockerfile is a self-contained multi-stage build (npm
+  # build inside), so no build-command is needed.
+  edge-image:
+    name: Edge image (labs64/checkout-ui)
+    needs: [build-test, e2e-playwright]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@master
+    with:
+      image: labs64/checkout-ui
+      context: ./checkout-fe
+      mode: edge
+    secrets: inherit

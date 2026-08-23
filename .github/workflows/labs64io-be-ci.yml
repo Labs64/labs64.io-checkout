@@ -39,3 +39,20 @@ jobs:
       # anywhere in the repo — dropped as a no-op.)
       compose-file: .github/compose/checkout-deps.yml
       compose-project: checkout
+  # Edge image — pushed to Docker Hub as :edge after a green master build. Checkout
+  # has never had a published release image, so before this job the only way to
+  # deploy it anywhere was to build it from source; labs64.io-tests' nightly
+  # regression now deploys this image instead.
+  edge-image:
+    name: Edge image (labs64/checkout)
+    needs: build-test
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@master
+    with:
+      image: labs64/checkout
+      context: ./checkout-be
+      # The checkout-be Dockerfile copies target/*.jar, so build the jar first.
+      mode: edge
+      build-command: mvn -B -ntp -DskipTests package --file ./checkout-be/pom.xml
+      java-version: "25"
+    secrets: inherit

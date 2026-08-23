@@ -2,6 +2,11 @@
 Documentation    Checkout smoke checks — fast critical-path validation via the API edge.
 Resource         ../../../labs64.io-tests/resources/checkout.resource
 Suite Teardown   Delete All Sessions
+# not-ga: the labs64/checkout and labs64/checkout-ui images have never been
+# published, so charts/labs64io-ecosystem defaults checkout.enabled to false and
+# no environment ever serves this module — see labs64.io-helm-charts/charts/
+# labs64io-ecosystem/values.yaml. Drop this tag the same day that flips.
+Test Tags        not-ga
 
 *** Test Cases ***
 Allow read-scoped access to customers (200)

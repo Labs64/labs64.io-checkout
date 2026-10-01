@@ -156,6 +156,7 @@ class PurchaseOrderMapperTest {
         final PurchaseOrder dto = mapper.toDto(entity);
 
         assertNotNull(dto);
+        assertEquals("https://labs64.io/schemas/checkout/PurchaseOrder/1.0.0.json", dto.get$Schema().toString());
 
         assertEquals(entity.getCurrency(), dto.getCurrency());
         assertEquals(entity.getStartsAt(), dto.getStartsAt());

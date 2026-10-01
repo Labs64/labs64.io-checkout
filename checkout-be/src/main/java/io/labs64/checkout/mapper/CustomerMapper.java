@@ -23,6 +23,8 @@ public interface CustomerMapper {
     @Mapping(target = "updatedAt", ignore = true)
     CustomerEntity toEntity(CustomerCreateRequest source);
 
+    @Mapping(target = "$schema", ignore = true)
+    @Mapping(target = "$Schema", ignore = true)
     Customer toDto(CustomerEntity entity);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

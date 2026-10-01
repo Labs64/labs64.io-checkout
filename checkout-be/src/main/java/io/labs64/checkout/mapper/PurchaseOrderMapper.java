@@ -32,6 +32,8 @@ public interface PurchaseOrderMapper {
     @Mapping(target = "netAmount", ignore = true)
     @Mapping(target = "grossAmount", ignore = true)
     @Mapping(target = "taxAmount", ignore = true)
+    @Mapping(target = "$schema", ignore = true)
+    @Mapping(target = "$Schema", ignore = true)
     PurchaseOrder toDto(PurchaseOrderEntity source);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)

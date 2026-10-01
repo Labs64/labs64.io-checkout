@@ -476,6 +476,16 @@ components:
       description: >
         Customer record used to reuse identity, contact, and address information across multiple 
         purchase orders.
+      required:
+        - $schema
+      properties:
+        $schema:
+          type: string
+          format: uri
+          description: Canonical URI of the immutable JSON Schema contract for this customer representation.
+          readOnly: true
+          const: "https://labs64.io/schemas/checkout/Customer/1.0.0.json"
+          default: "https://labs64.io/schemas/checkout/Customer/1.0.0.json"
       allOf:
         - $ref: "#/components/schemas/CustomerBase"
         - title: InlineObject
@@ -492,6 +502,10 @@ components:
               type: string
               format: date-time
               readOnly: true
+      x-labs64:
+        schema:
+          object: Customer
+          version: "1.0.0"
 
     CustomerCreateRequest:
       type: object
@@ -621,8 +635,17 @@ components:
           x-extra-annotation: "@io.labs64.checkout.validation.ValidExtra"
 
     PurchaseOrder:
+      type: object
       description: Purchase order holding items and totals for checkout.
       x-class-extra-annotation: "@io.labs64.checkout.validation.ValidTimeRange"
+      properties:
+        $schema:
+          type: string
+          format: uri
+          description: Canonical URI of the immutable JSON Schema contract for this purchase order representation.
+          readOnly: true
+          const: "https://labs64.io/schemas/checkout/PurchaseOrder/1.0.0.json"
+          default: "https://labs64.io/schemas/checkout/PurchaseOrder/1.0.0.json"
       allOf:
         - $ref: "#/components/schemas/PurchaseOrderBase"
         - title: InlineObject
@@ -661,7 +684,12 @@ components:
               format: date-time
               readOnly: true
       required:
+        - $schema
         - currency
+      x-labs64:
+        schema:
+          object: PurchaseOrder
+          version: "1.0.0"
 
     PurchaseOrderCreateRequest:
       x-class-extra-annotation: "@io.labs64.checkout.validation.ValidTimeRange"
@@ -829,7 +857,16 @@ components:
     CheckoutTransaction:
       type: object
       description: Represents a checkout transaction created when the buyer submits the purchase.
+      required:
+        - $schema
       properties:
+        $schema:
+          type: string
+          format: uri
+          description: Canonical URI of the immutable JSON Schema contract for this checkout transaction representation.
+          readOnly: true
+          const: "https://labs64.io/schemas/checkout/CheckoutTransaction/1.0.0.json"
+          default: "https://labs64.io/schemas/checkout/CheckoutTransaction/1.0.0.json"
         id:
           $ref: "#/components/schemas/UUID"
           readOnly: true
@@ -860,6 +897,10 @@ components:
           type: string
           format: date-time
           readOnly: true
+      x-labs64:
+        schema:
+          object: CheckoutTransaction
+          version: "1.0.0"
 
     CheckoutTransactionPage:
       allOf:

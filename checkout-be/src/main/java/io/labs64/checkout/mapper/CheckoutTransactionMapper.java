@@ -12,6 +12,8 @@ import io.labs64.checkout.model.CheckoutTransactionPage;
 
 @Mapper(config = MapperConfigBase.class, uses = { PurchaseOrderMapper.class })
 public interface CheckoutTransactionMapper {
+    @Mapping(target = "$schema", ignore = true)
+    @Mapping(target = "$Schema", ignore = true)
     CheckoutTransaction toDto(CheckoutTransactionEntity source);
 
     @Mapping(target = "sort", ignore = true)

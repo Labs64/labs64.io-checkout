@@ -148,6 +148,7 @@ class CustomerMapperTest {
         final Customer dto = mapper.toDto(entity);
 
         assertNotNull(dto);
+        assertEquals("https://labs64.io/schemas/checkout/Customer/1.0.0.json", dto.get$Schema().toString());
 
         assertEquals(entity.getFirstName(), dto.getFirstName());
         assertEquals(entity.getLastName(), dto.getLastName());

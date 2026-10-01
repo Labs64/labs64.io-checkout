@@ -65,6 +65,8 @@ class CheckoutTransactionMapperTest {
         final CheckoutTransaction dto = mapper.toDto(entity);
 
         assertThat(dto).isNotNull();
+        assertThat(dto.get$Schema().toString())
+                .isEqualTo("https://labs64.io/schemas/checkout/CheckoutTransaction/1.0.0.json");
         assertThat(dto.getId()).isEqualTo(id);
         assertThat(dto.getStatus()).isEqualTo(status);
         assertThat(dto.getPurchaseOrder()).isSameAs(purchaseOrderDto);

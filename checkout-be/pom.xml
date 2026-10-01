@@ -49,9 +49,12 @@
         <spotless-maven-plugin.version>3.1.0</spotless-maven-plugin.version>
         <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <exec-maven-plugin.version>3.6.3</exec-maven-plugin.version>
+        <openapi-schema-generator.version>0.1.0-SNAPSHOT</openapi-schema-generator.version>
         <!-- OpenAPI auth preprocessor paths -->
         <openapi.source>${project.basedir}/src/main/resources/openapi/openapi-checkout-v1.yaml</openapi.source>
         <openapi.generated>${project.build.directory}/generated-openapi/openapi-checkout-v1.yaml</openapi.generated>
+        <openapi.output>${project.build.directory}/generated-sources/openapi</openapi.output>
+        <contract-schema.input>${openapi.source}</contract-schema.input>
         <!-- Cerbos policies + routes manifest generated from x-labs64.auth.
              auth-policy.module must equal the module's gateway prefix
              (= policy-sources.yaml name); it is baked into the Cerbos resource
@@ -283,7 +286,7 @@
                         <configuration>
                             <inputSpec>${openapi.generated}</inputSpec>
                             <generatorName>spring</generatorName>
-                            <output>${project.build.directory}/generated-sources</output>
+                            <output>${openapi.output}</output>
                             <apiPackage>io.labs64.checkout.api</apiPackage>
                             <modelPackage>io.labs64.checkout.model</modelPackage>
                             <generateSupportingFiles>true</generateSupportingFiles>
@@ -314,7 +317,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${project.build.directory}/generated-sources</source>
+                                <source>${openapi.output}/src/main/java</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -364,4 +367,63 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>contract-schemas</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>exec-maven-plugin</artifactId>
+                        <version>${exec-maven-plugin.version}</version>
+                        <dependencies>
+                            <dependency>
+                                <groupId>io.labs64</groupId>
+                                <artifactId>openapi-schema-generator</artifactId>
+                                <version>${openapi-schema-generator.version}</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <execution>
+                                <id>generate-contract-schemas</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>io.labs64.contract.schema.OpenApiSchemaGeneratorCli</mainClass>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <includeProjectDependencies>false</includeProjectDependencies>
+                                    <arguments>
+                                        <argument>--input</argument>
+                                        <argument>${contract-schema.input}</argument>
+                                        <argument>--output-root</argument>
+                                        <argument>${contract-schema.output-root}</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>dry-run-contract-schemas</id>
+                                <goals>
+                                    <goal>java</goal>
+                                </goals>
+                                <configuration>
+                                    <mainClass>io.labs64.contract.schema.OpenApiSchemaGeneratorCli</mainClass>
+                                    <includePluginDependencies>true</includePluginDependencies>
+                                    <includeProjectDependencies>false</includeProjectDependencies>
+                                    <arguments>
+                                        <argument>--input</argument>
+                                        <argument>${contract-schema.input}</argument>
+                                        <argument>--output-root</argument>
+                                        <argument>${contract-schema.output-root}</argument>
+                                        <argument>--dry-run</argument>
+                                    </arguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

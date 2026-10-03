@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:24-bookworm-slim AS builder
+FROM node:26-bookworm-slim AS builder
 
 # Set working directory
 WORKDIR /app
@@ -15,7 +15,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2: Nginx runtime (non-root, unprivileged — runs as UID 101, listens on 8080)
-FROM nginxinc/nginx-unprivileged:1.30-alpine-slim
+FROM nginxinc/nginx-unprivileged:1.31-alpine-slim
 
 ARG GIT_REVISION=unknown
 

@@ -23,12 +23,12 @@
         <!-- DEPENDENCIES -->
         <java.version>25</java.version>
         <protobuf-java.version>4.36.2</protobuf-java.version>
-        <spring-cloud.version>2025.1.3</spring-cloud.version>
         <logstash.version>9.0</logstash.version>
         <springdoc.version>3.1.1</springdoc.version>
         <openapitools.version>0.2.12</openapitools.version>
         <mapstruct.version>1.7.0.Beta2</mapstruct.version>
         <lombok.version>1.18.48</lombok.version>
+        <netty.version>4.2.18.Final</netty.version>
         <!-- Jackson is NOT pinned here on purpose. Spring Boot's BOM manages the Jackson 3
              line (jackson-bom) and the Jackson 2 annotations line (jackson-2-bom) as a
              coordinated pair. Overriding tools.jackson.core:jackson-databind alone to 3.2.1
@@ -38,6 +38,13 @@
              died with NoClassDefFoundError and blocked the whole Helm release. To move ahead
              of Boot's Jackson, import tools.jackson:jackson-bom (which bumps both) rather
              than pinning a single artifact. -->
+        <!-- Security overrides ahead of Spring Boot 4.1.1's BOM (Boot 4.1.2 is expected to absorb
+             them; drop these properties then). Keep the pairs in step with the Jackson note above:
+             stay on the same Jackson minor line Boot ships (3.1.x with 2.21.x). Fixes: Tomcat
+             CVE-2026-65905/65182/68525, Jackson CVE-2026-89425/89407/91777/91776/68497. -->
+        <jackson-bom.version>3.1.7</jackson-bom.version>
+        <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
+        <tomcat.version>11.0.26</tomcat.version>
         <auth-context.version>0.1.0-SNAPSHOT</auth-context.version>
         <authz-queryplan.version>0.1.0-SNAPSHOT</authz-queryplan.version>
         <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
@@ -46,7 +53,6 @@
         <openapi-generator-maven-plugin.version>7.25.0</openapi-generator-maven-plugin.version>
         <build-helper-maven-plugin.version>3.6.2</build-helper-maven-plugin.version>
         <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
-        <spotless-maven-plugin.version>3.1.0</spotless-maven-plugin.version>
         <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
         <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
         <openapi-schema-generator.version>0.1.0-SNAPSHOT</openapi-schema-generator.version>
@@ -64,23 +70,11 @@
         <auth-policy.module>checkout</auth-policy.module>
     </properties>
 
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>${spring-cloud.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
-
     <dependencies>
         <!-- No in-app OpenTelemetry SDK on the classpath (guardrail #4). Tracing and
              log-trace correlation are infrastructure-owned: the bundled OTel Java Agent
              (activated via JAVA_TOOL_OPTIONS when observability.enabled) auto-instruments
-             HTTP/AMQP and injects trace_id/span_id into the logback MDC. Metrics stay on
+             HTTP/JDBC and injects trace_id/span_id into the logback MDC. Metrics stay on
              Micrometer + /actuator/prometheus (see micrometer-registry-prometheus below).
              Matches the auditflow reference — see OBSERVABILITY.md / RFC 03. -->
         <!-- Spring Boot Starter -->
@@ -155,12 +149,6 @@
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-        </dependency>
-
-        <!-- Spring Cloud SDK -->
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-stream-rabbit</artifactId>
         </dependency>
 
         <!-- Lombok (optional, for reducing boilerplate code) -->

@@ -1,6 +1,6 @@
 services:
   checkout-fe:
-    image: node:24-bookworm-slim
+    image: node:26-bookworm-slim
     working_dir: /app
     volumes:
       - .:/app

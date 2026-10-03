@@ -32,7 +32,7 @@ jobs:
       maven-goals: verify
       artifact-name: checkout-be-test-reports
       # checkout-be's own application.yml defaults (POSTGRES_HOST=localhost,
-      # POSTGRES_PORT=5432, POSTGRES_DB=checkout, guest/guest RabbitMQ, ...)
+      # POSTGRES_PORT=5432, POSTGRES_DB=checkout, ...)
       # already match these compose services exactly, so no extra env is
       # needed here. (The pre-migration workflow also set
       # SPRING_PROFILES_ACTIVE=test, a profile with no matching config

@@ -58,45 +58,15 @@ management:
 logging:
   level:
     io.labs64: DEBUG
-    org.springframework.cloud.stream: INFO
 
 spring:
   application:
     name: labs64.io-checkout
 
-  cloud:
-    stream:
-      bindings:
-        checkout-out-0:
-          destination: labs64-audit-topic
-          binder: rabbit
-          content-type: application/json
-        checkout-in-0:
-          destination: labs64-audit-topic
-          binder: rabbit
-          content-type: application/json
-      binders:
-        rabbit:
-          type: rabbit
-      rabbit:
-        bindings:
-          checkout-out-0:
-            producer:
-              exchangeType: topic
-          checkout-in-0:
-            consumer:
-              autoBindDlq: true
-
   messages:
     basename: messages
     fallback-to-system-locale: false
     encoding: UTF-8
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
 
   datasource:
     url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:checkout}?timeZone=UTC

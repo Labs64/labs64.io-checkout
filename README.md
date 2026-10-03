@@ -15,8 +15,8 @@
 Embeddable, brandable checkout for the Labs64.IO ecosystem. It turns a purchase
 order into a completed transaction — collecting customer details, applying tax and
 currency rules, and driving the payment through the [Payment Gateway](https://github.com/Labs64/labs64.io-payment-gateway).
-Order events are published to RabbitMQ and consumed by [AuditFlow](https://github.com/Labs64/labs64.io-auditflow)
-for compliance logging.
+Checkout needs no message broker. Delivery of order events to [AuditFlow](https://github.com/Labs64/labs64.io-auditflow)
+for compliance logging is not implemented yet; it will use AuditFlow's HTTP API, as the Payment Gateway does.
 
 The repository ships two services:
 

@@ -58,7 +58,7 @@ dev-logs:
       logs -f --tail=200
 
 # Full cleanup: stop + remove volumes + remove orphan containers
-# Use when you want a fresh Postgres/Rabbit state.
+# Use when you want a fresh Postgres state.
 dev-clean:
     docker compose \
       -f docker-compose.dev.yml \

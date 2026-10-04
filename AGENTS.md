@@ -21,6 +21,7 @@ Whitelabel checkout page: Vue 3 frontend + Spring Boot backend.
 2. **Never edit generated Java** under `target/`.
 3. **Never hardcode credentials** — env vars or K8s Secrets only.
 4. **Preserve `l64user`** (uid/gid 1064) in Dockerfiles.
+5. **One parent, no versions in poms.** `checkout-be` inherits `io.labs64:labs64io-parent` (`labs64.io-commons`): the Spring Boot line, BOM security overrides, shared dependency/plugin versions and the commons libraries come from that one parent version — never re-pin them here. The pom declares `<version>${revision}</version>` (default `0.0.0-SNAPSHOT`); a release is a GitHub Release whose tag `X.Y.Z` becomes the jar, image and chart `appVersion`, and that build refuses `-SNAPSHOT` inputs.
 
 ## Backend details
 

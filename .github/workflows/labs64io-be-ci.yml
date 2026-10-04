@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   build-test:
-    uses: Labs64/labs64.io-workspace/.github/workflows/java-ci.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/java-ci.yml@v1
     secrets:
       L64_PUB_CI_USERNAME: ${{ secrets.L64_PUB_CI_USERNAME }}
       L64_PUB_CI_PASSWORD: ${{ secrets.L64_PUB_CI_PASSWORD }}
@@ -47,12 +47,11 @@ jobs:
     name: Edge image (labs64/checkout)
     needs: build-test
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@v1
     with:
       image: labs64/checkout
       context: ./checkout-be
       # The checkout-be Dockerfile copies target/*.jar, so build the jar first.
       mode: edge
       build-command: mvn -B -ntp -DskipTests package --file ./checkout-be/pom.xml
-      java-version: "25"
     secrets: inherit

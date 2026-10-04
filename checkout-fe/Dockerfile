@@ -18,6 +18,8 @@ RUN npm run build
 FROM nginxinc/nginx-unprivileged:1.31-alpine-slim
 
 ARG GIT_REVISION=unknown
+# Release version (the git tag) for a published image, "edge" for master builds, "dev" locally.
+ARG VERSION=dev
 
 LABEL org.opencontainers.image.title="Labs64.IO :: Checkout UI" \
       org.opencontainers.image.description="Whitelabel checkout frontend for the Labs64.IO Ecosystem" \
@@ -25,6 +27,7 @@ LABEL org.opencontainers.image.title="Labs64.IO :: Checkout UI" \
       org.opencontainers.image.source="https://github.com/Labs64/labs64.io-checkout" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.revision="${GIT_REVISION}" \
+      org.opencontainers.image.version="${VERSION}" \
       io.labs64.edition="ce"
 
 # File operations need root; the base image drops back to the unprivileged user for runtime.

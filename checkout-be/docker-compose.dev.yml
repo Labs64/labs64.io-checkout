@@ -37,7 +37,7 @@ services:
     image: eclipse-temurin:25-jre-alpine
     working_dir: /app
     environment:
-      JAR_FILE: checkout-0.1.0-SNAPSHOT.jar
+      JAR_FILE: checkout-0.0.0-SNAPSHOT.jar
       LABS64_AUTH_AUTHZ_PDPADDRESS: cerbos:3593
       JAVA_TOOL_OPTIONS: >-
         -Duser.timezone=UTC

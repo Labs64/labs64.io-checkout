@@ -27,7 +27,7 @@ permissions:
 
 jobs:
   build-test:
-    uses: Labs64/labs64.io-workspace/.github/workflows/vue-ci.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/vue-ci.yml@v1
     with:
       working-directory: checkout-fe
       upload-dist: true
@@ -159,7 +159,7 @@ jobs:
     name: Edge image (labs64/checkout-ui)
     needs: [build-test, e2e-playwright]
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
-    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@v1
     with:
       image: labs64/checkout-ui
       context: ./checkout-fe

@@ -5,57 +5,24 @@
 
     <groupId>io.labs64</groupId>
     <artifactId>checkout</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <!-- Set by the release tag (-Drevision=<tag>); the 0.0.0-SNAPSHOT default is inherited. -->
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
     <name>Labs64.IO :: Checkout</name>
     <description>Labs64.IO - Checkout</description>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.1.1</version>
+        <groupId>io.labs64</groupId>
+        <artifactId>labs64io-parent</artifactId>
+        <version>0.0.0-SNAPSHOT</version>
+        <relativePath />
     </parent>
 
     <properties>
         <!-- API VERSIONS -->
         <api.version>v1</api.version>
-        <!-- DEPENDENCIES -->
-        <java.version>25</java.version>
-        <protobuf-java.version>4.36.2</protobuf-java.version>
-        <logstash.version>9.0</logstash.version>
-        <springdoc.version>3.1.1</springdoc.version>
-        <openapitools.version>0.2.12</openapitools.version>
-        <mapstruct.version>1.7.0.Beta2</mapstruct.version>
-        <lombok.version>1.18.48</lombok.version>
-        <netty.version>4.2.18.Final</netty.version>
-        <!-- Jackson is NOT pinned here on purpose. Spring Boot's BOM manages the Jackson 3
-             line (jackson-bom) and the Jackson 2 annotations line (jackson-2-bom) as a
-             coordinated pair. Overriding tools.jackson.core:jackson-databind alone to 3.2.1
-             left com.fasterxml.jackson.core:jackson-annotations at Boot's 2.21.4, and
-             databind 3.2.x calls JacksonAnnotationIntrospector.findApplyView(), which needs
-             @JsonApplyView — added only in annotations 2.22. The Flyway pre-install Job then
-             died with NoClassDefFoundError and blocked the whole Helm release. To move ahead
-             of Boot's Jackson, import tools.jackson:jackson-bom (which bumps both) rather
-             than pinning a single artifact. -->
-        <!-- Security overrides ahead of Spring Boot 4.1.1's BOM (Boot 4.1.2 is expected to absorb
-             them; drop these properties then). Keep the pairs in step with the Jackson note above:
-             stay on the same Jackson minor line Boot ships (3.1.x with 2.21.x). Fixes: Tomcat
-             CVE-2026-65905/65182/68525, Jackson CVE-2026-89425/89407/91777/91776/68497. -->
-        <jackson-bom.version>3.1.7</jackson-bom.version>
-        <jackson-2-bom.version>2.21.7</jackson-2-bom.version>
-        <tomcat.version>11.0.26</tomcat.version>
-        <auth-context.version>0.1.0-SNAPSHOT</auth-context.version>
-        <authz-queryplan.version>0.1.0-SNAPSHOT</authz-queryplan.version>
-        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
-        <!-- PLUGINS -->
-        <maven-enforcer-plugin.version>3.6.3</maven-enforcer-plugin.version>
-        <openapi-generator-maven-plugin.version>7.25.0</openapi-generator-maven-plugin.version>
-        <build-helper-maven-plugin.version>3.6.2</build-helper-maven-plugin.version>
-        <maven-dependency-plugin.version>3.11.0</maven-dependency-plugin.version>
-        <maven-compiler-plugin.version>3.16.0</maven-compiler-plugin.version>
-        <exec-maven-plugin.version>3.6.4</exec-maven-plugin.version>
-        <openapi-schema-generator.version>0.1.0-SNAPSHOT</openapi-schema-generator.version>
+        <!-- Shared dependency/plugin versions and Spring Boot BOM overrides come from labs64io-parent -->
         <!-- OpenAPI auth preprocessor paths -->
         <openapi.source>${project.basedir}/src/main/resources/openapi/openapi-checkout-v1.yaml</openapi.source>
         <openapi.generated>${project.build.directory}/generated-openapi/openapi-checkout-v1.yaml</openapi.generated>
@@ -101,13 +68,11 @@
         <dependency>
             <groupId>io.labs64</groupId>
             <artifactId>auth-context-spring-boot-starter</artifactId>
-            <version>${auth-context.version}</version>
         </dependency>
         <!-- Data PEP (pilot): Cerbos PlanResources -> JPA Specification. -->
         <dependency>
             <groupId>io.labs64</groupId>
             <artifactId>authz-queryplan-jpa</artifactId>
-            <version>${authz-queryplan.version}</version>
         </dependency>
         <!-- Micrometer Prometheus registry: serves /actuator/prometheus for the
              infrastructure-owned metrics scrape (matches auditflow). Java metrics stay on
@@ -187,6 +152,8 @@
         </dependency>
     </dependencies>
 
+    <!-- Needed here (not only in the parent): Maven must reach Labs64 Nexus to find
+         io.labs64:labs64io-parent in the first place. -->
     <repositories>
         <repository>
             <id>labs64-nexus</id>
@@ -208,26 +175,6 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-enforcer-plugin</artifactId>
-                <version>${maven-enforcer-plugin.version}</version>
-                <executions>
-                    <execution>
-                        <id>enforce-maven</id>
-                        <goals>
-                            <goal>enforce</goal>
-                        </goals>
-                        <configuration>
-                            <rules>
-                                <requireMavenVersion>
-                                    <version>3.6.3</version>
-                                </requireMavenVersion>
-                            </rules>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
@@ -369,7 +316,8 @@
                             <dependency>
                                 <groupId>io.labs64</groupId>
                                 <artifactId>openapi-schema-generator</artifactId>
-                                <version>${openapi-schema-generator.version}</version>
+                                <!-- Plugin dependencies are not covered by dependencyManagement. -->
+                                <version>${labs64-commons.version}</version>
                             </dependency>
                         </dependencies>
                         <executions>

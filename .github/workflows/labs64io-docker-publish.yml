@@ -14,7 +14,7 @@ on:
 jobs:
   publish-be:
     name: Build & Push Backend image (labs64/checkout)
-    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@v1
     with:
       image: labs64/checkout
       context: ./checkout-be
@@ -23,14 +23,13 @@ jobs:
       # The checkout-be Dockerfile copies target/*.jar, so build the jar first.
       # Unit/integration tests already gate merges via labs64io-be-ci.yml.
       build-command: mvn -B -ntp -DskipTests package --file ./checkout-be/pom.xml
-      java-version: "25"
     secrets: inherit
 
   publish-fe:
     name: Build & Push UI image (labs64/checkout-ui)
     # The checkout-fe Dockerfile is a self-contained multi-stage build (npm build inside),
     # so no build-command/java-version is needed.
-    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/docker-publish.yml@v1
     with:
       image: labs64/checkout-ui
       context: ./checkout-fe
@@ -44,7 +43,7 @@ jobs:
   propagate-to-chart:
     name: Pin digests in charts/checkout
     needs: [publish-be, publish-fe]
-    uses: Labs64/labs64.io-workspace/.github/workflows/chart-update-dispatch.yml@master
+    uses: Labs64/labs64.io-workspace/.github/workflows/chart-update-dispatch.yml@v1
     with:
       chart: checkout
       version: ${{ github.event.release.tag_name }}

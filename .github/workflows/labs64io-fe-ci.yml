@@ -94,9 +94,19 @@ jobs:
         working-directory: checkout-fe
         run: npx playwright install --with-deps
 
+      # Labs64 Nexus is not anonymously readable: the backend's parent (labs64io-parent) and
+      # commons libraries resolve from it, so this job needs the same settings.xml the shared
+      # java-ci.yml writes. Without it the build fails resolving io.labs64:labs64io-parent.
+      - uses: Labs64/labs64.io-workspace/.github/actions/maven-settings@v1
+        with:
+          nexus-username: ${{ secrets.L64_PUB_CI_USERNAME }}
+
       - name: Build BE (skip tests)
         working-directory: checkout-be
-        run: mvn -B -DskipTests package
+        env:
+          L64_PUB_CI_USERNAME: ${{ secrets.L64_PUB_CI_USERNAME }}
+          L64_PUB_CI_PASSWORD: ${{ secrets.L64_PUB_CI_PASSWORD }}
+        run: mvn -B -ntp -DskipTests package
 
       - name: Start BE (background)
         run: |
@@ -108,7 +118,7 @@ jobs:
 
       - name: Wait for BE
         run: |
-          for i in {1..60}; do
+          for _ in {1..60}; do
             if curl -fsS "http://localhost:8080/actuator/health" >/dev/null 2>&1; then
               echo "BE is up"
               exit 0

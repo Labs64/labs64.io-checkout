@@ -1,11 +1,11 @@
 APP_NAME := "checkout"
 REGISTRY  := "localhost:5005"
 
-# build application
+# Compile and package the application (skip tests)
 build:
     mvn clean package -DskipTests
 
-# build and run tests
+# Compile, run tests, and package
 test:
     mvn clean verify
 
@@ -16,11 +16,11 @@ docker: build
     docker push {{REGISTRY}}/{{APP_NAME}}:latest
     docker images | grep "{{APP_NAME}}"
 
-# run application
+# Build the application and run it with the local Spring profile
 run: build
     mvn spring-boot:run -Dspring-boot.run.profiles=local
 
-# check maven dependencies/plugins/properties updates
+# Show available Maven dependency, plugin and property updates, and scan the Docker image for CVEs
 check-updates:
     mvn versions:display-plugin-updates -Dmaven.version.ignore='(?i).*[.-]?(alpha|beta|RC|M)\d*'
     mvn versions:display-property-updates -Dmaven.version.ignore='(?i).*[.-]?(alpha|beta|RC|M)\d*'
@@ -31,6 +31,8 @@ check-updates:
 # NOTE: `dev-up` only starts services (no auto-restart on code/jar changes).
 # To auto-restart `checkout-be` after `mvn package/install`, run `dev-watch`
 # (it uses docker-compose `develop.watch`).
+#
+# Build the application and start the dev services in the background
 dev-up:
     mvn -f pom.xml -B -ntp -DskipTests clean install
     docker compose \
@@ -39,19 +41,21 @@ dev-up:
 
 # Runs in foreground: watches the filesystem and restarts services according to `develop.watch`.
 # Tip: run `mvn -DskipTests package` once so the jar exists before starting the container.
+#
+# Build the application, then watch the filesystem and restart services on changes
 dev-watch:
     mvn -f pom.xml -B -ntp -DskipTests clean install
     docker compose \
       -f docker-compose.dev.yml \
       watch
 
-# Stop services (keeps volumes)
+# Stop the dev services, keeping volumes
 dev-down:
     docker compose \
       -f docker-compose.dev.yml \
       down
 
-# Tail logs for local debugging
+# Follow the last 200 lines of the dev service logs
 dev-logs:
     docker compose \
       -f docker-compose.dev.yml \
@@ -59,6 +63,8 @@ dev-logs:
 
 # Full cleanup: stop + remove volumes + remove orphan containers
 # Use when you want a fresh Postgres state.
+#
+# Stop the dev services and remove their volumes and orphan containers
 dev-clean:
     docker compose \
       -f docker-compose.dev.yml \

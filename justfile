@@ -1,5 +1,6 @@
 # Labs64.IO :: Checkout — justfile
 
+# List available recipes
 default:
     @just --list
 
@@ -11,10 +12,10 @@ default:
 test-e2e:
     @just -f ../labs64.io-tests/justfile test-module checkout
 
-# Alias to run E2E tests
+# Run the E2E tests (same as test-e2e)
 test: test-e2e
 
-# Generate JSON Schema contracts from OpenAPI into a labs64.io checkout
+# Generate JSON Schema contracts from the OpenAPI spec into the given output directory
 schemas-generate output_root:
     test -d "{{output_root}}" || (echo "Output root does not exist: {{output_root}}" >&2; exit 2)
     mvn -ntp --file checkout-be/pom.xml --activate-profiles contract-schemas exec:java@generate-contract-schemas -Dcontract-schema.output-root="{{output_root}}"

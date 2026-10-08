@@ -4,36 +4,39 @@ DOCKER_REGISTRY := "localhost:5005"
 DEV_COMPOSE := "docker-compose.dev.yml"
 DEV_SERVICE := "checkout-fe"
 
-# build application
+# Install the npm dependencies and build the frontend
 build:
     npm install
     npm run build
 
-# build docker image
+# Build the Docker image and push it to the local registry
 docker:
     docker build -t {{APP_NAME}}:latest .
     docker tag {{APP_NAME}}:latest {{DOCKER_REGISTRY}}/{{APP_NAME}}:latest
     docker push {{DOCKER_REGISTRY}}/{{APP_NAME}}:latest
     docker images | grep "{{APP_NAME}}"
 
-# run application
+# Run the Docker image on port 5173
 run:
     docker run --rm -p 5173:80 {{APP_NAME}}:latest
 
-# check dependencies
+# Show outdated npm packages and scan the Docker image for CVEs
 check-updates:
     npm outdated || true
     docker scout cves {{APP_NAME}}:latest
 
-# dev tools
+# Start the dev frontend container in the background
 dev-up:
     docker compose -f {{DEV_COMPOSE}} up -d --remove-orphans {{DEV_SERVICE}}
 
+# Stop the dev stack and remove orphan containers
 dev-down:
     docker compose -f {{DEV_COMPOSE}} down --remove-orphans
 
+# Follow the last 200 lines of the dev frontend logs
 dev-logs:
     docker compose -f {{DEV_COMPOSE}} logs -f --tail=200 {{DEV_SERVICE}}
 
+# Stop the dev stack and remove its volumes and orphan containers
 dev-clean:
     docker compose -f {{DEV_COMPOSE}} down -v --remove-orphans

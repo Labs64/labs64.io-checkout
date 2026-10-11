@@ -34,6 +34,12 @@ The repository ships two services:
 
 For the full developer guide (build/run/test, where to make changes), see [`AGENTS.md`](AGENTS.md).
 
+## Get started
+
+Checkout needs the gateway and the Payment Gateway around it, so the practical way to run it is the full local ecosystem: [Run the full ecosystem locally](https://labs64.io/docs/getting-started/run-the-full-ecosystem-locally/) builds and deploys it with everything else in one command.
+
+To work on one half in isolation, use `just dev-up` in `checkout-be/` (JDK 25, Maven, Docker) or the frontend commands below.
+
 ## Frontend quick start
 
 ```sh

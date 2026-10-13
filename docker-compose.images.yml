@@ -1,0 +1,73 @@
+# Run the Checkout API from the published Docker Hub image: no JDK and no Node on your
+# machine, only Docker. (The checkout page needs the API gateway in front of the API, so it
+# comes with the Quickstart: https://labs64.io/docs/getting-started/quickstart/)
+#
+#   1. Generate the authorization policies once, inside a Maven container (about two minutes
+#      the first time; they come from the OpenAPI contract in this checkout):
+#
+#        docker run --rm -v "$PWD":/src -w /src/checkout-be maven:3.9-eclipse-temurin-25 \
+#          mvn -B -q -DskipTests package
+#
+#   2. Start the stack:
+#
+#        docker compose -f docker-compose.images.yml up -d
+#
+# API:  http://localhost:8080  (Swagger UI at /swagger-ui.html)
+#
+# Requests must carry the identity headers the API gateway adds after authenticating a
+# caller (X-Auth-User, X-Auth-Tenant, X-Auth-Scopes, X-Request-ID); see the README.
+#
+# Pin a release with CHECKOUT_VERSION=0.0.2 (default: latest).
+#
+# This is an evaluation setup: there is no API gateway in front of it, so anyone who can
+# reach port 8080 can claim any identity. Do not expose it. For the full stack (gateway,
+# authentication) use the Labs64.IO Quickstart.
+services:
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: checkout
+      POSTGRES_USER: checkout
+      POSTGRES_PASSWORD: checkout
+      TZ: UTC
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U checkout -d checkout"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  # Central authorization decision point, loaded with the policies generated in step 1.
+  cerbos:
+    image: ghcr.io/cerbos/cerbos:0.56.0
+    command: ["server"]
+    volumes:
+      - ./checkout-be/target/cerbos/policies:/policies:ro
+    healthcheck:
+      test: ["CMD", "/cerbos", "healthcheck", "--kind=grpc"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+
+  checkout:
+    image: labs64/checkout:${CHECKOUT_VERSION:-latest}
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: local
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/checkout
+      SPRING_DATASOURCE_USERNAME: checkout
+      SPRING_DATASOURCE_PASSWORD: checkout
+      SPRING_FLYWAY_ENABLED: "true"
+      LABS64_AUTH_AUTHZ_PDPADDRESS: cerbos:3593
+    depends_on:
+      postgres:
+        condition: service_healthy
+      cerbos:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/actuator/health/liveness || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 40s

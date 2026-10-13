@@ -20,11 +20,22 @@
 
 ## Why Checkout?
 
-A checkout is more than a payment form: it has to hold the order, the buyer, the tax and currency rules and the consents, and it has to look like your brand. Checkout gives you that as an API and a page:
+A checkout is more than a payment form. It has to hold the order, the buyer, the tax and currency rules and the consents, and it has to look like your brand rather than someone else's. Checkout gives you that as an API plus a page you can theme.
 
 1. **One order model.** A purchase order carries items, currency, tax, an optional customer and a validity window.
 2. **Rules enforced for you.** Currency, tax rate, time range, extras and required consents are validated before a transaction exists.
-3. **A checkout page that is yours.** A Vue 3 UI with runtime configuration and i18n, served from a static image.
+3. **A checkout page that is yours.** A Vue 3 page with i18n and runtime configuration, served from a small static image.
+
+**A good fit if**
+
+- You sell digital or physical goods and want an order and checkout service you can brand and host yourself.
+- Consents (terms, marketing, data processing) must be captured per order and enforced before checkout.
+- You are building on the Labs64.IO platform and want orders, payments and audit to fit together.
+
+**Probably not what you need if**
+
+- You need payments executed end to end today: Checkout currently records the transaction and does not yet hand it to the Payment Gateway.
+- You want a complete shop (catalogue, cart, inventory): Checkout starts at the purchase order.
 
 ## Get started
 
@@ -49,16 +60,17 @@ Not sure? Start with **3** to create an order and check out through the API, or 
 
 ### 1. `install.sh`: the quick ecosystem start
 
-One script installs the platform (gateway, authentication, AuditFlow and Payment Gateway) on any Kubernetes cluster, then proves it with a real request. Checkout is an optional module: answer **yes** to "Enable Checkout" in the BYO profile. No cluster? A throwaway one on your laptop is enough:
+One script installs the platform (gateway, authentication, AuditFlow and Payment Gateway) on any Kubernetes cluster, then proves it with a real request. Checkout is an optional module: answer **yes** to "Enable Checkout" in the BYO profile.
 
 ```bash
-k3d cluster create labs64io-demo -p "8000:80@loadbalancer" --k3s-arg "--disable=traefik@server:0"   # optional
+# No cluster yet? A throwaway one needs only Docker and k3d:
+k3d cluster create labs64io-demo -p "8000:80@loadbalancer" --k3s-arg "--disable=traefik@server:0"
 
 curl -fsSL https://raw.githubusercontent.com/Labs64/labs64.io-helm-charts/master/install.sh -o install.sh
 bash install.sh
 ```
 
-Press Enter three times to take the defaults. You finish with a gateway you can `curl`, interactive API docs and a working token flow:
+Press Enter three times to take the defaults. A few minutes later you should see:
 
 ```text
   PASS  Obtained a demo access token from mock-oidc
@@ -69,19 +81,21 @@ Press Enter three times to take the defaults. You finish with a gateway you can 
    API docs:  http://localhost:8000/swagger-ui/
 ```
 
-The Quickstart profile installs AuditFlow and Payment Gateway only; Checkout is offered by the BYO profile, which asks for your identity provider's discovery URL. The same script later runs `status`, `stop`, `start` and `uninstall`. This is an evaluation install with a demo identity provider: keep it on a local or private cluster. Details: [Quickstart](https://labs64.io/docs/getting-started/quickstart/) · [`install.sh`](https://github.com/Labs64/labs64.io-helm-charts/blob/master/install.sh).
+The Quickstart profile installs AuditFlow and Payment Gateway only; Checkout is offered by the BYO profile, which asks for your identity provider's discovery URL. The same script later runs `status`, `stop`, `start` and `uninstall`. This is an evaluation install with a demo identity provider: keep it on a local or private cluster. Details: [Quickstart](https://labs64.io/docs/getting-started/quickstart.html) · [`install.sh`](https://github.com/Labs64/labs64.io-helm-charts/blob/master/install.sh).
 
 ### 2. Kubernetes: on your own cluster
 
-Install Checkout from its Helm chart (API and, with `ui.enabled`, the checkout page):
+You have a cluster and a PostgreSQL database. Install Checkout from its chart (API and checkout page) and point it at the database:
 
 ```bash
 helm repo add labs64io https://labs64.github.io/labs64.io-helm-charts
 helm repo update
-helm install my-checkout labs64io/checkout -n labs64io --create-namespace
+
+helm install my-checkout labs64io/checkout -n labs64io --create-namespace \
+  --set global.postgresql.host=postgres.mycompany.internal
 ```
 
-Checkout needs PostgreSQL and, behind the gateway, the central policy engine. The [`preflight`](https://labs64.io/docs/getting-started/deploy-to-kubernetes/) chart checks your database from inside the cluster first. Guides: [Deploy to your Kubernetes cluster](https://labs64.io/docs/getting-started/deploy-to-kubernetes/) · [Helm chart on Artifact Hub](https://artifacthub.io/packages/helm/labs64io-helm-charts/checkout).
+Database credentials go in a Kubernetes Secret (see the chart's values), and behind the gateway Checkout also needs the central policy engine (the `authz-pdp` chart). Guides: [Deploy to your Kubernetes cluster](https://labs64.io/docs/getting-started/deploy-to-kubernetes.html) · [Helm chart on Artifact Hub](https://artifacthub.io/packages/helm/labs64io-helm-charts/checkout).
 
 ### 3. Docker: on your machine
 
@@ -126,7 +140,7 @@ api -X POST localhost:8080/purchase-orders/$ORDER/checkout -d '{
 
 The order is validated and a checkout transaction exists in `PENDING`. Clean up with `docker compose -f docker-compose.images.yml down -v`. Swagger UI is at <http://localhost:8080/swagger-ui.html>.
 
-This is an evaluation setup without an API gateway: do not expose port 8080. The checkout **page** needs the gateway in front of the API, so it comes with option 1 or the [full ecosystem](https://labs64.io/docs/getting-started/run-the-full-ecosystem-locally/).
+This is an evaluation setup without an API gateway: do not expose port 8080. The checkout **page** needs the gateway in front of the API, so it comes with option 1 or the [full ecosystem](https://labs64.io/docs/getting-started/run-the-full-ecosystem-locally.html).
 
 ### 4. Source: build and change it
 
@@ -141,7 +155,7 @@ cd ../checkout-fe
 npm install && npm run dev                              # the checkout page on http://localhost:5173
 ```
 
-[`AGENTS.md`](AGENTS.md) describes the layout, commands and tests; the [Contributing guide](https://labs64.io/docs/development/contributing/) covers the workflow.
+[`AGENTS.md`](AGENTS.md) describes the layout, commands and tests; the [Contributing guide](https://labs64.io/docs/development/contributing.html) covers the workflow.
 
 ### Where next?
 
@@ -152,7 +166,9 @@ Everything below is in the [Checkout documentation](https://labs64.io/docs/modul
 | Understand the order and checkout model | [Checkout documentation](https://labs64.io/docs/modules/checkout/) |
 | Call the API from my storefront | [REST APIs](https://labs64.io/docs/modules/checkout/#rest-apis) |
 | Brand the checkout page | [Configuration](https://labs64.io/docs/modules/checkout/#configuration) |
-| Compare all the ways to run Labs64.IO | [Choose a deployment path](https://labs64.io/docs/getting-started/choose-a-deployment-path/) |
+| Compare all the ways to run Labs64.IO | [Choose a deployment path](https://labs64.io/docs/getting-started/choose-a-deployment-path.html) |
+
+Something not working? [Troubleshooting your first run](https://labs64.io/docs/getting-started/troubleshooting.html) covers the usual suspects, and you are always welcome to [open an issue](https://github.com/Labs64/labs64.io-checkout/issues).
 
 ## Features
 
@@ -189,6 +205,19 @@ Everything below is in the [Checkout documentation](https://labs64.io/docs/modul
 
 Details are in the [Checkout documentation](https://labs64.io/docs/modules/checkout/).
 
+## What works today, and what does not yet
+
+We would rather you hear it from us than discover it in a demo.
+
+| Works today | Not yet |
+|---|---|
+| Purchase orders, customers and checkout transactions over REST | Handing the transaction to the Payment Gateway, so no `nextAction` redirect yet |
+| Validation of currency, tax, time window, extras and consents | Publishing events to AuditFlow |
+| Tenant isolation and scope-based authorization through the gateway | The checkout page driving the final checkout call (it loads and renders an order) |
+| A themable Vue 3 page with i18n and runtime configuration | |
+
+If your use case needs the missing pieces, the [issue tracker](https://github.com/Labs64/labs64.io-checkout/issues) is where to say so: that is how priorities get set.
+
 ## Using Checkout with AI agents
 
 Checkout turns a basket into a validated, auditable order that an agent can create and finalize with plain REST.
@@ -219,11 +248,11 @@ Checkout is one module of the [Labs64.IO Ecosystem](https://labs64.io); [every m
 
 ## Contributing
 
-Contributions of all sizes are welcome. Fork, branch, run the tests described in [`AGENTS.md`](AGENTS.md), and open a pull request. If you are unsure whether something fits, open an issue first.
+We would love your help. Connecting Checkout to the Payment Gateway, publishing events to AuditFlow and finishing the checkout page are the biggest open areas. Fork the repository, make your change on a branch, run the checks described in [`AGENTS.md`](AGENTS.md) and open a pull request. Not sure whether an idea fits? Open an issue first and we will talk it through; that is a perfectly good way to start.
 
 ## License
 
-The core of the *Labs64.IO Ecosystem* is entirely open source and free forever. Community modules are licensed under [Apache License 2.0](LICENSE).
+Everything in this repository is open source under the [Apache License 2.0](LICENSE): you can use it, change it and ship it commercially. The core of the *Labs64.IO Ecosystem* is free forever; community modules are Apache-2.0 licensed.
 
 ---
 

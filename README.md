@@ -11,7 +11,7 @@
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![📖 Documentation](https://img.shields.io/badge/📖-Documentation-AB6543.svg)](https://labs64.io/docs/modules/checkout/)
 
-<p align="center"><img src="docs/assets/checkout-hero.svg" alt="Checkout: your products become a purchase order; Checkout validates currency, tax, time window and consents, records the buyer's checkout transaction and serves a brandable checkout page." width="880"></p>
+<p align="center"><img src="docs/assets/checkout-hero.svg" alt="Checkout: One checkout page re-skins itself for three brands, each with its own colour, domain, language and currency, while the order, tax validation, consent record and PENDING transaction stay the same." width="880"></p>
 
 [**Get started**](#get-started) · [Features](#features) · [Architecture](#architecture) · [AI agents](#using-checkout-with-ai-agents) · [Ecosystem](#the-labs64io-ecosystem) · [Documentation](https://labs64.io/docs/modules/checkout/) · [labs64.io](https://labs64.io)
 

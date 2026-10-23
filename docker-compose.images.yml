@@ -39,7 +39,7 @@ services:
 
   # Central authorization decision point, loaded with the policies generated in step 1.
   cerbos:
-    image: ghcr.io/cerbos/cerbos:0.56.0
+    image: ghcr.io/cerbos/cerbos:0.57.0
     command: ["server"]
     volumes:
       - ./checkout-be/target/cerbos/policies:/policies:ro

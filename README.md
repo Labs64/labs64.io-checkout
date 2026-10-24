@@ -13,7 +13,7 @@
 
 <p align="center"><img src="docs/assets/checkout-hero.svg" alt="Checkout: One checkout page re-skins itself for three brands, each with its own colour, domain, language and currency, while the order, tax validation, consent record and PENDING transaction stay the same." width="880"></p>
 
-[**Get started**](https://labs64.io/docs/modules/checkout/#quick-start) · [Features](#features) · [Architecture](https://labs64.io/docs/modules/checkout/#architecture) · [AI agents](#using-checkout-with-ai-agents) · [Ecosystem](#the-labs64io-ecosystem) · [Documentation](https://labs64.io/docs/modules/checkout/) · [labs64.io](https://labs64.io)
+[**Get started**](https://labs64.io/docs/modules/checkout/#quick-start) · [Features](#features) · [Architecture](https://labs64.io/docs/modules/checkout/#architecture) · [AI agents](#using-it-with-ai-agents) · [Ecosystem](#the-labs64io-ecosystem) · [Documentation](https://labs64.io/docs/modules/checkout/) · [labs64.io](https://labs64.io)
 
 > [!NOTE]
 > Checkout currently records the buyer's checkout transaction as `PENDING` and returns `nextAction: NONE`. Handing the transaction to the Payment Gateway is not connected yet.
@@ -60,14 +60,9 @@ We would rather you hear it from us than discover it in a demo.
 
 If your use case needs the missing pieces, the [issue tracker](https://github.com/Labs64/labs64.io-checkout/issues) is where to say so: that is how priorities get set.
 
-## Using Checkout with AI agents
+## Using it with AI agents
 
-Checkout turns a basket into a validated, auditable order that an agent can create and finalize with plain REST.
-
-- **Machine-readable contract.** The OpenAPI v1 spec lives in [`openapi-checkout-v1.yaml`](checkout-be/src/main/resources/openapi/openapi-checkout-v1.yaml) and is served by the running API; generate a client or tool definition from it.
-- **Least privilege.** Operations require scopes such as `purchase-order:write` and `purchase-order:checkout`; give an agent only what its task needs.
-- **Send complete bodies.** Checkout expects `consents` and `extra` to be present (use `{}`); omitting them currently returns `500` rather than a validation error.
-- **Working on the code with an agent?** [`AGENTS.md`](AGENTS.md) and [`CLAUDE.md`](CLAUDE.md) describe the layout, conventions and test commands.
+An agent can create and finalize orders over plain REST, using the OpenAPI spec for its client. The [guide for AI agents](https://labs64.io/docs/introduction/ai-agents.html) covers authentication, retries and errors across all modules. Working on this repository with an agent? [`AGENTS.md`](AGENTS.md) and [`CLAUDE.md`](CLAUDE.md) describe the layout, conventions and test commands.
 
 ## The Labs64.IO Ecosystem
 

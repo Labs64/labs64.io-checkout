@@ -13,7 +13,7 @@
 
 <p align="center"><img src="docs/assets/checkout-hero.svg" alt="Checkout: One checkout page re-skins itself for three brands, each with its own colour, domain, language and currency, while the order, tax validation, consent record and PENDING transaction stay the same." width="880"></p>
 
-[Why Checkout?](#why-checkout) · [Documentation](https://labs64.io/docs/modules/checkout/) · [Build and test](#build-and-test) · [Ecosystem](#the-labs64io-ecosystem) · [labs64.io](https://labs64.io)
+[**Get started**](https://labs64.io/docs/modules/checkout/#quick-start) · [Features](#features) · [Architecture](https://labs64.io/docs/modules/checkout/#architecture) · [AI agents](#using-checkout-with-ai-agents) · [Ecosystem](#the-labs64io-ecosystem) · [Documentation](https://labs64.io/docs/modules/checkout/) · [labs64.io](https://labs64.io)
 
 > [!NOTE]
 > Checkout currently records the buyer's checkout transaction as `PENDING` and returns `nextAction: NONE`. Handing the transaction to the Payment Gateway is not connected yet.
@@ -37,49 +37,64 @@ A checkout is more than a payment form. It has to hold the order, the buyer, the
 - You need payments executed end to end today: Checkout currently records the transaction and does not yet hand it to the Payment Gateway.
 - You want a complete shop (catalogue, cart, inventory): Checkout starts at the purchase order.
 
-## Documentation
+## Features
 
-Install, configure and operate Checkout in the **[Checkout documentation](https://labs64.io/docs/modules/checkout/)**.
+- **Purchase orders**: items, currency, tax, validity window and an optional customer, over a REST API.
+- **Validation**: currency, tax rate, time range, extras and required consents are checked before checkout.
+- **Consent-aware**: orders can require named consents; checkout is refused until they are accepted.
+- **Multi-tenant**: tenant and scopes come from the trusted gateway headers; every query is tenant-scoped.
+- **Whitelabel page**: Vue 3 UI with runtime `env.json` configuration, so one image runs in every environment.
+- **i18n-ready**: translated UI via `vue-i18n`.
+- **OpenAPI-first**: the contract is the source of truth; server interfaces and authorization policies are generated from it.
 
-[Quick Start](https://labs64.io/docs/modules/checkout/#quick-start) · [Configuration](https://labs64.io/docs/modules/checkout/#configuration) · [REST APIs](https://labs64.io/docs/modules/checkout/#rest-apis)
+## What works today, and what does not yet
 
-New to Labs64.IO? The [Quickstart](https://labs64.io/docs/getting-started/quickstart.html) puts the platform on any Kubernetes cluster in about five minutes.
+We would rather you hear it from us than discover it in a demo.
 
-## Build and test
+| Works today | Not yet |
+|---|---|
+| Purchase orders, customers and checkout transactions over REST | Handing the transaction to the Payment Gateway, so no `nextAction` redirect yet |
+| Validation of currency, tax, time window, extras and consents | Publishing events to AuditFlow |
+| Tenant isolation and scope-based authorization through the gateway | The checkout page driving the final checkout call (it loads and renders an order) |
+| A themable Vue 3 page with i18n and runtime configuration | |
 
-```bash
-cd checkout-be
-just test        # mvn clean verify
-just dev-up      # build and start the API with PostgreSQL and Cerbos (:8080)
+If your use case needs the missing pieces, the [issue tracker](https://github.com/Labs64/labs64.io-checkout/issues) is where to say so: that is how priorities get set.
 
-cd ../checkout-fe
-just build       # npm install + npm run build
-just dev-up      # the checkout page (:5173)
-```
+## Using Checkout with AI agents
 
-Needs JDK 25, Maven 3.6.3+, Node and Docker. Working on the code with an AI agent? [`AGENTS.md`](AGENTS.md) and [`CLAUDE.md`](CLAUDE.md) describe the layout, conventions and checks.
+Checkout turns a basket into a validated, auditable order that an agent can create and finalize with plain REST.
+
+- **Machine-readable contract.** The OpenAPI v1 spec lives in [`openapi-checkout-v1.yaml`](checkout-be/src/main/resources/openapi/openapi-checkout-v1.yaml) and is served by the running API; generate a client or tool definition from it.
+- **Least privilege.** Operations require scopes such as `purchase-order:write` and `purchase-order:checkout`; give an agent only what its task needs.
+- **Send complete bodies.** Checkout expects `consents` and `extra` to be present (use `{}`); omitting them currently returns `500` rather than a validation error.
+- **Working on the code with an agent?** [`AGENTS.md`](AGENTS.md) and [`CLAUDE.md`](CLAUDE.md) describe the layout, conventions and test commands.
 
 ## The Labs64.IO Ecosystem
 
-This repository is part of the [Labs64.IO Ecosystem](https://labs64.io): open-source building blocks for secure commerce platforms. Every module is documented at [labs64.io/docs](https://labs64.io/docs/).
+Checkout is one module of the [Labs64.IO Ecosystem](https://labs64.io); [every module is documented here](https://labs64.io/docs/).
 
-| Module | What it does |
-|---|---|
-| [**AuditFlow**](https://github.com/Labs64/labs64.io-auditflow) | Publish once, route anywhere, lose nothing |
-| [**Auth Gateway**](https://github.com/Labs64/labs64.io-authproxy) | One authenticated edge for every module |
-| [**Payment Gateway**](https://github.com/Labs64/labs64.io-payment-gateway) | One API across multiple payment providers |
-| [**Checkout**](https://github.com/Labs64/labs64.io-checkout) | Whitelabel checkout and order workflow |
-| [**Customer Portal**](https://github.com/Labs64/labs64.io-customer-portal) | Self-service portal for your customers |
-
-Built on [Commons](https://github.com/Labs64/labs64.io-commons), deployed with [Helm Charts](https://github.com/Labs64/labs64.io-helm-charts), developed in the [Workspace](https://github.com/Labs64/labs64.io-workspace), verified by [Tests](https://github.com/Labs64/labs64.io-tests) and documented in [Docs](https://github.com/Labs64/labs64.io-docs). Also from Labs64: [NetLicensing](https://netlicensing.io) for licensing-as-a-service and [GuideChimp](https://www.labs64.com/guidechimp/) for guided product tours.
+| Module | What it does | Link |
+|---|---|---|
+| **AuditFlow** | Audit-event routing pipeline | [labs64.io-auditflow](https://github.com/Labs64/labs64.io-auditflow) |
+| **API Gateway** | Authenticating, policy-enforcing edge for all modules | [labs64.io-authproxy](https://github.com/Labs64/labs64.io-authproxy) |
+| **Payment Gateway** | One API over multiple payment providers | [labs64.io-payment-gateway](https://github.com/Labs64/labs64.io-payment-gateway) |
+| **Checkout** | Embeddable, brandable checkout | [labs64.io-checkout](https://github.com/Labs64/labs64.io-checkout) |
+| **Customer Portal** | Customer self-service UI | [labs64.io-customer-portal](https://github.com/Labs64/labs64.io-customer-portal) |
+| **Commons** | Shared Java and Python libraries | [labs64.io-commons](https://github.com/Labs64/labs64.io-commons) |
+| **Helm Charts** | Kubernetes deployment for every module | [labs64.io-helm-charts](https://github.com/Labs64/labs64.io-helm-charts) |
+| **Workspace** | Dev container and multi-repo tooling | [labs64.io-workspace](https://github.com/Labs64/labs64.io-workspace) |
+| **Tests** | Cross-module regression suite | [labs64.io-tests](https://github.com/Labs64/labs64.io-tests) |
+| **Docs** | Published documentation | [labs64.io-docs](https://github.com/Labs64/labs64.io-docs) |
+| **NetLicensing** | Licensing-as-a-Service: license and entitlement management | [netlicensing.io](https://netlicensing.io) |
+| **GuideChimp** | Interactive guided product tours | [labs64.com/guidechimp](https://www.labs64.com/guidechimp/) |
 
 ## Contributing
 
-We would love your help. Connecting Checkout to the Payment Gateway, publishing events to AuditFlow and finishing the checkout page are the biggest open areas. Fork the repository, make your change on a branch, run the checks described in [`AGENTS.md`](AGENTS.md) and open a pull request. Not sure whether an idea fits? Open an issue first.
+We would love your help. Connecting Checkout to the Payment Gateway, publishing events to AuditFlow and finishing the checkout page are the biggest open areas. Fork the repository, make your change on a branch, run the checks described in [`AGENTS.md`](AGENTS.md) and open a pull request. Not sure whether an idea fits? Open an issue first and we will talk it through; that is a perfectly good way to start.
 
 ## License
 
-Open source under the [Apache License 2.0](LICENSE): use it, change it and ship it commercially.
+Everything in this repository is open source under the [Apache License 2.0](LICENSE): you can use it, change it and ship it commercially. The core of the *Labs64.IO Ecosystem* is free forever; community modules are Apache-2.0 licensed.
 
 ---
 

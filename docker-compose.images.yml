@@ -15,7 +15,7 @@
 # API:  http://localhost:8080  (Swagger UI at /swagger-ui.html)
 #
 # Requests must carry the identity headers the API gateway adds after authenticating a
-# caller (X-Auth-User, X-Auth-Tenant, X-Auth-Scopes, X-Request-ID); see the README.
+# caller (X-Auth-User, X-Auth-Tenant, X-Auth-Scopes, X-Request-ID); see the Checkout documentation (labs64.io/docs/modules/checkout/).
 #
 # Pin a release with CHECKOUT_VERSION=0.0.2 (default: latest).
 #

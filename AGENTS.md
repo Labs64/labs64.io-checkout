@@ -12,8 +12,8 @@ Whitelabel checkout page: Vue 3 frontend + Spring Boot backend.
 
 | Path | Service | Stack | Port |
 |------|---------|-------|------|
-| `checkout-be/` | Backend | Java 25, Spring Boot 4.1.0, Maven | 8080 |
-| `checkout-fe/` | Frontend | Vue 3, Vite 7, Pinia, TypeScript | 5173 (dev) |
+| `checkout-be/` | Backend | Java, Spring Boot, Maven (versions: the `labs64io-parent` pom) | 8080 |
+| `checkout-fe/` | Frontend | Vue 3, Vite, Pinia, TypeScript | 5173 (dev) |
 
 ## Critical guardrails
 
@@ -56,6 +56,13 @@ just dev-up         # docker compose up
 just dev-down       # docker compose down
 ```
 
+Frontend checks (`checkout-fe/package.json`): `npm run type-check`, `npm run test:unit` (Vitest, runs once).
+`npm test` also runs the Playwright E2E, which needs its browsers installed. `npm run lint` **rewrites files**
+(`--fix`): review the diff it leaves.
+
+Gateway-edge regression for this module lives in `tests/e2e/` (Robot Framework, run by `labs64.io-tests`, whose
+`AGENTS.md` explains the tags, `not-ga` included, and which of them gate).
+
 Local URLs: Swagger `:8080/swagger-ui.html`, frontend `:5173`.
 
 ## Where to make common changes
@@ -67,3 +74,9 @@ Local URLs: Swagger `:8080/swagger-ui.html`, frontend `:5173`.
 | REST controller | `checkout-be/src/main/java/io/labs64/checkout/controller/` |
 | Custom validator | `checkout-be/src/main/java/io/labs64/checkout/validation/` |
 | Frontend components | `checkout-fe/src/` |
+
+## Working rules for every change
+
+- Judge the change against the **Quality bar for every change** in `labs64.io-workspace/AGENTS.md` (stability of the ecosystem, no regression, no network surprises, performance, HA and resilience, testability, maintainability), and say in the pull request how each applies, or why it does not.
+- Every pull request is assigned to its author and added to the `Labs64.IO` GitHub Project (`labs64.io-workspace/AGENTS.md`, "Pull requests").
+- Before you push: `cd checkout-be && just test`; for the frontend `cd checkout-fe && npm run type-check && npm run test:unit`.

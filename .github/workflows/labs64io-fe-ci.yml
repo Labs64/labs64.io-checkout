@@ -65,6 +65,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false  # no token left in .git/config for npm install scripts and the build to read
 
       - name: Start deps
         uses: ./.github/actions/checkout-deps

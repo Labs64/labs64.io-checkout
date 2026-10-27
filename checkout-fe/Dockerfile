@@ -1,5 +1,5 @@
 # Stage 1: Build
-FROM node:26-bookworm-slim AS builder
+FROM node:26.12.1-bookworm-slim AS builder
 
 # Set working directory
 WORKDIR /app

@@ -4,7 +4,7 @@ Whitelabel checkout page: Vue 3 frontend + Spring Boot backend.
 
 ## Ecosystem role
 
-- `checkout-be` has **no message-broker dependency** and does not emit business events yet. When it does, deliver them to AuditFlow over its HTTP API as a `service:checkout` principal (the pattern `payment-gateway` uses; RFC 09), not via RabbitMQ.
+- `checkout-be` has **no message-broker dependency** and does not emit business events yet. When it does, deliver them to AuditFlow over its HTTP API as a `svc:checkout` principal (the pattern `payment-gateway` uses; RFC 09), not via RabbitMQ.
 - `checkout-fe` served behind Traefik, authenticated via traefik-authproxy (OIDC/JWT).
 - Swagger UI at `gateway.localhost/checkout/v3/api-docs`.
 

@@ -3,13 +3,13 @@
 **A whitelabel checkout that looks like you: from order to transaction.**
 *Part of the [Labs64.IO Ecosystem](https://labs64.io): the order and checkout layer in front of your payments.*
 
-[![CI (Backend)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-be-ci.yml/badge.svg)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-be-ci.yml)
-[![CI (Frontend)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-fe-ci.yml/badge.svg)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-fe-ci.yml)
+[![CI (Backend)](https://img.shields.io/github/actions/workflow/status/Labs64/labs64.io-checkout/labs64io-be-ci.yml?label=CI%20(Backend)&logo=github)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-be-ci.yml)
+[![CI (Frontend)](https://img.shields.io/github/actions/workflow/status/Labs64/labs64.io-checkout/labs64io-fe-ci.yml?label=CI%20(Frontend)&logo=github)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-fe-ci.yml)
 [![Docker Image Version](https://img.shields.io/docker/v/labs64/checkout?label=Docker&logo=docker&logoColor=white&color=1C90ED)](https://hub.docker.com/r/labs64/checkout)
 [![Docker Image Version (UI)](https://img.shields.io/docker/v/labs64/checkout-ui?label=Docker%20(UI)&logo=docker&logoColor=white&color=1C90ED)](https://hub.docker.com/r/labs64/checkout-ui)
 [![Artifact Hub](https://img.shields.io/endpoint?url=https://artifacthub.io/badge/repository/labs64io-helm-charts)](https://artifacthub.io/packages/helm/labs64io-helm-charts/checkout)
-[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![📖 Documentation](https://img.shields.io/badge/📖-Documentation-AB6543.svg)](https://labs64.io/docs/modules/checkout/)
+[![Labs64.IO Ecosystem](https://img.shields.io/badge/Labs64.IO-Ecosystem-E14817.svg?logo=data%3Aimage%2Fsvg%2Bxml%3Bbase64%2CPHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9Ii01IC01IDE1NSAxNTUiPjxwYXRoIGZpbGw9IiNmZmYiIGQ9Ik0zIDNoMTM5djEzOUgzWk02OSAzdjEzOWg3VjNaTTQzIDQzdjU5aDI2VjQzWk03NiA0M3Y1OWgyNlY0M1oiLz48cGF0aCBmaWxsPSIjYmJiIiBkPSJNNDkgNDloNDd2NDdINDlaIi8%2BPC9zdmc%2B)](https://labs64.io/docs/services/)
 
 <p align="center"><img src="docs/assets/checkout-hero.svg" alt="Checkout: One checkout page re-skins itself for three brands, each with its own colour, domain, language and currency, while the order, tax validation, consent record and PENDING transaction stay the same." width="880"></p>
 

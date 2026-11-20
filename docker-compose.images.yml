@@ -1,5 +1,5 @@
 # Run the Checkout API from the published Docker Hub image: no JDK and no Node on your
-# machine, only Docker. (The checkout page needs the API gateway in front of the API, so it
+# machine, only Docker. (The checkout page needs the Auth Gateway in front of the API, so it
 # comes with the Quickstart: https://labs64.io/docs/getting-started/quickstart/)
 #
 #   1. Generate the authorization policies once, inside a Maven container (about two minutes
@@ -14,12 +14,12 @@
 #
 # API:  http://localhost:8080  (Swagger UI at /swagger-ui.html)
 #
-# Requests must carry the identity headers the API gateway adds after authenticating a
+# Requests must carry the identity headers the Auth Gateway adds after authenticating a
 # caller (X-Auth-User, X-Auth-Tenant, X-Auth-Scopes, X-Request-ID); see the README.
 #
 # Pin a release with CHECKOUT_VERSION=0.0.2 (default: latest).
 #
-# This is an evaluation setup: there is no API gateway in front of it, so anyone who can
+# This is an evaluation setup: there is no Auth Gateway in front of it, so anyone who can
 # reach port 8080 can claim any identity. Do not expose it. For the full stack (gateway,
 # authentication) use the Labs64.IO Quickstart.
 services:

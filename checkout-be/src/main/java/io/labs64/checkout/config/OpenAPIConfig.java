@@ -28,7 +28,7 @@ import java.util.Properties;
         servers = {
                 @Server(
                         url = "/checkout/api/v1",
-                        description = "Via API Gateway (Traefik)"
+                        description = "Via Auth Gateway (Traefik)"
                 ),
                 @Server(
                         url = "/",

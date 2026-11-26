@@ -1,7 +1,6 @@
 # Labs64.IO :: Checkout
 
-**A whitelabel checkout that looks like you: from order to transaction.**
-*Part of the [Labs64.IO Ecosystem](https://labs64.io): the order and checkout layer in front of your payments.*
+**A whitelabel checkout that looks like you: from order to transaction.** Checkout is the order and checkout layer in front of your payments: it holds a purchase order with its items, currency, tax, an optional customer and a validity window, validates currency, tax rate, time range, extras and required consents, and records the checkout transaction, through a REST API and a themable Vue 3 checkout page. It does not yet hand the transaction to the Payment Gateway: it records it as `PENDING`.
 
 [![CI (Backend)](https://img.shields.io/github/actions/workflow/status/Labs64/labs64.io-checkout/labs64io-be-ci.yml?label=CI%20(Backend)&logo=github)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-be-ci.yml)
 [![CI (Frontend)](https://img.shields.io/github/actions/workflow/status/Labs64/labs64.io-checkout/labs64io-fe-ci.yml?label=CI%20(Frontend)&logo=github)](https://github.com/Labs64/labs64.io-checkout/actions/workflows/labs64io-fe-ci.yml)
@@ -13,68 +12,9 @@
 
 <p align="center"><img src="assets/checkout-hero.svg" alt="Checkout: One checkout page re-skins itself for three brands, each with its own colour, domain, language and currency, while the order, tax validation, consent record and PENDING transaction stay the same." width="880"></p>
 
-[**Get started**](https://labs64.io/docs/modules/checkout/#quick-start) · [Features](#features) · [Architecture](https://labs64.io/docs/modules/checkout/#architecture) · [AI agents](#using-it-with-ai-agents) · [Ecosystem](#the-labs64io-ecosystem) · [Documentation](https://labs64.io/docs/modules/checkout/) · [labs64.io](https://labs64.io)
-
-> [!NOTE]
-> Checkout currently records the buyer's checkout transaction as `PENDING` and returns `nextAction: NONE`. Handing the transaction to the Payment Gateway is not connected yet.
-
-## Why Checkout?
-
-A checkout is more than a payment form. It has to hold the order, the buyer, the tax and currency rules and the consents, and it has to look like your brand rather than someone else's. Checkout gives you that as an API plus a page you can theme.
-
-1. **One order model.** A purchase order carries items, currency, tax, an optional customer and a validity window.
-2. **Rules enforced for you.** Currency, tax rate, time range, extras and required consents are validated before a transaction exists.
-3. **A checkout page that is yours.** A Vue 3 page with i18n and runtime configuration, served from a small static image.
-
-**A good fit if**
-
-- You sell digital or physical goods and want an order and checkout service you can brand and host yourself.
-- Consents (terms, marketing, data processing) must be captured per order and enforced before checkout.
-- You are building on the Labs64.IO platform and want orders, payments and audit to fit together.
-
-**Probably not what you need if**
-
-- You need payments executed end to end today: Checkout currently records the transaction and does not yet hand it to the Payment Gateway.
-- You want a complete shop (catalogue, cart, inventory): Checkout starts at the purchase order.
-
-## Features
-
-- **Purchase orders**: items, currency, tax, validity window and an optional customer, over a REST API.
-- **Validation**: currency, tax rate, time range, extras and required consents are checked before checkout.
-- **Consent-aware**: orders can require named consents; checkout is refused until they are accepted.
-- **Multi-tenant**: tenant and scopes come from the trusted gateway headers; every query is tenant-scoped.
-- **Whitelabel page**: Vue 3 UI with runtime `env.json` configuration, so one image runs in every environment.
-- **i18n-ready**: translated UI via `vue-i18n`.
-- **OpenAPI-first**: the contract is the source of truth; server interfaces and authorization policies are generated from it.
-
-## What works today, and what does not yet
-
-We would rather you hear it from us than discover it in a demo.
-
-| Works today | Not yet |
-|---|---|
-| Purchase orders, customers and checkout transactions over REST | Handing the transaction to the Payment Gateway, so no `nextAction` redirect yet |
-| Validation of currency, tax, time window, extras and consents | Publishing events to AuditFlow |
-| Tenant isolation and scope-based authorization through the gateway | The checkout page driving the final checkout call (it loads and renders an order) |
-| A themable Vue 3 page with i18n and runtime configuration | |
-
-If your use case needs the missing pieces, the [issue tracker](https://github.com/Labs64/labs64.io-checkout/issues) is where to say so: that is how priorities get set.
-
-## Using it with AI agents
-
-An agent can create and finalize orders over plain REST, using the OpenAPI spec for its client. The [guide for AI agents](https://labs64.io/docs/introduction/ai-agents.html) covers authentication, retries and errors across all modules. Working on this repository with an agent? [`AGENTS.md`](AGENTS.md) and [`CLAUDE.md`](CLAUDE.md) describe the layout, conventions and test commands.
-
 ## The Labs64.IO Ecosystem
 
-Checkout is one module of the [Labs64.IO Ecosystem](https://labs64.io). [All modules are listed in the documentation](https://labs64.io/docs/services/).
-
-## Contributing
-
-We would love your help. Connecting Checkout to the Payment Gateway, publishing events to AuditFlow and finishing the checkout page are the biggest open areas. Fork the repository, make your change on a branch, run the checks described in [`AGENTS.md`](AGENTS.md) and open a pull request. Not sure whether an idea fits? Open an issue first and we will talk it through; that is a perfectly good way to start.
-
-## License
-
-Everything in this repository is open source under the [Apache License 2.0](LICENSE): you can use it, change it and ship it commercially. The core of the *Labs64.IO Ecosystem* is free forever; community modules are Apache-2.0 licensed.
+Checkout is one module of the [Labs64.IO Ecosystem](https://labs64.io). Its documentation is at [labs64.io/docs/modules/checkout](https://labs64.io/docs/modules/checkout/); [all modules are listed in the documentation](https://labs64.io/docs/services/).
 
 ---
 
